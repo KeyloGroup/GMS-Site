@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keylo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100">
+
+<!-- Header -->
+<header class="fixed w-full bg-slate-900/80 backdrop-blur z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <a href="#" class="text-2xl font-extrabold text-amber-400">Keylo</a>
+    <nav class="hidden md:flex gap-8 text-slate-300">
+      <a href="#features" class="hover:text-amber-400">Features</a>
+      <a href="#pricing" class="hover:text-amber-400">Pricing</a>
+      <a href="#testimonials" class="hover:text-amber-400">Testimonials</a>
+      <a href="#contact" class="hover:text-amber-400">Contact</a>
+    </nav>
+    <div class="flex gap-3">
+      <a href="#" class="px-4 py-2 text-amber-400 border border-amber-400 rounded-lg hover:bg-amber-400 hover:text-slate-900">Log in</a>
+      <a href="#" class="px-4 py-2 bg-amber-400 text-slate-900 font-semibold rounded-lg hover:bg-amber-300">Get Started</a>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 pt-32 pb-20">
+  <div class="max-w-4xl text-center px-4">
+    <h1 class="text-5xl sm:text-6xl font-extrabold text-white mb-6">The Modern Management Suite for Your Community</h1>
+    <p class="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto">Keylo helps you streamline operations, automate tasks, and understand your members with powerful insights.</p>
+    <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+      <a href="#" class="px-8 py-4 bg-amber-400 text-slate-900 font-bold rounded-lg hover:bg-amber-300">Get Started</a>
+      <button onclick="openModal('videoModal')" class="px-8 py-4 border border-slate-700 text-white rounded-lg hover:bg-slate-800">Watch Demo</button>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features" class="py-24 bg-slate-900">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-4xl font-bold text-center mb-16 text-white">What Makes Keylo Different</h2>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div class="bg-slate-950 p-8 rounded-2xl border border-slate-800 hover:border-amber-400 transition">
+        <div class="w-14 h-14 mb-4 bg-amber-400/10 rounded-full flex items-center justify-center text-amber-400">
+          <i data-lucide="zap" class="w-7 h-7"></i>
+        </div>
+        <h3 class="text-xl font-semibold mb-2">Instant Setup</h3>
+        <p class="text-slate-400">Connect your group and start managing in minutes.</p>
+      </div>
+      <div class="bg-slate-950 p-8 rounded-2xl border border-slate-800 hover:border-amber-400 transition">
+        <div class="w-14 h-14 mb-4 bg-amber-400/10 rounded-full flex items-center justify-center text-amber-400">
+          <i data-lucide="shield-check" class="w-7 h-7"></i>
+        </div>
+        <h3 class="text-xl font-semibold mb-2">Secure & Reliable</h3>
+        <p class="text-slate-400">All actions are powered by trusted APIs for safety.</p>
+      </div>
+      <div class="bg-slate-950 p-8 rounded-2xl border border-slate-800 hover:border-amber-400 transition">
+        <div class="w-14 h-14 mb-4 bg-amber-400/10 rounded-full flex items-center justify-center text-amber-400">
+          <i data-lucide="bar-chart-3" class="w-7 h-7"></i>
+        </div>
+        <h3 class="text-xl font-semibold mb-2">Data-Driven Insights</h3>
+        <p class="text-slate-400">Understand your community with analytics and growth tools.</p>
+      </div>
+      <div class="bg-slate-950 p-8 rounded-2xl border border-slate-800 hover:border-amber-400 transition">
+        <div class="w-14 h-14 mb-4 bg-amber-400/10 rounded-full flex items-center justify-center text-amber-400">
+          <i data-lucide="bot" class="w-7 h-7"></i>
+        </div>
+        <h3 class="text-xl font-semibold mb-2">Smart Automation</h3>
+        <p class="text-slate-400">Automate recurring tasks and save hours every week.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section id="pricing" class="py-24 bg-slate-950">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-4xl font-bold text-center mb-16">Simple Pricing</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-slate-900 p-8 rounded-2xl border border-slate-800 text-center">
+        <h3 class="text-2xl font-semibold mb-4">Basic</h3>
+        <p class="text-5xl font-bold text-amber-400 mb-4">£0<span class="text-lg text-slate-400">/mo</span></p>
+        <p class="mb-6 text-slate-400">Perfect for small teams.</p>
+        <a href="#" class="block px-4 py-3 bg-amber-400 text-slate-900 rounded-lg font-bold hover:bg-amber-300">Choose Plan</a>
+      </div>
+      <div class="bg-slate-900 p-8 rounded-2xl border-2 border-amber-400 text-center">
+        <h3 class="text-2xl font-semibold mb-4">Pro</h3>
+        <p class="text-5xl font-bold text-amber-400 mb-4">£5<span class="text-lg text-slate-400">/mo</span></p>
+        <p class="mb-6 text-slate-400">Advanced tools for growing communities.</p>
+        <a href="#" class="block px-4 py-3 bg-amber-400 text-slate-900 rounded-lg font-bold hover:bg-amber-300">Choose Plan</a>
+      </div>
+      <div class="bg-slate-900 p-8 rounded-2xl border border-slate-800 text-center">
+        <h3 class="text-2xl font-semibold mb-4">Elite</h3>
+        <p class="text-5xl font-bold text-amber-400 mb-4">£N/A<span class="text-lg text-slate-400">/mo</span></p>
+        <p class="mb-6 text-slate-400">For large organizations.</p>
+        <a href="#" class="block px-4 py-3 bg-amber-400 text-slate-900 rounded-lg font-bold hover:bg-amber-300">Unavailable</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer id="contact" class="bg-slate-900 text-slate-400 py-12">
+  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-8">
+    <div>
+      <h4 class="text-white font-semibold mb-4">Keylo</h4>
+      <p class="text-sm">Streamline your community operations with ease and security.</p>
+    </div>
+    <div>
+      <h4 class="text-white font-semibold mb-4">Product</h4>
+      <ul class="space-y-2">
+        <li><a href="#features" class="hover:text-white">Features</a></li>
+        <li><a href="#pricing" class="hover:text-white">Pricing</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-white font-semibold mb-4">Company</h4>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-white">About</a></li>
+        <li><a href="#" class="hover:text-white">Careers</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-white font-semibold mb-4">Support</h4>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-white">Help Center</a></li>
+        <li><a href="#" class="hover:text-white">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="text-center mt-8 text-sm text-slate-600">© <script>document.write(new Date().getFullYear())</script> Keylo. All rights reserved.</div>
+</footer>
+
+<!-- Video Modal -->
+<div id="videoModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center p-4 z-50">
+  <div class="bg-slate-900 rounded-xl max-w-3xl w-full relative">
+    <button onclick="closeModal('videoModal')" class="absolute top-3 right-3 text-slate-400 hover:text-white">✕</button>
+    <div class="p-6">
+      <h3 class="text-2xl font-bold mb-4 text-center">Watch Our Demo</h3>
+      <div class="aspect-video">
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" class="w-full h-full" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openModal(id){ document.getElementById(id).style.display='flex'; }
+function closeModal(id){ document.getElementById(id).style.display='none'; }
+</script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script> lucide.createIcons(); </script>
+</body>
+</html>
