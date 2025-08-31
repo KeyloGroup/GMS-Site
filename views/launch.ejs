@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Keylo — Next Chapter</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1,h2,h3,h4 { font-family: 'Outfit', sans-serif; }
+    .glass {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(22px) saturate(250%);
+      -webkit-backdrop-filter: blur(22px) saturate(250%);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 12px 40px rgba(31,38,135,0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    .glass::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: linear-gradient(rgba(255,255,255,0.15), rgba(255,255,255,0));
+      pointer-events: none;
+    }
+    .glass-button {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(12px) saturate(200%);
+      border: 1px solid rgba(255,255,255,0.25);
+      transition: all 0.3s ease;
+    }
+    .glass-button:hover {
+      background: rgba(255,255,255,0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(31,38,135,0.3);
+    }
+    .glow-text { text-shadow: 0 0 4px rgba(170, 130, 255, 0.65); }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-purple-100 via-purple-200 to-purple-300 text-slate-900">
+
+<header class="fixed w-full glass z-50">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <div class="glass-button w-11 h-11 rounded-full flex items-center justify-center overflow-hidden">
+        <img src="<%= userProfileURL %>" alt="Profile" class="w-full h-full object-cover">
+      </div>
+      <h2 class="text-base font-semibold text-slate-800">Welcome, <%= user %></h2>
+    </div>
+
+    <a href="/" class="text-xl sm:text-2xl font-extrabold glow-text">Keylo</a>
+
+    <a href="/signout" class="glass-button px-4 py-2 rounded-lg text-sm font-medium text-purple-900">Sign Out</a>
+  </div>
+</header>
+
+<main class="pt-28 pb-20 px-6">
+  <section class="flex items-center justify-center">
+    <div class="max-w-3xl w-full glass p-10 text-center">
+      <h1 class="text-4xl sm:text-5xl font-extrabold mb-6 glow-text">Something New is on the Horizon</h1>
+      <p class="text-lg leading-relaxed text-slate-800 mb-6">
+        The next evolution of <span class="font-semibold">Keylo</span> is almost here.  
+        Manage your community with ease, automate routine tasks, and gain valuable insights — all in one place.
+      </p>
+      <p class="text-slate-700 font-medium">Expected launch: <span class="font-semibold">N.A</span></p>
+    </div>
+  </section>
+
+  <section class="max-w-5xl mx-auto mt-12 grid gap-8 md:grid-cols-3">
+    <div class="glass p-6 rounded-xl text-center">
+      <h3 class="text-xl font-semibold mb-3">Beta Access</h3>
+      <p class="text-slate-700 mb-4 leading-relaxed">
+        Be the first to explore new Keylo features. Join the beta program and help us refine the experience with your feedback.
+      </p>
+      <a href="#" class="glass-button px-5 py-2 rounded-lg text-purple-900 font-medium">Apply Now</a>
+    </div>
+
+    <div class="glass p-6 rounded-xl text-center">
+      <h3 class="text-xl font-semibold mb-3">Careers</h3>
+      <p class="text-slate-700 mb-4 leading-relaxed">
+        We're building the future of community management. Explore open positions and become part of the Keylo journey.
+      </p>
+      <a href="careers" class="glass-button px-5 py-2 rounded-lg text-purple-900 font-medium">See Roles</a>
+    </div>
+
+    <div class="glass p-6 rounded-xl text-center">
+      <h3 class="text-xl font-semibold mb-3">Support</h3>
+      <p class="text-slate-700 mb-4 leading-relaxed">
+        Have questions or need help? Our support team is ready to assist you with any issues, big or small.
+      </p>
+      <a href="support" class="glass-button px-5 py-2 rounded-lg text-purple-900 font-medium">Get Help</a>
+    </div>
+  </section>
+</main>
+
+<footer class="text-center text-sm text-slate-500 pb-8">
+  © <%= new Date().getFullYear() %> Keylo. All rights reserved.
+</footer>
+
+</body>
+</html>
