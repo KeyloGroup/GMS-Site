@@ -185,6 +185,13 @@ app.get('/api/roblox/user/:id', async (req, res, next) => {
     }
 });
 
+app.get('/api/users/:id/promote', async (req, res, next) => {
+};
+
+app.get('/api/users/:id/demote', async (req, res, next) => {
+  
+};
+
 app.get('/api/register/get/robloxusername/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
