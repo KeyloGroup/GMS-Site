@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Keylo — Workspaces</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1,h2,h3,h4 { font-family: 'Outfit', sans-serif; }
+    .glass {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px) saturate(200%);
+      -webkit-backdrop-filter: blur(20px) saturate(200%);
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+    .btn-primary {
+      background: linear-gradient(to right, #7e22ce, #9333ea);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(to right, #6b21a8, #7e22ce);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: #374151;
+      transition: all 0.3s ease;
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .glow-text { text-shadow: 0 0 6px rgba(200, 150, 255, 0.5); }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 via-purple-50 to-purple-100 text-slate-900 flex flex-col min-h-screen">
+
+<!-- Header -->
+<header class="fixed w-full glass z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between relative">
+    <div class="flex items-center gap-3">
+      <div class="glass w-11 h-11 rounded-full overflow-hidden">
+        <img src="<%= typeof userProfileURL !== 'undefined' ? userProfileURL : '/images/default-avatar.png' %>" alt="Profile" class="w-full h-full object-cover">
+      </div>
+      <h2 class="text-base font-semibold text-slate-800">
+        Welcome, <%= typeof user !== 'undefined' ? user : 'Guest' %>
+      </h2>
+    </div>
+    <a href="/launch" class="absolute left-1/2 transform -translate-x-1/2 text-2xl font-extrabold glow-text text-purple-800">
+      Keylo
+    </a>
+    <a href="/logout" class="btn-secondary px-4 py-2 rounded-lg text-sm font-medium">Sign Out</a>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="flex-grow pt-32 pb-20 px-6 max-w-7xl mx-auto flex flex-col items-center">
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 gap-6 w-full">
+    <div>
+      <h1 class="text-4xl font-extrabold bg-gradient-to-r from-purple-600 to-purple-400 bg-clip-text text-transparent">
+        Your Workspaces
+      </h1>
+      <p class="text-slate-600 mt-2">Manage and access all your workspaces in one place.</p>
+    </div>
+    <div class="flex gap-4">
+      <button onclick="openNewWorkspaceModal()" class="btn-primary px-6 py-3 rounded-xl font-medium shadow-lg">
+        + New Workspace
+      </button>
+    </div>
+  </div>
+
+  <!-- Workspaces Grid -->
+  <div class="flex flex-wrap justify-center gap-8 w-full">
+    <% if (workspaces && workspaces.length > 0) { %>
+      <% workspaces.forEach(ws => { %>
+        <a href="/workspace/<%= ws.id %>" class="glass rounded-2xl overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group w-64">
+          <div class="h-44 w-full bg-gradient-to-br from-purple-50 to-purple-100 flex items-center justify-center overflow-hidden">
+            <img src="<%= ws.image || '/images/default-workspace.png' %>" alt="<%= ws.name %>" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+          </div>
+          <div class="p-5 border-t border-slate-200">
+            <h3 class="text-lg font-bold text-slate-800 group-hover:text-purple-700 transition-colors">
+              <%= ws.name %>
+            </h3>
+          </div>
+        </a>
+      <% }) %>
+    <% } else { %>
+      <div class="flex flex-col items-center justify-center text-center py-16 w-full">
+        <h3 class="text-xl font-semibold text-slate-700 mb-2">No workspaces yet</h3>
+        <p class="text-slate-500 mb-6">Create a workspace to start collaborating and organizing your projects.</p>
+        <button onclick="openNewWorkspaceModal()" class="btn-primary px-6 py-3 rounded-xl font-medium shadow">
+          + Create Your First Workspace
+        </button>
+      </div>
+    <% } %>
+  </div>
+</main>
+
+<!-- New Workspace Modal -->
+<div id="workspaceModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center overflow-y-auto pt-24 sm:pt-32 hidden z-50">
+  <div class="bg-white rounded-2xl p-8 w-full max-w-lg relative">
+    <button class="absolute top-4 right-4 text-gray-500 hover:text-gray-900" onclick="closeNewWorkspaceModal()">✕</button>
+    <h2 class="text-2xl font-bold text-purple-800 mb-4">Create New Workspace</h2>
+
+    <form id="workspaceForm" class="space-y-4">
+  <input type="text" name="name" placeholder="Workspace Name" required class="w-full p-3 border rounded-lg">
+  <input type="url" name="image" placeholder="Image URL" required class="w-full p-3 border rounded-lg">
+  <!-- New fields -->
+  <input type="number" name="groupId" placeholder="Roblox Group ID" class="w-full p-3 border rounded-lg">
+  <input type="number" name="minRank" placeholder="Minimum Rank ID" class="w-full p-3 border rounded-lg">
+  <button type="submit" class="btn-primary w-full py-3 rounded-lg font-medium">Create Workspace</button>
+</form>
+
+  </div>
+</div>
+
+<script>
+  function openNewWorkspaceModal() { document.getElementById('workspaceModal').classList.remove('hidden'); }
+  function closeNewWorkspaceModal() { 
+    document.getElementById('workspaceModal').classList.add('hidden'); 
+    document.getElementById('workspaceForm').reset();
+  }
+
+ document.getElementById('workspaceForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const name = e.target.name.value;
+  const image = e.target.image.value;
+  const groupId = e.target.groupId.value || null;
+  const minRank = e.target.minRank.value || null;
+  const csrfToken = '<%= csrfToken %>';
+
+  try {
+    const res = await fetch('/workspace/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'CSRF-Token': csrfToken },
+      body: JSON.stringify({ name, image, groupId, minRank })
+    });
+    const data = await res.json();
+    if(data.success){ alert('✅ Workspace created!'); location.reload(); }
+    else alert('❌ Failed: '+(data.error||'Unknown'));
+  } catch(err){ console.error(err); alert('❌ Error creating workspace'); }
+});
+
+</script>
+
+</body>
+</html>
