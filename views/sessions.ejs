@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sessions — <%= workspace.name %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1,h2,h3,h4 { font-family: 'Outfit', sans-serif; }
+    .glass {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px) saturate(200%);
+      -webkit-backdrop-filter: blur(20px) saturate(200%);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+    .sidebar-link {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .75rem; border-radius: .5rem;
+      color: #4b5563; transition: background-color .2s;
+      cursor: pointer;
+    }
+    .sidebar-link:hover {
+      background-color: rgba(168, 85, 247, 0.15);
+      color: #6d28d9;
+    }
+    .sidebar-active {
+      background-color: rgba(168, 85, 247, 0.25);
+      color: 
+      #6d28d9; font-weight: 600;
+    }
+
+        .sidebar-link img {
+    filter: brightness(0) saturate(100%);
+  }
+
+  .sidebar-active img {
+  filter: brightness(0) saturate(100%);
+  }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 via-purple-50 to-purple-100 text-slate-900 flex min-h-screen">
+
+  <!-- Sidebar (same as workspacehome.ejs) -->
+  <aside class="w-20 md:w-64 p-4 glass flex flex-col shadow-xl">
+    <!-- Workspace Profile -->
+    <div class="flex flex-col items-center mb-10">
+      <img src="<%= workspace.image %>" alt="Workspace Profile" class="w-12 h-12 rounded-full mb-2">
+      <p class="text-slate-600 text-sm font-semibold"><%= workspace.name %></p>
+    </div>
+
+    <div class="border-t border-purple-200 mb-4"></div>
+
+    <nav class="flex flex-col gap-2 flex-1">
+      <a href="/workspace/<%= workspace.id %>" class="sidebar-link">
+        <img src="/icons/icons8-home-48.png" class="w-5 h-5">
+        <span>Home</span>
+      </a>
+      <a href="#" class="sidebar-link">
+        <img src="/icons/icons8-checked-box-50.png" class="w-5 h-5">
+        <span>Tasks</span>
+      </a>
+      <a href="#" class="sidebar-link">
+        <img src="/icons/icons8-open-book-50.png" class="w-5 h-5">
+        <span>Logbook</span>
+      </a>
+      <a href="/workspace/<%= workspace.id %>/sessions" class="sidebar-link sidebar-active">
+        <img src="/icons/icons8-calendar-50.png" class="w-5 h-5">
+        <span>Sessions</span>
+      </a>
+      <a href="#" class="sidebar-link">
+        <img src="/icons/icons8-avatar-24.png" class="w-5 h-5">
+        <span>Staff</span>
+      </a>
+      <a href="#" class="sidebar-link">
+        <img src="/icons/icons8-clock-24.png" class="w-5 h-5">
+        <span>Activity</span>
+      </a>
+      <a href="#" class="sidebar-link">
+        <img src="/icons/icons8-airplane-take-off-50.png" class="w-5 h-5">
+        <span>Leave of Absence</span>
+      </a>
+      <a href="#" class="sidebar-link">
+        <img src="/icons/icons8-folder-50.png" class="w-5 h-5">
+        <span>Documents</span>
+      </a>
+    </nav>
+
+    <div class="border-t border-purple-200 mt-4"></div>
+
+    <a href="#" class="sidebar-link mt-4">
+      <img src="/icons/icons8-settings-50.png" class="w-5 h-5">
+      <span>Settings</span>
+    </a>
+
+    <!-- User Profile Section -->
+    <div class="mt-6 flex items-center gap-3 p-2 glass rounded-lg">
+      <img src="<%= userProfileURL %>" alt="Profile" class="w-10 h-10 rounded-full">
+      <div class="hidden md:block">
+        <p class="text-sm font-semibold text-slate-800"><%= user %></p>
+        <p class="text-xs text-slate-500">Online</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-8 overflow-y-auto">
+    <header class="flex justify-between items-center mb-10">
+      <h1 class="text-3xl font-extrabold text-purple-800">Sessions</h1>
+      <div class="flex items-center gap-4">
+        <input class="glass px-4 py-2 rounded-full placeholder-slate-400 text-slate-900 w-64 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Search sessions..." />
+      </div>
+    </header>
+
+    <!-- Date Picker -->
+    <div class="flex justify-center items-center gap-2 mb-8">
+      <button class="p-2 rounded-lg bg-purple-200 hover:bg-purple-300">&lt;</button>
+      <% days.forEach((day, idx) => { %>
+        <button class="px-4 py-2 rounded-lg <%= day.active ? 'bg-purple-600 text-white' : 'bg-purple-100 hover:bg-purple-200' %>">
+          <%= day.label %>
+        </button>
+      <% }) %>
+      <button class="p-2 rounded-lg bg-purple-200 hover:bg-purple-300">&gt;</button>
+    </div>
+
+    <!-- Sessions Grid -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-6 text-purple-800">Today</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% sessions.forEach(session => { %>
+          <div class="glass p-5 hover:bg-purple-50 cursor-pointer transition"
+               onclick="openSessionModal('<%= session.id %>')">
+            <p class="text-xs text-slate-500 mb-1"><%= session.timeFormatted %></p>
+            <h3 class="text-lg font-bold text-purple-700"><%= session.title %></h3>
+            <div class="mt-3 flex items-center gap-2">
+              <img src="<%= session.host.avatar %>" class="w-8 h-8 rounded-full">
+              <p class="text-sm text-slate-700">Host: <%= session.host.name %></p>
+            </div>
+            <% if (session.type) { %>
+              <span class="mt-3 inline-block px-3 py-1 text-xs rounded-full bg-purple-200 text-purple-800">
+                <%= session.type %>
+              </span>
+            <% } %>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+  </main>
+
+  <!-- Session Modal -->
+  <div id="sessionModal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center">
+    <div class="glass max-w-lg w-full p-6 bg-white">
+      <h3 class="text-xl font-bold text-purple-800 mb-4" id="modalTitle">Session Details</h3>
+      <p id="modalTime" class="text-sm text-slate-600 mb-3"></p>
+      <p id="modalType" class="text-sm text-slate-700 mb-3"></p>
+      <p id="modalHost" class="text-sm text-slate-700 mb-3"></p>
+      <p id="modalCoHost" class="text-sm text-slate-700 mb-3"></p>
+      <p id="modalGroups" class="text-sm text-slate-700"></p>
+      <button onclick="closeSessionModal()" class="mt-6 px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-500">Close</button>
+    </div>
+  </div>
+
+  <script>
+    function openSessionModal(id) {
+      const session = <%- JSON.stringify(sessions) %>.find(s => s.id === id);
+      if (!session) return;
+      document.getElementById('modalTitle').textContent = session.title;
+      document.getElementById('modalTime').textContent = "Time: " + session.timeFormatted;
+      document.getElementById('modalType').textContent = "Type: " + (session.type || "N/A");
+      document.getElementById('modalHost').textContent = "Host: " + (session.host?.name || "N/A");
+      document.getElementById('modalCoHost').textContent = "Co-Host: " + (session.coHost?.name || "None");
+      document.getElementById('modalGroups').textContent = "Groups: " + (session.groups?.join(", ") || "None");
+
+      document.getElementById('sessionModal').classList.remove('hidden');
+      document.getElementById('sessionModal').classList.add('flex');
+    }
+    function closeSessionModal() {
+      document.getElementById('sessionModal').classList.add('hidden');
+      document.getElementById('sessionModal').classList.remove('flex');
+    }
+  </script>
+</body>
+</html>
