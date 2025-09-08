@@ -31,6 +31,10 @@
     .btn-secondary {
       background: rgba(255, 255, 255, 0.1);
       color: #374151;
+      transition: all 0.3s ease;
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
     }
 
     .glow-text {
@@ -43,13 +47,16 @@
 <!-- Header -->
 <header class="fixed w-full glass z-50">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <a href="#" class="text-2xl font-extrabold glow-text text-purple-800">Keylo</a>
+    <a href="/" class="text-2xl font-extrabold glow-text text-purple-800">Keylo</a>
     <nav class="hidden md:flex gap-6 text-slate-700">
       <a href="#features" class="hover:text-purple-600">Features</a>
       <a href="#pricing" class="hover:text-purple-600">Pricing</a>
       <a href="#contact" class="hover:text-purple-600">Contact</a>
     </nav>
-    <a href="/waitlist" class="btn-primary px-4 py-2 rounded-lg font-semibold">Get Started</a>
+    <div class="flex gap-4">
+      <a href="/register" class="btn-primary px-4 py-2 rounded-lg font-semibold">Get Started</a>
+      <a href="/login" class="btn-secondary px-4 py-2 rounded-lg font-semibold">Login</a>
+    </div>
   </div>
 </header>
 
@@ -106,26 +113,27 @@
         <p class="text-4xl font-bold mb-4">£0<span class="text-lg">/mo</span></p>
         <ul class="list-disc list-inside text-left space-y-2 text-slate-700">
           <li>1 Workspace</li>
-          <li>1,000 members (extra £2.00/1k)</li>
+          <li>1,000 members (extra 100 robux per 1k)</li>
           <li>Basic API, Roles, Docs, Logbook</li>
           <li>1 Application Center</li>
-          <li>Optional Auto-Ranking (£2.00)</li>
+          <li>Optional Auto-Ranking (125 robux fee)</li>
         </ul>
         <button class="btn-secondary mt-6 px-6 py-3 rounded-lg">Unavailable</button>
       </div>
       <!-- Pro -->
       <div class="glass p-8 rounded-2xl border-2 border-purple-500 scale-105">
         <h3 class="text-2xl font-semibold mb-4">Pro</h3>
-        <p class="text-4xl font-bold mb-4">£7.60<span class="text-lg">/mo</span></p>
+        <p class="text-4xl font-bold mb-4">400 robux<span class="text-lg">/mo</span></p>
         <ul class="list-disc list-inside text-left space-y-2 text-slate-700">
           <li>Everything in Starter</li>
           <li>3 Workspaces</li>
-          <li>1,500 members/workspace (extra £2.00/1k)</li>
+          <li>3,000 members/workspace (extra 50 per 1k)</li>
           <li>Advanced Graphs</li>
           <li>Enhanced API</li>
           <li>Auto-Ranking Included</li>
           <li>2 Application Centers</li>
           <li>1 Ranking Center</li>
+          <li>Optional Auto-Ranking (125 robux fee)</li>
         </ul>
         <button class="btn-primary mt-6 px-6 py-3 rounded-lg">Unavailable</button>
       </div>
@@ -142,14 +150,11 @@
     <p class="text-lg mb-8 text-slate-700">
       Join Keylo today and take the pain out of running your group.
     </p>
-    <a href="/waitlist" class="btn-primary px-8 py-4 rounded-xl font-bold shadow-lg inline-block">
+    <a href="/register" class="btn-primary px-8 py-4 rounded-xl font-bold shadow-lg inline-block">
       Get Started
     </a>
   </div>
 </section>
-
-
-
 
 <!-- Footer -->
 <footer id="contact" class="bg-gradient-to-br from-purple-900 via-purple-800 to-purple-700 text-white py-8">
@@ -173,7 +178,7 @@
       </ul>
     </div>
   </div>
-  <div class="text-center mt-8 text-sm text-purple-200">© <script>document.write(new Date().getFullYear())</script> Keylo. All rights reserved.</div>
+  <div class="text-center mt-8 text-sm text-purple-200">© <%= new Date().getFullYear() %> Keylo. All rights reserved.</div>
 </footer>
 
 <!-- Video Modal -->
