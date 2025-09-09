@@ -614,11 +614,43 @@ app.get('/workspace/:id/settings', async (req, res) => {
 
 app.get('/api/activity/entry/new/', async (req, res) => {
   const worksapceid = req.params.Worksapce_ID;
-  const apikey_atuh = req.params.API_Key;
+  const apikey_auth = req.params.API_Key;
   const targetUser = req.params.User_ID;
   const totaltime_tracked = req.params.Tracked_Time;
   const type = req.params.Type;
 };
+
+/* -------------------- Session Endpoints -------------------- */
+
+app.get('/api/sessions/list', async (req, res) => {
+  const worksapceid = req.params.Workspace_ID;
+  const apikey_auth = req.params.API_Key;
+  const type = req.params.Type;
+  const timeframe = req.params.type // Either day or week
+  
+};
+
+app.get('/api/sessions/create', async (req, res) => {
+  const workspaceid = req.params.Workspace_ID;
+  const apikey_auth = req.params.API_Key;
+  const type = req.params.Type;
+  const host = req.params.Type;
+  const co_host = req.params.Co_Host;
+  const StartTime = req.params.Start_Time;
+  const durationTime = req.Params.Duraion;
+  const assisantGroups = req.Params.Groups;
+  const date = req.Params.Session_Date;
+  
+};
+
+app.get('/api/sessions/delete', async (req, res) => {
+  const workspaceid = req.params.Workspace_ID;
+  const apikey_auth = req.headers.authentication.API_Key;
+  const sessionsid = req.params.Session_ID;
+  
+};
+
+app.get('/api/sessions/update/attendies', async (req, res) => {};
 
 /* -------------------- ERROR HANDLER -------------------- */
 app.use((err, req, res, next) => {
