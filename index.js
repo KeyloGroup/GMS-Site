@@ -421,6 +421,8 @@ app.get('/workspaces', async (req, res) => {
     const username = req.cookies.username || (await fetchRobloxUsernameById(robloxId));
     const avatarUrl = req.cookies.profile_pic || (await getAvatarUrl(robloxId));
 
+
+    //Make it so it makes more tables in supabase following format of worksapceid_activity, workspaceid_sessions, worksapceid_tasks, worksapceid_settings and worksapceid_logbook
     const { data: workspaces, error } = await supabaseWorkspaces
       .from('existing workspaces')
       .select('*');
@@ -607,6 +609,16 @@ app.get('/workspace/:id/settings', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+/* -------------------- Actvity Endpoints -------------------- */
+
+app.get('/api/activity/entry/new/', async (req, res) => {
+  const worksapceid = req.params.Worksapce_ID;
+  const apikey_atuh = req.params.API_Key;
+  const targetUser = req.params.User_ID;
+  const totaltime_tracked = req.params.Tracked_Time;
+  const type = req.params.Type;
+};
 
 /* -------------------- ERROR HANDLER -------------------- */
 app.use((err, req, res, next) => {
