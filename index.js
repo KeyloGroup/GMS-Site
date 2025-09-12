@@ -497,6 +497,9 @@ app.post('/workspace/create', async (req, res) => {
 
     const { name, image, groupId, minRank = req.body;
     if (!name) return res.status(400).json({ error: 'Worksapce name is required' });
+    if (!image) return res.status(400).json({ error: 'Worksapce icon image URL is required' });
+    if (!groupId) return res.status(400).json({ error: 'Worksapce group id is required' });
+    if (!minRank) return res.status(400).json({ error: 'Worksapce group minimum access rank is required' });
 
     const ownerUsername = req.cookies.username || (await fetchRobloxUsernameById(req.cookies.user_id));
 
@@ -517,6 +520,31 @@ app.post('/workspace/create', async (req, res) => {
 
     const newWorkspaceId = data.id;
     const sessionsTableName `ws_sessions_${newWorksapceId}`;
+
+    try {
+      const createTableQuery = `
+      CREATE TABLE IF NOT EXSISTS ${sessionsTableName} (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      title VARCAHR(255) NOT NULL,
+      type VARCAHR(255) NOT NULL,
+      host_id BIGINT NOT NULL,
+      co_host_id BIGINT,
+      start_time TIMESTAMPTZ NOT NULL,
+      duration_minuites INTEGER,
+      groups JSONB,
+      created_at TIMESTAMPTZ DEFAULT now()
+      );
+      `;
+      await pgClient.query(createTableQuery);
+      console.log(`✅ Table '${sessionsTableName}' created successfully.`);
+    } catch (dbErr) {
+      console.error(`❌ Error creating table '${sessionsTableName}':`, dbErr);
+    }
+
+    res.json({ success: true, worksapceId: newWorkspaceId });
+  } catch (err) {
+    console.error('❌ Workspace create error:', err);
+    res.json({ success: false, error: 'Server error' });
   }
 });
 
