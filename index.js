@@ -15,6 +15,7 @@ const bcrypt = require('bcrypt');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const { version } = require('os');
+const { Client } = require('pg');
 
 const swaggerOptions = {
   definition: {
@@ -52,6 +53,18 @@ const supabaseWorkspaces = createClient(
   process.env.SUPABASE_WORKSPACES_URL,
   process.env.SUPABASE_WORKSPACES_SERVICE_ROLE_KEY
 );
+
+const pgClient = new Client({
+  connectionString: process.env.SUPABASE_WORKSPACES_DB_URL
+});
+
+pgClient.connection((err) => {
+  if (err) {
+        console.error('❌ Failed to connect to Supabase PostgreSQL database:', err.stack);
+  } else {
+    console.log('✅ Connected to Supabase PostgreSQL database.');
+  }
+});
 
 /* -------------------- MIDDLEWARE -------------------- */
 app.use(cookieParser());
@@ -482,31 +495,28 @@ app.post('/workspace/create', async (req, res) => {
   try {
     if (!req.cookies.user_id) return res.status(401).json({ error: 'Not logged in' });
 
-    const { name, image, groupId, minRank } = req.body;
-    if (!name) return res.status(400).json({ error: 'Workspace name is required' });
+    const { name, image, groupId, minRank = req.body;
+    if (!name) return res.status(400).json({ error: 'Worksapce name is required' });
 
-    const ownerUsername =
-      req.cookies.username || (await fetchRobloxUsernameById(req.cookies.user_id));
+    const ownerUsername = req.cookies.username || (await fetchRobloxUsernameById(req.cookies.user_id));
 
-    const { error } = await supabaseWorkspaces.from('existing workspaces').insert([
+    const { data, error } = await supabaseWorksapces.from('exsisting workspaces').insert([
       {
-        workspace_name: name,
+        worksapce_name: name,
         owner_username: ownerUsername,
-        workspace_img_url: image || null,
+        worksapce_img_url: image || null,
         rblx_group_id: groupId || null,
-        min_rank_id: minRank || null,
+        min_rank_id: minrank || null,
       },
-    ]);
+    ]).select('id').single();
 
     if (error) {
-      console.error('❌ Supabase Workspaces insert error:', error);
+            console.error('❌ Supabase Workspaces insert error:', error);
       return res.json({ success: false, error: 'Database insert failed' });
     }
 
-    res.json({ success: true });
-  } catch (err) {
-    console.error('❌ Workspace create error:', err);
-    res.json({ success: false, error: 'Server error' });
+    const newWorkspaceId = data.id;
+    const sessionsTableName `ws_sessions_${newWorksapceId}`;
   }
 });
 
