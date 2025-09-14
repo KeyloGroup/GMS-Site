@@ -3,7 +3,7 @@ name: Auto Deploy to VPS
 on:
   push:
     branches:
-      - main  # deploy on pushes to main branch
+      - main
 
 jobs:
   deploy:
@@ -21,10 +21,8 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ssh -i ~/.ssh/id_ed25519 -p 22022 -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+          ssh -o IdentitiesOnly=yes -i ~/.ssh/id_ed25519 -p 22022 -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
             cd /keylo || exit
             git pull origin main
-            # Optional: install dependencies or restart service
-            # Uncomment the next line if using Node.js/pm2
-            # npm install && pm2 restart keylo
+            # Optional: npm install && pm2 restart keylo
           EOF
