@@ -5,101 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sessions — <%= workspace.name %></title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@600;800&display=swap" rel="stylesheet" />
   <style>
     body { font-family: 'Inter', sans-serif; }
     h1,h2,h3,h4 { font-family: 'Outfit', sans-serif; }
-    .glass {
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(20px) saturate(200%);
-      -webkit-backdrop-filter: blur(20px) saturate(200%);
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-    }
-    .sidebar-link {
-      display: flex; align-items: center; gap: .75rem;
-      padding: .75rem; border-radius: .5rem;
-      color: #4b5563; transition: background-color .2s;
-      cursor: pointer;
-    }
-    .sidebar-link:hover {
-      background-color: rgba(168, 85, 247, 0.15);
-      color: #6d28d9;
-    }
-    .sidebar-active {
-      background-color: rgba(168, 85, 247, 0.25);
-      color: 
-      #6d28d9; font-weight: 600;
-    }
+    .glass { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(20px) saturate(200%); -webkit-backdrop-filter: blur(20px) saturate(200%); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); }
+    .sidebar-link { display: flex; align-items: center; gap: .75rem; padding: .75rem; border-radius: .5rem; color: #4b5563; transition: background-color .2s; cursor: pointer; }
+    .sidebar-link:hover { background-color: rgba(168, 85, 247, 0.15); color: #6d28d9; }
+    .sidebar-active { background-color: rgba(168, 85, 247, 0.25); color: #6d28d9; font-weight: 600; }
+    .sidebar-link img { filter: brightness(0) saturate(100%); }
+    .sidebar-active img { filter: brightness(0) saturate(100%); }
 
-        .sidebar-link img {
-    filter: brightness(0) saturate(100%);
-  }
-
-  .sidebar-active img {
-  filter: brightness(0) saturate(100%);
-  }
+    /* Styles for modal backdrop and logs */
+    .modal-backdrop { background: rgba(255,255,255,0.40); backdrop-filter: blur(6px) saturate(120%); }
+    .log-entry { display:flex; gap:.75rem; align-items:flex-start; padding:.6rem; border-radius:.6rem; transition:background .12s; }
+    .log-entry:hover { background: rgba(15,23,42,0.02); }
   </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 via-purple-50 to-purple-100 text-slate-900 flex min-h-screen">
 
-  <!-- Sidebar (same as workspacehome.ejs) -->
+  <!-- Sidebar -->
   <aside class="w-20 md:w-64 p-4 glass flex flex-col shadow-xl">
     <!-- Workspace Profile -->
     <div class="flex flex-col items-center mb-10">
-      <img src="<%= workspace.image %>" alt="Workspace Profile" class="w-12 h-12 rounded-full mb-2">
+      <img src="<%= workspace.image %>" alt="Workspace Profile" class="w-12 h-12 rounded-full mb-2" />
       <p class="text-slate-600 text-sm font-semibold"><%= workspace.name %></p>
     </div>
-
     <div class="border-t border-purple-200 mb-4"></div>
-
     <nav class="flex flex-col gap-2 flex-1">
       <a href="/workspace/<%= workspace.id %>" class="sidebar-link">
-        <img src="/icons/icons8-home-48.png" class="w-5 h-5">
-        <span>Home</span>
+        <img src="/icons/icons8-home-48.png" class="w-5 h-5" /> <span>Home</span>
       </a>
       <a href="#" class="sidebar-link">
-        <img src="/icons/icons8-checked-box-50.png" class="w-5 h-5">
-        <span>Tasks</span>
+        <img src="/icons/icons8-checked-box-50.png" class="w-5 h-5" /> <span>Tasks</span>
       </a>
       <a href="#" class="sidebar-link">
-        <img src="/icons/icons8-open-book-50.png" class="w-5 h-5">
-        <span>Logbook</span>
+        <img src="/icons/icons8-open-book-50.png" class="w-5 h-5" /> <span>Logbook</span>
       </a>
       <a href="/workspace/<%= workspace.id %>/sessions" class="sidebar-link sidebar-active">
-        <img src="/icons/icons8-calendar-50.png" class="w-5 h-5">
-        <span>Sessions</span>
+        <img src="/icons/icons8-calendar-50.png" class="w-5 h-5" /> <span>Sessions</span>
       </a>
       <a href="#" class="sidebar-link">
-        <img src="/icons/icons8-avatar-24.png" class="w-5 h-5">
-        <span>Staff</span>
+        <img src="/icons/icons8-avatar-24.png" class="w-5 h-5" /> <span>Staff</span>
       </a>
       <a href="#" class="sidebar-link">
-        <img src="/icons/icons8-clock-24.png" class="w-5 h-5">
-        <span>Activity</span>
+        <img src="/icons/icons8-clock-24.png" class="w-5 h-5" /> <span>Activity</span>
       </a>
       <a href="#" class="sidebar-link">
-        <img src="/icons/icons8-airplane-take-off-50.png" class="w-5 h-5">
-        <span>Leave of Absence</span>
+        <img src="/icons/icons8-airplane-take-off-50.png" class="w-5 h-5" /> <span>Leave of Absence</span>
       </a>
       <a href="#" class="sidebar-link">
-        <img src="/icons/icons8-folder-50.png" class="w-5 h-5">
-        <span>Documents</span>
+        <img src="/icons/icons8-folder-50.png" class="w-5 h-5" /> <span>Documents</span>
       </a>
     </nav>
-
     <div class="border-t border-purple-200 mt-4"></div>
-
     <a href="#" class="sidebar-link mt-4">
-      <img src="/icons/icons8-settings-50.png" class="w-5 h-5">
-      <span>Settings</span>
+      <img src="/icons/icons8-settings-50.png" class="w-5 h-5" /> <span>Settings</span>
     </a>
-
-    <!-- User Profile Section -->
+    <!-- User Profile -->
     <div class="mt-6 flex items-center gap-3 p-2 glass rounded-lg">
-      <img src="<%= userProfileURL %>" alt="Profile" class="w-10 h-10 rounded-full">
+      <img src="<%= userProfileURL %>" alt="Profile" class="w-10 h-10 rounded-full" />
       <div class="hidden md:block">
         <p class="text-sm font-semibold text-slate-800"><%= user %></p>
         <p class="text-xs text-slate-500">Online</p>
@@ -108,7 +73,7 @@
   </aside>
 
   <!-- Main Content -->
-  <main class="flex-1 p-8 overflow-y-auto">
+  <main class="flex-1 p-8 overflow-y-auto" id="sessions-main">
     <header class="flex justify-between items-center mb-10">
       <h1 class="text-3xl font-extrabold text-purple-800">Sessions</h1>
       <div class="flex items-center gap-4">
@@ -116,72 +81,282 @@
       </div>
     </header>
 
-    <!-- Date Picker -->
-    <div class="flex justify-center items-center gap-2 mb-8">
-      <button class="p-2 rounded-lg bg-purple-200 hover:bg-purple-300">&lt;</button>
+    <!-- Date Picker Buttons -->
+    <div class="flex justify-center items-center gap-2 mb-8" id="date-buttons">
+      <button class="p-2 rounded-lg bg-purple-200 hover:bg-purple-300" id="prevDay">&lt;</button>
       <% days.forEach((day, idx) => { %>
-        <button class="px-4 py-2 rounded-lg <%= day.active ? 'bg-purple-600 text-white' : 'bg-purple-100 hover:bg-purple-200' %>">
+        <button class="px-4 py-2 rounded-lg <%= day.active ? 'bg-purple-600 text-white' : 'bg-purple-100 hover:bg-purple-200' %> day-button" data-day-index="<%= idx %>">
           <%= day.label %>
         </button>
       <% }) %>
-      <button class="p-2 rounded-lg bg-purple-200 hover:bg-purple-300">&gt;</button>
+      <button class="p-2 rounded-lg bg-purple-200 hover:bg-purple-300" id="nextDay">&gt;</button>
     </div>
 
-    <!-- Sessions Grid -->
-    <section>
+    <!-- Sessions Display Area -->
+    <section id="sessions-container">
       <h2 class="text-2xl font-semibold mb-6 text-purple-800">Today</h2>
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <% sessions.forEach(session => { %>
-          <div class="glass p-5 hover:bg-purple-50 cursor-pointer transition"
-               onclick="openSessionModal('<%= session.id %>')">
-            <p class="text-xs text-slate-500 mb-1"><%= session.timeFormatted %></p>
-            <h3 class="text-lg font-bold text-purple-700"><%= session.title %></h3>
-            <div class="mt-3 flex items-center gap-2">
-              <img src="<%= session.host.avatar %>" class="w-8 h-8 rounded-full">
-              <p class="text-sm text-slate-700">Host: <%= session.host.name %></p>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="sessions-grid">
+        <% if (sessions.length > 0) { %>
+          <% sessions.forEach(session => { %>
+            <div class="glass p-5 cursor-pointer transition hover:scale-105 hover:shadow-xl duration-200 rounded-xl" onclick="openSessionModal('<%= session.id %>')">
+              <div class="flex justify-between items-start mb-3">
+                <p class="text-xs text-slate-500"><%= session.timeFormatted || '' %></p>
+                <div class="flex items-center gap-2">
+                  <% if (session.isLive) { %>
+                    <span class="px-2 py-1 text-xs font-bold rounded-full bg-red-100 text-red-700">NOW</span>
+                  <% } %>
+                  <% if (session.type) { %>
+                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-700"><%= session.type %></span>
+                  <% } %>
+                </div>
+              </div>
+              <h3 class="text-lg font-bold text-purple-700 mb-3"><%= session.title %></h3>
+              <div class="flex items-center gap-2">
+                <img src="<%= session.host?.avatar || '/icons/icons8-avatar-24.png' %>" class="w-8 h-8 rounded-full border border-purple-200" />
+                <p class="text-sm text-slate-700">Host: <%= session.host?.name || 'Unknown' %></p>
+              </div>
             </div>
-            <% if (session.type) { %>
-              <span class="mt-3 inline-block px-3 py-1 text-xs rounded-full bg-purple-200 text-purple-800">
-                <%= session.type %>
-              </span>
-            <% } %>
-          </div>
-        <% }) %>
+          <% }) %>
+        <% } else { %>
+          <p class="col-span-full text-center text-slate-500 mt-4">No sessions for today.</p>
+        <% } %>
       </div>
     </section>
   </main>
 
-  <!-- Session Modal -->
-  <div id="sessionModal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center">
-    <div class="glass max-w-lg w-full p-6 bg-white">
-      <h3 class="text-xl font-bold text-purple-800 mb-4" id="modalTitle">Session Details</h3>
-      <p id="modalTime" class="text-sm text-slate-600 mb-3"></p>
-      <p id="modalType" class="text-sm text-slate-700 mb-3"></p>
-      <p id="modalHost" class="text-sm text-slate-700 mb-3"></p>
-      <p id="modalCoHost" class="text-sm text-slate-700 mb-3"></p>
-      <p id="modalGroups" class="text-sm text-slate-700"></p>
-      <button onclick="closeSessionModal()" class="mt-6 px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-500">Close</button>
+  <!-- Session Detail Modal -->
+  <div id="sessionModal" class="fixed inset-0 hidden items-center justify-center z-50 modal-backdrop">
+    <div class="glass max-w-5xl w-[94%] lg:w-4/5 p-6 rounded-2xl border border-purple-100 shadow-2xl overflow-y-auto max-h-[90vh]">
+      <div class="flex items-start justify-between gap-4 mb-4">
+        <div>
+          <h3 id="modalTitle" class="text-2xl font-extrabold text-purple-800 mb-1"></h3>
+          <div id="modalTime" class="text-sm text-slate-600"></div>
+        </div>
+        <div class="flex items-center gap-3">
+          <button id="copyLogBtn" class="px-3 py-1 rounded-md text-sm bg-white/70 border border-purple-100">Copy Log Format</button>
+          <button onclick="closeSessionModal()" class="p-2 rounded-md text-2xl text-slate-500 hover:text-purple-700">&times;</button>
+        </div>
+      </div>
+      
+      <!-- Modal Content -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Hosting / Shift Roles -->
+        <div class="lg:col-span-2 flex flex-col gap-4">
+          <!-- Hosting -->
+          <div class="glass p-4 rounded-xl border border-purple-100">
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="text-lg font-semibold text-purple-700">Hosting</h4>
+              <div class="text-xs text-slate-400">Live status: <span id="modalLiveFlag" class="font-semibold text-red-500 hidden">LIVE</span></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div class="p-3 rounded-lg bg-white/60 flex items-center gap-3">
+                <img id="modalHostAvatar" src="/icons/icons8-avatar-24.png" class="w-10 h-10 rounded-md" />
+                <div>
+                  <div class="text-sm font-semibold text-slate-800" id="modalHostName">—</div>
+                  <div class="text-xs text-slate-500" id="modalHostMeta">Host</div>
+                </div>
+              </div>
+              <div class="p-3 rounded-lg bg-white/60 flex items-center gap-3">
+                <img id="modalCoHostAvatar" src="/icons/icons8-avatar-24.png" class="w-10 h-10 rounded-md" />
+                <div>
+                  <div class="text-sm font-semibold text-slate-800" id="modalCoHostName">—</div>
+                  <div class="text-xs text-slate-500" id="modalCoHostMeta">Co-Host</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Shift Roles -->
+          <div class="glass p-4 rounded-xl border border-purple-100">
+            <h4 class="text-lg font-semibold text-purple-700 mb-3">Shift Roles</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="p-3 rounded-lg bg-white/60">
+                <div class="text-xs text-slate-500">Host</div>
+                <div class="text-sm font-semibold text-slate-800" id="modalShiftHost">—</div>
+              </div>
+              <div class="p-3 rounded-lg bg-white/60">
+                <div class="text-xs text-slate-500">Co-Host</div>
+                <div class="text-sm font-semibold text-slate-800" id="modalShiftCoHost">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Main Server / Logs -->
+        <div class="flex flex-col gap-4">
+          <div class="glass p-4 rounded-xl border border-purple-100">
+            <h4 class="text-lg font-semibold text-purple-700 mb-3">Main Server</h4>
+            <div class="flex items-center gap-3 mb-2">
+              <img id="modalMainHostAvatar" src="/icons/icons8-avatar-24.png" class="w-10 h-10 rounded-md" />
+              <div>
+                <div class="text-sm font-semibold text-slate-800" id="modalMainHost">—</div>
+                <div class="text-xs text-slate-500">Host</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <img id="modalMainCoHostAvatar" src="/icons/icons8-avatar-24.png" class="w-10 h-10 rounded-md" />
+              <div>
+                <div class="text-sm font-semibold text-slate-800" id="modalMainCoHost">—</div>
+                <div class="text-xs text-slate-500">Co-Host</div>
+              </div>
+            </div>
+          </div>
+          <!-- Logs -->
+          <div class="glass p-3 rounded-xl border border-purple-100 max-h-64 overflow-y-auto">
+            <h4 class="text-lg font-semibold text-purple-700 mb-3">Logs</h4>
+            <ul id="modalLogs" class="space-y-2"></ul>
+          </div>
+        </div>
+      </div>
+      <!-- Action Buttons -->
+      <div class="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <button class="bg-purple-600 text-white rounded-md px-4 py-2">Take Action</button>
+        <button id="copyLogFormatBtn" class="bg-white/70 border border-purple-100 rounded-md px-4 py-2">Copy Log Format</button>
+        <button onclick="closeSessionModal()" class="bg-transparent border border-slate-300 rounded-md px-4 py-2">Close</button>
+      </div>
     </div>
   </div>
 
+  <!-- Scripts -->
   <script>
-    function openSessionModal(id) {
-      const session = <%- JSON.stringify(sessions) %>.find(s => s.id === id);
-      if (!session) return;
-      document.getElementById('modalTitle').textContent = session.title;
-      document.getElementById('modalTime').textContent = "Time: " + session.timeFormatted;
-      document.getElementById('modalType').textContent = "Type: " + (session.type || "N/A");
-      document.getElementById('modalHost').textContent = "Host: " + (session.host?.name || "N/A");
-      document.getElementById('modalCoHost').textContent = "Co-Host: " + (session.coHost?.name || "None");
-      document.getElementById('modalGroups').textContent = "Groups: " + (session.groups?.join(", ") || "None");
+    const sessionsClient = <%- JSON.stringify(sessions || []) %>;
 
-      document.getElementById('sessionModal').classList.remove('hidden');
-      document.getElementById('sessionModal').classList.add('flex');
+    // Function to open modal with session details
+    function openSessionModal(id) {
+      const s = sessionsClient.find(x => String(x.id) === String(id));
+      if (!s) return;
+
+      // Basic info
+      document.getElementById('modalTitle').textContent = s.title || 'Session';
+      document.getElementById('modalTime').textContent = s.timeFormatted || '';
+
+      // Host / Co-Host info
+      document.getElementById('modalHostName').textContent = s.host?.name || 'None';
+      document.getElementById('modalHostAvatar').src = s.host?.avatar || '/icons/icons8-avatar-24.png';
+      document.getElementById('modalHostMeta').textContent = s.host?.tag || 'Host';
+
+      document.getElementById('modalCoHostName').textContent = s.coHost?.name || 'None';
+      document.getElementById('modalCoHostAvatar').src = s.coHost?.avatar || '/icons/icons8-avatar-24.png';
+      document.getElementById('modalCoHostMeta').textContent = s.coHost?.tag || 'Co-Host';
+
+      // Shift roles
+      document.getElementById('modalShiftHost').textContent = s.shiftRoles?.host?.name || s.host?.name || 'None';
+      document.getElementById('modalShiftCoHost').textContent = s.shiftRoles?.coHost?.name || s.coHost?.name || 'None';
+
+      // Main server
+      document.getElementById('modalMainHost').textContent = s.mainServer?.host?.name || s.host?.name || 'None';
+      document.getElementById('modalMainHostAvatar').src = s.mainServer?.host?.avatar || s.host?.avatar || '/icons/icons8-avatar-24.png';
+
+      document.getElementById('modalMainCoHost').textContent = s.mainServer?.coHost?.name || s.coHost?.name || 'None';
+      document.getElementById('modalMainCoHostAvatar').src = s.mainServer?.coHost?.avatar || s.coHost?.avatar || '/icons/icons8-avatar-24.png';
+
+      // Live flag
+      const liveFlag = document.getElementById('modalLiveFlag');
+      if (s.isLive) {
+        liveFlag.classList.remove('hidden');
+      } else {
+        liveFlag.classList.add('hidden');
+      }
+
+      // Logs
+      const logsEl = document.getElementById('modalLogs');
+      logsEl.innerHTML = '';
+      if (Array.isArray(s.logs) && s.logs.length) {
+        s.logs.slice().reverse().forEach(l => {
+          const li = document.createElement('li');
+          li.className = 'log-entry';
+          li.innerHTML = `
+            <img src="${l.actorAvatar || '/icons/icons8-avatar-24.png'}" class="w-8 h-8 rounded-md" />
+            <div>
+              <div class="text-sm font-semibold text-slate-800">${l.actor || 'Unknown'}</div>
+              <div class="text-xs text-slate-500">${l.action || ''}</div>
+              <div class="text-xs text-slate-400 mt-1">${l.time || ''}</div>
+            </div>
+          `;
+          logsEl.appendChild(li);
+        });
+      } else {
+        logsEl.innerHTML = '<li class="text-sm text-slate-500 italic">No logs.</li>';
+      }
+
+      // Show modal
+      const modal = document.getElementById('sessionModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    // Close modal
     function closeSessionModal() {
-      document.getElementById('sessionModal').classList.add('hidden');
       document.getElementById('sessionModal').classList.remove('flex');
+      document.getElementById('sessionModal').classList.add('hidden');
     }
+
+    // Copy log format button
+    document.getElementById('copyLogFormatBtn')?.addEventListener('click', () => {
+      const s = sessionsClient[0];
+      const sample = s ? `${s.title} — ${s.timeFormatted} — Host: ${s.host?.name || 'None'}` : 'Session log format';
+      navigator.clipboard?.writeText(sample).then(() => {
+        alert('Log format copied');
+      }).catch(() => alert('Copy failed'));
+    });
+
+     document.addEventListener('DOMContentLoaded', () => {
+    const dayButtons = document.querySelectorAll('.day-button');
+
+    dayButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const dayIndex = parseInt(btn.dataset.dayIndex, 10);
+        loadSessionsForDay(dayIndex);
+        // Update active button styles
+        dayButtons.forEach(b => b.classList.remove('bg-purple-600', 'text-white'));
+        btn.classList.add('bg-purple-600', 'text-white');
+      });
+    });
+
+    async function loadSessionsForDay(dayIndex) {
+      // Fetch sessions for the selected day
+      const workspaceId = '<%= workspace.id %>'; // ensure this value is available
+      try {
+        const response = await fetch(`/api/workspace/${workspaceId}/sessions/day/${dayIndex}`);
+        if (!response.ok) throw new Error('Failed to fetch sessions');
+
+        const data = await response.json();
+
+        // Update the sessions container
+        const sessionsContainer = document.getElementById('sessions-grid');
+        // Clear existing sessions
+        sessionsContainer.innerHTML = '';
+
+        if (data.sessions.length > 0) {
+          data.sessions.forEach(session => {
+            const sessionDiv = document.createElement('div');
+            sessionDiv.className = 'glass p-5 cursor-pointer transition hover:scale-105 hover:shadow-xl duration-200 rounded-xl';
+            sessionDiv.innerHTML = `
+              <div class="flex justify-between items-start mb-3">
+                <p class="text-xs text-slate-500">${session.timeFormatted || ''}</p>
+                <div class="flex items-center gap-2">
+                  ${session.isLive ? '<span class="px-2 py-1 text-xs font-bold rounded-full bg-red-100 text-red-700">NOW</span>' : ''}
+                  <span class="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-700">${session.type}</span>
+                </div>
+              </div>
+              <h3 class="text-lg font-bold text-purple-700 mb-3">${session.title}</h3>
+              <div class="flex items-center gap-2">
+                <img src="${session.host?.avatar || '/icons/icons8-avatar-24.png'}" class="w-8 h-8 rounded-full border border-purple-200" />
+                <p class="text-sm text-slate-700">Host: ${session.host?.name || 'Unknown'}</p>
+              </div>
+            `;
+            // Add onclick if needed:
+            sessionDiv.onclick = () => openSessionModal(session.id);
+            sessionsContainer.appendChild(sessionDiv);
+          });
+        } else { 
+          sessionsContainer.innerHTML = '<p class="col-span-full text-center text-slate-500 mt-4">No sessions for this day.</p>';
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Failed to load sessions for selected day.');
+      }
+    }
+  });
   </script>
 </body>
 </html>
