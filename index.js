@@ -889,9 +889,13 @@ app.get('/api/sessions/list/:workspaceId', async (req, res) => {
  */
 app.post('/api/sessions/:workspaceId/create', async (req, res) => {
     const { apiKey, type, title, hostId, coHostId, startTime, durationMinutes, groups } = req.body;
+    // api key is in headers so need to fix this rather than apikey gettign from body
     const workspaceId = req.params.workspaceId;
-    // TODO: Implement API key authentication and database insert logic here
-    res.status(201).json({ message: 'Session created successfully.' });
+    const tableName = `ws_sessions_${workspceId}`;
+
+    const { error } = await supabaseWorkspaces
+        .from(tableName)
+        .insert([{ 'title': title, 'type': type, 'host_id': hostId, 'co_host_id': coHostId }])
 });
 
 /**
