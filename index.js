@@ -889,13 +889,28 @@ app.get('/api/sessions/list/:workspaceId', async (req, res) => {
  */
 app.post('/api/sessions/:workspaceId/create', async (req, res) => {
     const { apiKey, type, title, hostId, coHostId, startTime, durationMinutes, groups } = req.body;
-    // api key is in headers so need to fix this rather than apikey gettign from body
+    // api key is in headers so need to fix this rather than apikey gettign from body as well as scanning api key if it is right allow else return 401 unauthorised
     const workspaceId = req.params.workspaceId;
     const tableName = `ws_sessions_${workspceId}`;
 
+    if (!req.body.type) return res.status({ code: 500, success: false, error: 'Body paramater of request is missing type input.});
+    if (!req.body.title) return res.status({ code: 500, success: false, error: 'Body paramater of request is missing title input.});
+    if (!req.body.hostId) return res.status({ code: 500, success: false, error: 'Body paramater of request is missing hostId input.});
+    if (!req.body.coHostId) return res.status({ code: 500, success: false, error: 'Body paramater of request is missing coHostId input.});
+    if (!req.body.startTime) return res.status({ code: 500, success: false, error: 'Body paramater of request is missing startTime input.});
+    if (!req.body.durationMinuites) return res.status({ code: 500, success: false, error: 'Body paramater of request is missing durationMinuites input.});
+    if (!req.body.groups) return res.status({ code: 500, success: false, error: 'Body paramater of request is missing groups input.});
+
     const { error } = await supabaseWorkspaces
         .from(tableName)
-        .insert([{ 'title': title, 'type': type, 'host_id': hostId, 'co_host_id': coHostId }])
+        .insert([{ 'title': title, 'type': type, 'host_id': hostId, 'co_host_id': coHostId, 'start_time': startTime, 'duration_minutes': durationMinutes, 'groups': groups }])
+
+    if (error) {
+        console.error('Supabase Workspaces insert error:', error);
+        return res.json({ code: 500, success: false, error: `Database insert faied at /api/sessions/${workspaceId}/create`, DeveloperError: error})
+    }
+    // if not error return success message to be done here
+    // res.status(200).json({ message: 'Session entry created successfully.' });
 });
 
 /**
@@ -1093,9 +1108,14 @@ app.post('/api/sessions/:workspaceId/:sessionId/server/create', async (req, res)
  *         description: Server error
  */
 app.delete('/api/sessions/:workspaceId/:sessionId/server/delete', async (req, res) => {
-    // TODO: Implement API key authentication and Roblox server deletion logic here
+    // TODO: Implement API key authentication and api delete thing database
     res.status(200).json({ message: 'Server deleted successfully.' });
 });
+
+// swagger here again to be done
+app.get('/api/sessions/:worksapceId/:sessionId/list/servers' ,async (req, res) => {
+    res.status(200).json({ code: "404", error: 'Page not found'});
+};
 
 /* -------------------- ERROR HANDLER -------------------- */
 app.use((err, req, res, next) => {
