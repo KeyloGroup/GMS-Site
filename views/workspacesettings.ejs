@@ -241,7 +241,7 @@
           <h3 class="text-xl font-semibold mb-4 text-purple-800">API</h3>
           <label class="block mb-2 font-medium">API Key</label>
           <div class="flex items-center gap-2">
-            <input type="password" id="apiKey" value="sk_live_1234-5678-XXXX" readonly class="border rounded-lg p-2 flex-1"/>
+            <input type="password" id="apiKey" value="sk_live_1234-5678-XXXX" readonly class="border rounded-lg p-2 flex-1"/> //get api key route needed to be done here to get the api key and show it
             <button type="button" onclick="toggleKey()" class="glass px-3 py-2 rounded-lg">👁</button>
             <form method="POST" action="/workspace/<%= workspace.id %>/settings/api/regenerate">
               <input type="hidden" name="_csrf" value="<%= csrfToken %>">
