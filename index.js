@@ -834,8 +834,14 @@ app.post('/api/activity/entry/new/:workspaceId', async (req, res) => {
  *         description: Server error
  */
 app.get('/api/sessions/list/:workspaceId', async (req, res) => {
-    const { type, timeframe } = req.query;
+    const { type, sessionID, day } = req.body;
     const { workspaceId } = req.params;
+
+    if (!req.body.type) return res.status({ code: 500, success: false, error: 'Body of request is missing type input.' });
+    if (!req.body.sessionID) return res.status({ code: 500, success: false, error: 'Body of request is missing sessionID input.' });
+    if (!req.body.day) return res.status({ code: 500, success: false, error: 'Body of request is missing day input.' });
+    if (!req.params.worksapceID) return res.status({ code: 500, success: false, error: 'Params of request is missing worksapceId input.' });
+    
     // TODO: Implement API key authentication and database query logic here
     res.status(200).json({ sessions: [] });
 });
