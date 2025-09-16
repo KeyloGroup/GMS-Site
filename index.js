@@ -735,6 +735,10 @@ app.get('/workspace/:id/settings', async (req, res) => {
     }
 });
 
+app.get('/api/worksapce/:id/settings/apikey/regenerate' async (req, res) => {
+    // use function ApiKeyGenerate but also make sure it doesn't match any other api keys in worksapces exsisting table then set the new one
+};
+
 /* -------------------- Activity Endpoints -------------------- */
 
 /**
