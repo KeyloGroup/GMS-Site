@@ -202,7 +202,6 @@ app.get('/', (req, res) => {
     res.render('index', { title: 'Keylo' });
 });
 
-
 app.get('/register', (req, res) => {
     res.render('register', { title: 'Keylo - Register', csrfToken: req.csrfToken() });
 });
@@ -457,8 +456,6 @@ app.get('/workspaces', async (req, res) => {
         const username = req.cookies.username || (await fetchRobloxUsernameById(robloxId));
         const avatarUrl = req.cookies.profile_pic || (await getAvatarUrl(robloxId));
 
-
-        //Make it so it makes more tables in supabase following format of worksapceid_activity, workspaceid_sessions, worksapceid_tasks, worksapceid_settings and worksapceid_logbook
         const { data: workspaces, error } = await supabaseWorkspaces
             .from('existing workspaces')
             .select('*');
@@ -504,12 +501,7 @@ app.get('/workspaces', async (req, res) => {
         });
     } catch (err) {
         console.error('❌ Workspaces load error:', err);
-        res.render('workspaces', {
-            user: 'Guest',
-            userProfileURL: '/images/default-avatar.png',
-            csrfToken: req.csrfToken(),
-            workspaces: [],
-        });
+        return res.json({ success: false, error: 'Loading workspaces failed.', dev_error: err });
     }
 });
 
