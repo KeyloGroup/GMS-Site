@@ -619,7 +619,14 @@ app.post('/workspace/create', async (req, res) => {
                     min_role_id INTEGER NOT NULL,
                     group_id INTEGER NOT NULL,
                     api_key TEXT NOT NULL,
-                    flags BOOLEAN NOT NULL,
+                    worksapce_name TEXT NOT NULL,
+                    features_sessions BOOLEAN DEFAULT FALSE,
+                    features_logbook BOOLEAN DEFAULT FALSE,
+                    features_auditlogs BOOLEAN DEFAULT TRUE,
+                    features_activity BOOLEAN DEFAULT TRUE,
+                    features_documents BOOLEAN DEFAULT FALSE,
+                    roles JSONB,
+                    logs JSONB,
                     created_at TIMESTAMPTZ DEFAULT now()
                 );
             `;
