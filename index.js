@@ -407,6 +407,7 @@ app.get('/api/roblox/check-bio/:id/:code', async (req, res, next) => {
 /* -------------------- WORKSPACES ROUTES -------------------- */
 
 // Single workspace home
+// need to make it so it laods settings from ws_settings_id and get the features, depending on if it false hides page or if true shows page such as features_activity allows activity page in sidebar and you can go to that page.
 app.get('/workspace/:id', async (req, res) => {
     try {
         if (!req.cookies.user_id) {
@@ -446,6 +447,7 @@ app.get('/workspace/:id', async (req, res) => {
 });
 
 // Workspaces list (with optional group rank filter as in old code)
+// Need to make it so if you get given a link such as domain/worksacpes/id it will check your rank before you're processed into the site  
 app.get('/workspaces', async (req, res) => {
     try {
         if (!req.cookies.user_id) {
