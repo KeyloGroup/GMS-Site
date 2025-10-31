@@ -7,6 +7,6 @@ REMOTE=$(git rev-parse origin/main)
 if [ $LOCAL != $REMOTE ]; then
     echo "New commit detected. Pulling updates..."
     git reset --hard origin/main
-    npm install    # optional if dependencies changed
+    npm install 
     pm2 restart MainKeylo
 fi
