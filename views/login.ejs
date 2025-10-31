@@ -8,58 +8,98 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
   <style>
     body {
-      background: radial-gradient(circle at 70% 50%, rgba(0, 51, 153, 0.5), rgba(0, 0, 0, 0.9) 70%),
-                  linear-gradient(135deg, rgba(0, 0, 64, 0.8), rgba(0, 0, 0, 0.95));
+      background-color: #0d0d0d;
       color: #fff;
       font-family: 'Inter', sans-serif;
-      transition: background 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+      min-width: 100vw;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      position: relative;
     }
-    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
-
+    .dotted-bg {
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(#222 1px, transparent 1px);
+      background-size: 24px 24px;
+      z-index: 0;
+    }
+    .dotted-bg::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(#1a1a1a 1px, transparent 1px);
+      background-size: 24px 24px;
+      opacity: 0.5;
+      pointer-events: none;
+    }
     .glass {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(24, 24, 24, 0.7);
+      backdrop-filter: blur(14px);
       border-radius: 22px;
+      border: 1px solid #222;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.28);
+      z-index: 1;
     }
-
     .btn-primary {
-      background: linear-gradient(to right, #2563eb, #1d4ed8);
+      background: linear-gradient(to right, #4f46e5, #6366f1);
       color: white;
-      transition: all 0.3s ease;
+      transition: background 0.18s, transform .14s;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      box-shadow: 0 2px 12px 0 #15151560;
+      outline: none;
+      border: none;
     }
-    .btn-primary:hover { background: linear-gradient(to right, #1e40af, #1d4ed8); }
-
+    .btn-primary:hover, .btn-primary:focus {
+      background: linear-gradient(to right, #3730a3, #6366f1);
+      transform: translateY(-1px) scale(1.02);
+    }
     .btn-secondary {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255,255,255,0.05);
       color: white;
-      transition: all 0.3s ease;
+      border-radius: 0.75rem;
+      transition: background 0.18s, transform .14s;
+      border: 1px solid rgba(255,255,255,0.10);
+      font-weight: 500;
+      outline: none;
     }
-    .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
-
+    .btn-secondary:hover, .btn-secondary:focus {
+      background: rgba(255,255,255,0.12);
+      transform: translateY(-1px) scale(1.02);
+    }
+    .glow-text {
+      text-shadow: 0 0 7px rgba(128, 90, 255, 0.44);
+    }
     input {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(24,24,24,0.7);
       color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255,255,255,0.18);
       border-radius: 12px;
       padding: 0.75rem;
       width: 100%;
       outline: none;
-      transition: all 0.2s ease;
+      transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+      margin-bottom: 0.5rem;
     }
     input:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
+      border-color: #6366f1;
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+      background: rgba(40,40,60,0.88);
+    }
+    a { transition: color 0.18s; }
+    @media (max-width: 600px) {
+      .glass {
+        padding: 1.2rem 0.6rem !important;
+      }
     }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center px-4">
-
-<div class="glass max-w-md w-full p-8">
+<body class="min-h-screen flex items-center justify-center px-4 relative">
+<div class="dotted-bg"></div>
+<div class="glass max-w-md w-full p-8 mx-auto z-10">
   <h2 class="text-4xl font-extrabold text-center mb-8 glow-text">Login</h2>
-
-  <!-- Step 0: Choose Method -->
   <div id="step0" class="<%= oauthSuccess ? 'hidden' : '' %> text-center">
     <p class="mb-6 text-gray-300">Choose how you’d like to log in:</p>
     <div class="flex flex-col gap-4">
@@ -67,8 +107,6 @@
       <button onclick="manualLogin()" class="btn-secondary py-3 rounded-lg font-semibold border border-white/20">Login with Password</button>
     </div>
   </div>
-
-  <!-- Step 1: Manual Login -->
   <div id="step1" class="<%= oauthSuccess ? '' : 'hidden' %>">
     <form method="POST" action="/login">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -81,26 +119,22 @@
         value="<%= robloxUsername %>" 
         required
       >
-
       <label for="password" class="block text-sm font-medium text-gray-300 mt-4 mb-2">Password</label>
       <input name="password" type="password" placeholder="Enter your password" required>
-
       <button type="submit" class="btn-primary w-full py-3 mt-4 rounded-lg font-semibold">Login</button>
     </form>
-
     <p class="text-sm text-center text-gray-400 mt-4">
       Don’t have an account? 
-      <a href="/register" class="text-blue-400 font-semibold hover:underline">Register</a>
+      <a href="/register" class="text-indigo-400 font-semibold hover:underline">Register</a>
     </p>
   </div>
 </div>
-
 <script>
 function manualLogin() {
   document.getElementById('step0').classList.add('hidden');
   document.getElementById('step1').classList.remove('hidden');
+  document.getElementById('robloxUsername').focus();
 }
 </script>
-
 </body>
 </html>
