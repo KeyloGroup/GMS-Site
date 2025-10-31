@@ -2,6 +2,9 @@
 
 chmod +x "$0"
 
+GITHUB_USERNAME="boba-duck"
+GITHUB_TOKEN="${GITHUB_TOKEN}"
+
 git fetch origin main
 LOCAL=$(git rev-parse HEAD)
 REMOTE=$(git rev-parse origin/main)
