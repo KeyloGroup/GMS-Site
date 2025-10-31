@@ -21,7 +21,7 @@ const querystring = require('querystring');
 const unless = require('express-unless');
 const mysql = require('mysql2/promise');
 
-require('dotenv').config();
+require('dotenv').config({ path: '/KeyloENV/.env' });
 
 dotenv.config();
 const app = express();
