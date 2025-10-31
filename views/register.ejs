@@ -8,65 +8,98 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
   <style>
     body {
-      background: radial-gradient(circle at 70% 50%, rgba(0, 51, 153, 0.5), rgba(0, 0, 0, 0.9) 70%),
-                  linear-gradient(135deg, rgba(0, 0, 64, 0.8), rgba(0, 0, 0, 0.95));
+      background-color: #0d0d0d;
       color: #fff;
       font-family: 'Inter', sans-serif;
-      transition: background 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+      min-width: 100vw;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      position: relative;
     }
-    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
-
+    .dotted-bg {
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(#222 1px, transparent 1px);
+      background-size: 24px 24px;
+      z-index: 0;
+    }
+    .dotted-bg::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(#1a1a1a 1px, transparent 1px);
+      background-size: 24px 24px;
+      opacity: 0.5;
+      pointer-events: none;
+    }
     .glass {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(24, 24, 24, 0.7);
+      backdrop-filter: blur(14px);
       border-radius: 22px;
+      border: 1px solid #222;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.28);
+      z-index: 1;
     }
-
     .btn-primary {
-      background: linear-gradient(to right, #2563eb, #1d4ed8);
+      background: linear-gradient(to right, #4f46e5, #6366f1);
       color: white;
-      transition: all 0.3s ease;
+      transition: background 0.18s, transform .14s;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      box-shadow: 0 2px 12px 0 #15151560;
+      outline: none;
+      border: none;
     }
-    .btn-primary:hover { background: linear-gradient(to right, #1e40af, #1d4ed8); }
-
+    .btn-primary:hover, .btn-primary:focus {
+      background: linear-gradient(to right, #3730a3, #6366f1);
+      transform: translateY(-1px) scale(1.02);
+    }
     .btn-secondary {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255,255,255,0.05);
       color: white;
-      transition: all 0.3s ease;
+      border-radius: 0.75rem;
+      transition: background 0.18s, transform .14s;
+      border: 1px solid rgba(255,255,255,0.10);
+      font-weight: 500;
+      outline: none;
     }
-    .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
-
+    .btn-secondary:hover, .btn-secondary:focus {
+      background: rgba(255,255,255,0.12);
+      transform: translateY(-1px) scale(1.02);
+    }
     .glow-text {
-      text-shadow: 0 0 6px rgba(60, 100, 255, 0.4);
+      text-shadow: 0 0 7px rgba(128, 90, 255, 0.44);
     }
-
     input, select {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(24,24,24,0.7);
       color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255,255,255,0.18);
       border-radius: 12px;
       padding: 0.75rem;
       width: 100%;
       outline: none;
-      transition: all 0.2s ease;
+      transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+      margin-bottom: 0.5rem;
     }
-
     input:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
+      border-color: #6366f1;
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+      background: rgba(40,40,60,0.88);
     }
-
-    a { transition: all 0.2s ease; }
+    a { transition: color 0.18s; }
+    @media (max-width: 600px) {
+      .glass {
+        padding: 1.2rem 0.6rem !important;
+      }
+    }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center px-4">
-
-<div class="glass max-w-md w-full p-8">
+<body class="min-h-screen flex items-center justify-center px-4 relative">
+<div class="dotted-bg"></div>
+<div class="glass max-w-md w-full p-8 mx-auto z-10">
   <h2 class="text-4xl font-extrabold text-center mb-8 glow-text">Register</h2>
-
-  <!-- Step 0: Pick Verification Method -->
   <div id="step0" class="text-center">
     <p class="mb-6 text-gray-300">Choose how you’d like to verify your Roblox account:</p>
     <div class="flex flex-col gap-4">
@@ -74,51 +107,39 @@
       <a href="/auth/roblox" class="btn-secondary py-3 rounded-lg font-semibold border border-white/20">Verify with Roblox OAuth</a>
     </div>
   </div>
-
-  <!-- Step 1: Roblox User ID -->
   <div id="step1" class="hidden mt-4">
     <label for="robloxIdInput" class="block text-sm font-medium text-gray-300 mb-2">Roblox User ID</label>
-    <input id="robloxIdInput" type="text" placeholder="Enter your Roblox User ID">
-    <button onclick="lookupRobloxUser()" class="btn-primary w-full py-3 mt-4 rounded-lg font-semibold">Continue</button>
+    <input id="robloxIdInput" type="text" placeholder="Enter your Roblox User ID" autocomplete="off">
+    <button onclick="lookupRobloxUser()" class="btn-primary w-full py-3 mt-2 rounded-lg font-semibold">Continue</button>
   </div>
-
-  <!-- Step 2: Confirm Profile -->
   <div id="step2" class="hidden text-center mt-4">
     <img id="robloxAvatar" class="mx-auto rounded-full w-24 h-24 mb-4 shadow-md" src="" alt="Avatar">
-    <p id="robloxName" class="text-xl font-semibold text-blue-400 mb-1"></p>
+    <p id="robloxName" class="text-xl font-semibold text-indigo-400 mb-1"></p>
     <p id="robloxIdText" class="text-gray-400 text-sm mb-4"></p>
     <div class="flex gap-4 justify-center">
       <button onclick="confirmProfile(true)" class="btn-primary px-6 py-2 rounded-lg font-medium">Yes</button>
       <button onclick="confirmProfile(false)" class="btn-secondary px-6 py-2 rounded-lg font-medium">No</button>
     </div>
   </div>
-
-  <!-- Step 3: Code in Bio -->
   <div id="step3" class="hidden text-center mt-4">
     <p class="mb-4 text-gray-300">Add this code to your Roblox bio:</p>
-    <div id="verificationCode" class="text-2xl font-bold text-blue-400 mb-4"></div>
+    <div id="verificationCode" class="text-2xl font-bold text-indigo-400 mb-4"></div>
     <button onclick="checkBio()" class="btn-primary w-full py-3 rounded-lg">Check Code</button>
     <p id="bioCheckMsg" class="mt-3 text-sm text-gray-400"></p>
   </div>
-
-  <!-- Step 4: Password Only -->
   <div id="step4" class="hidden mt-4">
     <form method="POST" action="/api/register">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <input type="hidden" id="finalRobloxId" name="robloxUsername">
-
       <label for="password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
-      <input name="password" type="password" placeholder="Enter your password" required>
-
+      <input name="password" type="password" placeholder="Enter your password" required autocomplete="new-password">
       <button type="submit" class="btn-primary w-full py-3 mt-4 rounded-lg font-semibold">Finish Registration</button>
     </form>
   </div>
 </div>
-
 <script>
 let robloxId = null;
 let verificationCode = null;
-
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get("oauth") === "success") {
   const username = urlParams.get("username");
@@ -129,20 +150,18 @@ if (urlParams.get("oauth") === "success") {
     document.getElementById('finalRobloxId').value = username;
   }
 }
-
 function startCodeVerification() {
   document.getElementById('step0').classList.add('hidden');
   document.getElementById('step1').classList.remove('hidden');
+  document.getElementById('robloxIdInput').focus();
 }
-
 function lookupRobloxUser() {
   const id = document.getElementById('robloxIdInput').value.trim();
-  if (!id) return alert('Enter a Roblox User ID.');
-
+  if (!id) { alert('Enter a Roblox User ID.'); return; }
   fetch(`/api/roblox/user/${encodeURIComponent(id)}`)
     .then(res => res.json())
     .then(data => {
-      if (!data || data.error) return alert('User not found.');
+      if (!data || data.error) { alert('User not found.'); return; }
       robloxId = data.id;
       document.getElementById('robloxAvatar').src = data.avatar;
       document.getElementById('robloxName').innerText = data.name;
@@ -151,11 +170,11 @@ function lookupRobloxUser() {
       document.getElementById('step2').classList.remove('hidden');
     });
 }
-
 function confirmProfile(yes) {
   if (!yes) {
     document.getElementById('step2').classList.add('hidden');
     document.getElementById('step1').classList.remove('hidden');
+    document.getElementById('robloxIdInput').focus();
     return;
   }
   fetch(`/api/roblox/code`)
@@ -167,7 +186,6 @@ function confirmProfile(yes) {
       document.getElementById('step3').classList.remove('hidden');
     });
 }
-
 function checkBio() {
   fetch(`/api/roblox/check-bio/${robloxId}/${encodeURIComponent(verificationCode)}`)
     .then(res => res.json())
@@ -190,6 +208,5 @@ function checkBio() {
     });
 }
 </script>
-
 </body>
 </html>
