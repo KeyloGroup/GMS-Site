@@ -1,4 +1,7 @@
 #!/bin/bash
+
+chmod +x "$0"
+
 git fetch origin main
 LOCAL=$(git rev-parse HEAD)
 REMOTE=$(git rev-parse origin/main)
