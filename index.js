@@ -20,7 +20,6 @@ const { parseISO, startOfDay, endOfDay, addDays } = require("date-fns");
 const querystring = require('querystring');
 const unless = require('express-unless');
 const mysql = require('mysql2/promise');
-const { encrypt, decrypt, hashPassword, verifyPassword } = require('./lib/encryption');
 
 require('dotenv').config();
 
