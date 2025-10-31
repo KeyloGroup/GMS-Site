@@ -3,38 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Activity — <%= workspace.name %></title>
+  <title>Activity <%= workspace.name %></title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-
   <style>
     body {
-      background-color: #000;
+      background-color: #0d0d0d;
       color: #fff;
       font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      min-width: 100vw;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      position: relative;
     }
     h1, h2, h3, h4 {
       font-family: 'Outfit', sans-serif;
     }
-
-    .gradient-bg {
-      background: radial-gradient(circle at 70% 50%, rgba(0, 51, 153, 0.5), rgba(0, 0, 0, 0.9) 70%),
-                  linear-gradient(135deg, rgba(0, 0, 64, 0.8), rgba(0, 0, 0, 0.95));
+    .dotted-bg {
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(#222 1px, transparent 1px);
+      background-size: 24px 24px;
+      z-index: 0;
     }
-
+    .dotted-bg::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(#1a1a1a 1px, transparent 1px);
+      background-size: 24px 24px;
+      opacity: 0.5;
+      pointer-events: none;
+    }
     .glass {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(24, 24, 24, 0.74);
+      backdrop-filter: blur(16px);
       border-radius: 22px;
+      border: 1px solid #232323;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.30);
+      z-index: 1;
     }
-
     .sidebar-link img {
       filter: brightness(0) invert(1);
     }
-    
     .sidebar-link {
       display: flex;
       align-items: center;
@@ -43,70 +57,78 @@
       border-radius: .75rem;
       color: #9ca3af;
       font-weight: 500;
-      transition: all 0.3s ease;
+      transition: all 0.24s cubic-bezier(.4,0,.2,1);
+      text-decoration: none;
+      cursor: pointer;
     }
     .sidebar-link:hover {
-      background-color: rgba(37, 99, 235, 0.15);
+      background-color: rgba(37, 99, 235, 0.18);
       color: #60a5fa;
-      transform: translateX(4px);
+      transform: translateX(4px) scale(1.025);
     }
     .sidebar-active {
-      background-color: rgba(37, 99, 235, 0.25);
+      background-color: rgba(37, 99, 235, 0.29);
       color: #3b82f6;
       font-weight: 600;
     }
-
     .glow-text {
-      text-shadow: 0 0 8px rgba(60, 100, 255, 0.5);
+      text-shadow: 0 0 8px rgba(60, 100, 255, 0.53);
+    }
+    ::selection {
+      background: #3b82f6;
+      color: #fff;
+    }
+    @media (max-width: 800px) {
+      main { padding: 1.2rem !important; }
+      .glass { padding: 1.2rem 0.7rem; }
+      aside { min-width: 4.5rem !important; }
+    }
+    @media (max-width: 600px) {
+      .glass { padding: 1rem 0.4rem; }
+      aside { min-width: 3.5rem !important; }
     }
   </style>
 </head>
 
-<body class="gradient-bg text-white flex min-h-screen">
+<body class="dotted-bg text-white flex min-h-screen">
 
-  <!-- Sidebar -->
-  <aside class="w-20 md:w-64 p-4 glass flex flex-col shadow-xl">
+  <aside class="w-20 md:w-64 p-4 glass flex flex-col shadow-xl z-10">
     <div class="flex flex-col items-center mb-10">
       <img src="<%= workspace.image %>" alt="Workspace Icon" class="w-14 h-14 rounded-full mb-2 shadow-md">
-      <p class="text-gray-300 text-sm font-semibold text-center"><%= workspace.name %></p>
+      <p class="text-gray-300 text-sm font-semibold text-center break-words"><%= workspace.name %></p>
     </div>
-
     <div class="border-t border-gray-700 mb-4"></div>
-
     <nav class="flex flex-col gap-2 flex-1">
       <a href="/workspace/<%= workspace.id %>/" class="sidebar-link">
-        <img src="/icons/icons8-home-48.png" class="w-5 h-5"> <span>Home</span>
+        <img src="/icons/icons8-home-48.png" class="w-5 h-5" alt="Home"> <span>Home</span>
       </a>
       <a href="#" class="sidebar-link">
-        <img src="/icons/icons8-checked-box-50.png" class="w-5 h-5"> <span>Tasks</span>
+        <img src="/icons/icons8-checked-box-50.png" class="w-5 h-5" alt="Tasks"> <span>Tasks</span>
       </a>
       <a href="#" class="sidebar-link">
-        <img src="/icons/icons8-open-book-50.png" class="w-5 h-5"> <span>Logbook</span>
+        <img src="/icons/icons8-open-book-50.png" class="w-5 h-5" alt="Logbook"> <span>Logbook</span>
       </a>
       <a href="/workspace/<%= workspace.id %>/sessions" class="sidebar-link">
-        <img src="/icons/icons8-calendar-50.png" class="w-5 h-5"> <span>Sessions</span>
+        <img src="/icons/icons8-calendar-50.png" class="w-5 h-5" alt="Sessions"> <span>Sessions</span>
       </a>
       <a href="#" class="sidebar-link">
-        <img src="/icons/icons8-avatar-24.png" class="w-5 h-5"> <span>Staff</span>
+        <img src="/icons/icons8-avatar-24.png" class="w-5 h-5" alt="Staff"> <span>Staff</span>
       </a>
       <a href="/workspace/<%= workspace.id %>/activity" class="sidebar-link sidebar-active">
-        <img src="/icons/icons8-clock-24.png" class="w-5 h-5"> <span>Activity</span>
+        <img src="/icons/icons8-clock-24.png" class="w-5 h-5" alt="Activity"> <span>Activity</span>
       </a>
       <a href="#" class="sidebar-link">
-        <img src="/icons/icons8-airplane-take-off-50.png" class="w-5 h-5"> <span>Leave</span>
+        <img src="/icons/icons8-airplane-take-off-50.png" class="w-5 h-5" alt="Leave"> <span>Leave</span>
       </a>
       <a href="#" class="sidebar-link">
-        <img src="/icons/icons8-folder-50.png" class="w-5 h-5"> <span>Documents</span>
+        <img src="/icons/icons8-folder-50.png" class="w-5 h-5" alt="Documents"> <span>Documents</span>
       </a>
     </nav>
-
     <div class="border-t border-gray-700 mt-4"></div>
-
     <a href="/workspace/<%= workspace.id %>/settings" class="sidebar-link mt-4">
-      <img src="/icons/icons8-settings-50.png" class="w-5 h-5">
+      <img src="/icons/icons8-settings-50.png" class="w-5 h-5" alt="Settings">
       <span>Settings</span>
     </a>
-
     <div class="mt-6 flex items-center gap-3 p-2 glass rounded-xl">
       <img src="<%= userProfileURL %>" alt="Profile" class="w-10 h-10 rounded-full shadow">
       <div class="hidden md:block">
@@ -116,8 +138,7 @@
     </div>
   </aside>
 
-  <!-- Main -->
-  <main class="flex-1 p-8 overflow-y-auto">
+  <main class="flex-1 p-8 overflow-y-auto z-20">
     <header class="flex justify-between items-center mb-12">
       <div>
         <h1 class="text-3xl font-extrabold glow-text">Activity Overview</h1>
@@ -125,14 +146,11 @@
       </div>
       <div class="flex items-center gap-4">
         <input class="glass px-4 py-2 rounded-full placeholder-gray-400 text-white w-64 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Search..." />
-        <button class="glass p-2 rounded-full hover:bg-blue-600/20 transition">
+        <button class="glass p-2 rounded-full hover:bg-blue-600/20 transition" type="button">
           <i class="fas fa-bell text-blue-400"></i>
         </button>
       </div>
-
     </header>
-
-    <!-- Stats -->
     <section class="grid md:grid-cols-4 gap-6 mb-10">
       <div class="glass p-5 text-center hover:-translate-y-1 transition-all">
         <p class="text-sm text-gray-400 mb-1">Today's Time</p>
@@ -151,8 +169,6 @@
         <p class="text-3xl font-bold text-blue-400"><%= todaysChats || 0 %></p>
       </div>
     </section>
-
-    <!-- Recent Activity -->
     <section>
       <h2 class="text-xl font-semibold mb-4 glow-text">Recent Activity</h2>
       <% if (activity && activity.length > 0) { %>
@@ -189,7 +205,6 @@
           </div>
           <p class="text-gray-400 text-lg font-medium">No recent activity</p>
         </div>
-
       <% } %>
     </section>
   </main>
