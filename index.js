@@ -22,6 +22,7 @@ const unless = require('express-unless');
 const mysql = require('mysql2/promise');
 
 require('dotenv').config({ path: 'root/KeyloENV/.env' });
+console.log("🔍 ROBLOX_OAUTH_CLIENT_SECRET:", process.env.ROBLOX_OAUTH_CLIENT_SECRET ? "LOADED" : "MISSING");
 
 dotenv.config();
 const app = express();
