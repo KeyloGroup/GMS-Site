@@ -8,5 +8,5 @@ if [ $LOCAL != $REMOTE ]; then
     echo "New commit detected. Pulling updates..."
     git reset --hard origin/main
     npm install 
-    pm2 restart MainKeylo
+    pm2 restart KeyloSite
 fi
