@@ -28,10 +28,6 @@ const app = express();
 const PORT = 3050;
 
 /* -------------------- SUPABASE -------------------- */
-const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
-);
 const supabaseAccounts = createClient(
     process.env.SUPABASE_ACCOUNTS_URL,
     process.env.SUPABASE_ACCOUNTS_SERVICE_ROLE_KEY
