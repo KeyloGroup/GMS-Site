@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title><%= workspace.name %> — Keylo Workspace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="/assets/keylo-logo.png">
+
+    <style>
+        /* Base styles from index.ejs */
+        body {
+            background-color: #0d0d0d;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Dotted Background from index.ejs */
+        .dotted-bg {
+            background-image: radial-gradient(#222 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .dotted-bg::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(#1a1a1a 1px, transparent 1px);
+            background-size: 24px 24px;
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Buttons from index.ejs */
+        .btn-primary {
+            background-color: #fff;
+            color: #000;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover { background-color: #eaeaea; }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #fff;
+            border: 1px solid #333;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        .btn-secondary:hover {
+            border-color: #555;
+            background-color: #111;
+        }
+
+        /* Custom UI for Dashboard */
+        .card-bg {
+            background-color: #111; /* Dark background for cards */
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+        .card-bg:hover {
+            border-color: #333;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Sidebar Links */
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            padding: .75rem .9rem;
+            border-radius: .75rem;
+            color: #9ca3af;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .sidebar-link:hover {
+            background-color: rgba(255, 255, 255, 0.08); /* Slight white hover for dark theme */
+            color: #fff;
+            transform: translateX(4px);
+        }
+        .sidebar-active {
+            background-color: rgba(255, 255, 255, 0.15); /* Distinct background for active */
+            color: #fff;
+            font-weight: 600;
+        }
+        .sidebar-active:hover {
+            transform: translateX(0); /* Remove slide effect on active */
+        }
+
+        /* Hide scrollbar but keep scroll functionality */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+    </style>
+</head>
+
+<body class="text-white flex min-h-screen">
+
+<!-- Sidebar — REPLACE existing <aside> with this -->
+<aside class="w-20 md:w-64 p-4 glass flex flex-col shadow-xl sticky top-0 h-screen overflow-y-auto scrollbar-hide">
+    <div class="flex flex-col items-center mb-10 flex-shrink-0">
+        <img src="<%= workspace.image %>" alt="Workspace Icon" class="w-14 h-14 rounded-full mb-2 shadow-md">
+        <p class="text-gray-300 text-sm font-semibold text-center"><%= workspace.name %></p>
+    </div>
+
+    <div class="border-t border-gray-700 mb-4"></div>
+
+    <nav class="flex flex-col gap-2 flex-1">
+        <a href="/workspace/<%= workspace.id %>/" class="sidebar-link sidebar-active"><img src="/icons/icons8-home-48.png" class="w-5 h-5"><span>Home</span></a>
+        <a href="#" class="sidebar-link"><img src="/icons/icons8-checked-box-50.png" class="w-5 h-5"><span>Tasks</span></a>
+        <a href="#" class="sidebar-link"><img src="/icons/icons8-open-book-50.png" class="w-5 h-5"><span>Logbook</span></a>
+        <a href="/workspace/<%= workspace.id %>/sessions" class="sidebar-link"><img src="/icons/icons8-calendar-50.png" class="w-5 h-5"><span>Sessions</span></a>
+        <a href="/workspace/<%= workspace.id %>/staff" class="sidebar-link"><img src="/icons/icons8-avatar-24.png" class="w-5 h-5"><span>Staff</span></a>
+        <a href="/workspace/<%= workspace.id %>/activity" class="sidebar-link"><img src="/icons/icons8-clock-24.png" class="w-5 h-5"><span>Activity</span></a>
+        <a href="#" class="sidebar-link"><img src="/icons/icons8-airplane-take-off-50.png" class="w-5 h-5"><span>Leave</span></a>
+        <a href="#" class="sidebar-link"><img src="/icons/icons8-folder-50.png" class="w-5 h-5"><span>Documents</span></a>
+    </nav>
+
+    <div class="border-t border-gray-700 mt-4"></div>
+
+    <a href="/workspace/<%= workspace.id %>/settings" class="sidebar-link mt-4 flex-shrink-0"><img src="/icons/icons8-settings-50.png" class="w-5 h-5"><span>Settings</span></a>
+
+    <div class="mt-6 flex items-center gap-3 p-2 glass rounded-xl flex-shrink-0">
+        <img src="<%= userProfileURL %>" alt="Profile" class="w-10 h-10 rounded-full shadow">
+        <div class="hidden md:block">
+            <p class="text-sm font-semibold text-white"><%= user %></p>
+            <p class="text-xs text-gray-400">Online</p>
+        </div>
+    </div>
+</aside>
+
+
+    <main class="flex-1 p-8 overflow-y-auto relative dotted-bg">
+        <header class="flex justify-between items-center mb-12 relative z-10">
+            <div class="flex items-center gap-4">
+                <img src="<%= userProfileURL %>" alt="User Profile" class="w-10 h-10 rounded-full border border-[#333]">
+                <div>
+                    <h1 class="text-3xl font-extrabold tracking-tight">
+                        Welcome, <span class="text-white"><%= user %></span>
+                    </h1>
+                    <p class="text-gray-400 text-sm">You’re in <%= workspace.name %></p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <input class="card-bg px-4 py-2 rounded-full placeholder-gray-400 text-white w-64 focus:outline-none focus:ring-2 focus:ring-gray-600 border border-[#333]" placeholder="Search..." />
+                <button class="card-bg p-3 rounded-full hover:bg-white/10 transition border border-[#333]">
+                    <i class="fas fa-bell text-gray-400 hover:text-white"></i>
+                </button>
+            </div>
+        </header>
+
+        <section class="grid md:grid-cols-3 gap-6 mb-10 relative z-10">
+            <div class="card-bg p-6 text-center hover:shadow-lg hover:bg-[#151515]">
+                <p class="text-sm text-gray-400 mb-1">Total Minutes</p>
+                <p class="text-4xl font-bold text-white">123</p>
+            </div>
+            <div class="card-bg p-6 text-center hover:shadow-lg hover:bg-[#151515]">
+                <p class="text-sm text-gray-400 mb-1">Average Daily</p>
+                <p class="text-4xl font-bold text-white">15</p>
+            </div>
+            <div class="card-bg p-6 text-center hover:shadow-lg hover:bg-[#151515]">
+                <p class="text-sm text-gray-400 mb-1">Total Chats</p>
+                <p class="text-4xl font-bold text-white">42</p>
+            </div>
+        </section>
+
+        <section class="mb-10 relative z-10">
+            <h2 class="text-xl font-semibold mb-4">Quick Access Docs</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card-bg p-5 cursor-pointer hover:shadow-lg hover:bg-[#151515]">
+                    <div class="flex items-center mb-2">
+                        <div class="p-2 bg-gray-700/50 rounded-full mr-3 text-white">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h3 class="font-semibold text-white">Staff Handbook</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm">By Admin</p>
+                    <p class="text-gray-500 text-xs">Updated: Sep 2025</p>
+                </div>
+                <div class="card-bg p-5 cursor-pointer hover:shadow-lg hover:bg-[#151515]">
+                    <div class="flex items-center mb-2">
+                        <div class="p-2 bg-gray-700/50 rounded-full mr-3 text-white">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h3 class="font-semibold text-white">Training Guide</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm">By HR</p>
+                    <p class="text-gray-500 text-xs">Updated: Aug 2025</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="relative z-10">
+            <h2 class="text-xl font-semibold mb-4">Recent Activity</h2>
+            <div class="card-bg p-5">
+                <ul class="divide-y divide-[#1a1a1a]">
+                    <li class="py-4 flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-gray-700/50 rounded-full text-white">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-white">CoolRobloxUser / DiscordGuy#1234</p>
+                                <p class="text-xs text-gray-400">Total: 250 min • Today: 35 min • Avg: 20 min</p>
+                            </div>
+                        </div>
+                        <span class="text-xs px-3 py-1 font-semibold rounded-full bg-green-700/30 text-green-400">Session</span>
+                    </li>
+                    <li class="py-4 flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-gray-700/50 rounded-full text-white">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-white">AnotherUser / CoolDiscord#5678</p>
+                                <p class="text-xs text-gray-400">Total: 120 min • Today: 15 min • Avg: 10 min</p>
+                            </div>
+                        </div>
+                        <span class="text-xs px-3 py-1 font-semibold rounded-full bg-yellow-700/30 text-yellow-400">Adjustment</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>

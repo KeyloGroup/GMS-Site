@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Sessions — <%= workspace.name %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
+
+        .gradient-bg {
+            background: radial-gradient(circle at 70% 50%, rgba(0, 51, 153, 0.5), rgba(0, 0, 0, 0.9) 70%),
+                        linear-gradient(135deg, rgba(0, 0, 64, 0.8), rgba(0, 0, 0, 0.95));
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 22px;
+        }
+
+        .btn-primary { 
+            background: linear-gradient(to right, #2563eb, #1d4ed8); 
+            color:white; 
+            transition: all 0.3s ease; 
+        }
+        .btn-primary:hover { 
+            background: linear-gradient(to right, #1e40af, #1d4ed8); 
+        }
+        
+        .btn-secondary { 
+            background: rgba(255,255,255,0.08); 
+            color:white; 
+            transition: all 0.3s ease; 
+            border: 1px solid rgba(255,255,255,0.15); 
+        }
+        .btn-secondary:hover { 
+            background: rgba(255,255,255,0.15); 
+        }
+        
+        /* Retained from old, but used sparingly or as a base style */
+        .btn-blue { 
+            background-color: #1e40af; 
+            color: white; 
+            transition: background-color 0.2s; 
+        }
+        .btn-blue:hover { 
+            background-color: #1d4ed8; 
+        }
+
+        .sidebar-link { 
+            display:flex; 
+            align-items:center; 
+            gap:.75rem; 
+            padding:.75rem .9rem; 
+            border-radius:.75rem; 
+            color:#9ca3af; 
+            font-weight:500; 
+            transition: all 0.3s ease; 
+        }
+        .sidebar-link:hover { 
+            background-color: rgba(37, 99, 235, 0.15); 
+            color:#60a5fa; 
+            transform: translateX(4px); 
+        }
+        .sidebar-active { 
+            background-color: rgba(37, 99, 235, 0.25); 
+            color: #3b82f6; 
+            font-weight:600; 
+        }
+
+        .glow-text { 
+            text-shadow: 0 0 8px rgba(60, 100, 255, 0.5); 
+        }
+        .modal-backdrop { 
+            background: rgba(0,0,0,0.7); 
+            backdrop-filter: blur(6px) saturate(120%); 
+        }
+        .log-entry:hover { 
+            background: rgba(255,255,255,0.05); 
+        }
+        
+        /* New log entry style to fix alignment inside modalLogs ul */
+        #modalLogs .log-entry {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        }
+        
+        /* Specific style for the card title to match the bold look of the image */
+        /* Changed from text-lg to text-xl and font-extrabold to match the image better */
+        .card-title {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 800; /* font-extrabold */
+            color: white;
+            margin-bottom: 0.75rem; /* mb-3 */
+        }
+        /* Specific style for the grey time text (Top Left) */
+        .card-time-header {
+            font-size: 0.8rem; /* text-sm */
+            color: #b3b3b3; /* Light gray */
+            margin-bottom: 0.25rem; /* Added margin for separation from title */
+        }
+    </style>
+</head>
+
+<body class="gradient-bg text-white flex min-h-screen">
+
+    <aside class="w-20 md:w-64 p-4 glass flex flex-col shadow-xl">
+        <div class="flex flex-col items-center mb-10">
+            <img src="<%= workspace.image %>" alt="Workspace Icon" class="w-14 h-14 rounded-full mb-2 shadow-md">
+            <p class="text-gray-300 text-sm font-semibold text-center"><%= workspace.name %></p>
+        </div>
+        <div class="border-t border-gray-700 mb-4"></div>
+        <nav class="flex flex-col gap-2 flex-1">
+            <a href="/workspace/<%= workspace.id %>/" class="sidebar-link"><img src="/icons/icons8-home-48.png" class="w-5 h-5"><span>Home</span></a>
+            <a href="#" class="sidebar-link"><img src="/icons/icons8-checked-box-50.png" class="w-5 h-5"><span>Tasks</span></a>
+            <a href="#" class="sidebar-link"><img src="/icons/icons8-open-book-50.png" class="w-5 h-5"><span>Logbook</span></a>
+            <a href="/workspace/<%= workspace.id %>/sessions" class="sidebar-link sidebar-active"><img src="/icons/icons8-calendar-50.png" class="w-5 h-5"><span>Sessions</span></a>
+            <a href="#" class="sidebar-link"><img src="/icons/icons8-avatar-24.png" class="w-5 h-5"><span>Staff</span></a>
+            <a href="/workspace/<%= workspace.id %>/activity" class="sidebar-link"><img src="/icons/icons8-clock-24.png" class="w-5 h-5"><span>Activity</span></a>
+            <a href="#" class="sidebar-link"><img src="/icons/icons8-airplane-take-off-50.png" class="w-5 h-5"><span>Leave</span></a>
+            <a href="#" class="sidebar-link"><img src="/icons/icons8-folder-50.png" class="w-5 h-5"><span>Documents</span></a>
+        </nav>
+        <div class="border-t border-gray-700 mt-4"></div>
+        <a href="/workspace/<%= workspace.id %>/settings" class="sidebar-link mt-4"><img src="/icons/icons8-settings-50.png" class="w-5 h-5"><span>Settings</span></a>
+        <div class="mt-6 flex items-center gap-3 p-2 glass rounded-xl">
+            <img src="<%= userProfileURL %>" alt="Profile" class="w-10 h-10 rounded-full shadow">
+            <div class="hidden md:block">
+                <p class="text-sm font-semibold text-white"><%= user %></p>
+                <p class="text-xs text-gray-400">Online</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 p-8 overflow-y-auto" id="sessions-main">
+        <header class="flex justify-between items-center mb-10">
+            <h1 class="text-3xl font-extrabold text-blue-400 glow-text">Sessions</h1>
+            <div class="flex items-center gap-2">
+                <input class="glass px-4 py-2 rounded-full placeholder-gray-400 text-white w-64 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Search sessions..." />
+                <button id="createSessionBtn" class="px-4 py-2 rounded-lg bg-blue-700 hover:bg-blue-600 text-white">+ Create Session</button>
+            </div>
+        </header>
+
+        <div class="flex justify-center items-center gap-2 mb-8" id="date-buttons">
+            <button class="p-2 rounded-lg bg-blue-700 hover:bg-blue-600 text-white" id="prevDay">&lt;</button>
+            <% days.forEach((day, idx) => { %>
+                <button class="px-4 py-2 rounded-lg transition-all day-button <%= day.active ? 'btn-primary' : 'btn-secondary hover:bg-white/15' %>" data-day-index="<%= idx %>">
+                    <%= day.label %>
+                </button>
+            <% }) %>
+            <button class="p-2 rounded-lg bg-blue-700 hover:bg-blue-600 text-white" id="nextDay">&gt;</button>
+        </div>
+
+        <section id="sessions-container">
+            <h2 class="text-2xl font-semibold mb-6 text-white glow-text">Sessions (<%= days.find(d => d.active)?.label.split(', ')[0] || 'Today' %>)</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="sessions-grid">
+                <% if (sessions.length > 0) { %>
+                    <% sessions.forEach(session => { %>
+                        <div class="glass p-4 rounded-xl flex flex-col justify-between cursor-pointer transition hover:scale-[1.02] hover:shadow-2xl duration-200" onclick="openSessionModal('<%= session.id %>')"> 
+                            
+                            <div class="flex justify-between items-start mb-2"> 
+                                <p class="card-time-header font-medium"><%= session.dateAndTimeFormatted || '' %></p> 
+                                <div class="flex items-center gap-2">
+                                    <% if (session.isLive) { %><span class="px-2 py-1 text-xs font-bold rounded-full bg-red-700/30 text-red-400">NOW</span><% } %>
+                                    <% if (session.type) { %> 
+                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-700/30 text-blue-400"><%= session.type %></span> 
+                                    <% } %>
+                                </div>
+                            </div> 
+                        
+                            <h3 class="card-title"><%= session.title %></h3> 
+                        
+                            <div class="flex items-center gap-4 mt-auto"> 
+                                <div class="flex items-center gap-2"> 
+                                    <img src="<%= session.host?.avatar || '/icons/icons8-avatar-24.png' %>" class="w-8 h-8 rounded-full border border-blue-700/50"> 
+                                    <p class="text-sm text-gray-300 font-medium"><%= session.host?.name || 'Unknown' %></p> 
+                                </div> 
+                                <% if (session.coHost) { %> 
+                                    <div class="flex items-center gap-2"> 
+                                        <img src="<%= session.coHost?.avatar || '/icons/icons8-avatar-24.png' %>" class="w-8 h-8 rounded-full border border-blue-700/50"> 
+                                        <p class="text-sm text-gray-300 font-medium"><%= session.coHost?.name || 'Unknown' %></p> 
+                                    </div> 
+                                <% } %> 
+                            </div> 
+                        </div>
+                        <% }) %>
+                <% } else { %>
+                    <p class="col-span-full text-center text-gray-500 mt-4 glass p-4 rounded-xl">No sessions for this day.</p>
+                <% } %>
+            </div>
+        </section>
+    </main>
+    
+    <div id="createSessionModal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md text-black">
+            <h2 class="text-xl font-semibold mb-4">Create New Session</h2>
+            <form id="createSessionForm">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                <div class="mb-3">
+                    <label class="block text-sm font-medium mb-1">Session Title</label>
+                    <input type="text" id="sessionTitle" name="title" required class="w-full border px-3 py-2 rounded">
+                </div>
+
+                <div class="mb-3">
+                    <label class="block text-sm font-medium mb-1">Type</label>
+                    <input type="text" id="sessionType" name="type" placeholder="e.g. Training, Patrol" required class="w-full border px-3 py-2 rounded">
+                </div>
+
+                <div class="mb-3">
+                    <label class="block text-sm font-medium mb-1">Host ID (Required)</label>
+                    <input type="number" id="hostId" name="hostId" required class="w-full border px-3 py-2 rounded" placeholder="e.g. 101" min="1">
+                </div>
+
+                <div class="mb-3">
+                    <label class="block text-sm font-medium mb-1">Co-Host ID (Optional)</label>
+                    <input type="number" id="coHostId" name="coHostId" class="w-full border px-3 py-2 rounded" placeholder="e.g. 102" min="1">
+                </div>
+
+                <div class="mb-3">
+                    <label class="block text-sm font-medium mb-1">Start Time</label>
+                    <input type="datetime-local" id="startTime" name="startTime" required class="w-full border px-3 py-2 rounded">
+                </div>
+
+                <div class="mb-3">
+                    <label class="block text-sm font-medium mb-1">Duration (minutes)</label>
+                    <input type="number" id="durationMinutes" name="durationMinutes" required class="w-full border px-3 py-2 rounded" min="10" max="480">
+                </div>
+
+                <div class="flex justify-end mt-4">
+                    <button type="button" id="cancelCreateSession" class="mr-2 px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded bg-blue-700 text-white hover:bg-blue-600">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="sessionModal" class="fixed inset-0 hidden items-center justify-center z-50 modal-backdrop">
+        <div class="glass max-w-5xl w-[94%] lg:w-4/5 p-6 rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh]">
+            <div class="flex items-start justify-between gap-4 mb-4">
+                <div>
+                    <h3 id="modalTitle" class="text-2xl font-extrabold text-blue-400 mb-1"></h3>
+                    <div id="modalTime" class="text-sm text-gray-400"></div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button id="copyLogFormatBtnTop" class="btn-secondary px-3 py-1 rounded-md text-sm">Copy Logs</button>
+                    <button onclick="closeSessionModal()" class="p-2 rounded-md text-2xl text-gray-400 hover:text-blue-400">&times;</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 flex flex-col gap-4">
+                    <div class="glass p-4 rounded-xl">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="text-lg font-semibold text-blue-400">Hosting</h4>
+                            <div class="text-xs text-gray-500">Live status: <span id="modalLiveFlag" class="font-semibold text-red-400 hidden">LIVE</span></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="p-3 rounded-lg bg-white/10 flex items-center gap-3">
+                                <img id="modalHostAvatar" src="/icons/icons8-avatar-24.png" class="w-10 h-10 rounded-md" />
+                                <div>
+                                    <div class="text-sm font-semibold text-white" id="modalHostName">—</div>
+                                    <div class="text-xs text-gray-400" id="modalHostMeta">Host</div>
+                                </div>
+                            </div>
+                            <div class="p-3 rounded-lg bg-white/10 flex items-center gap-3">
+                                <img id="modalCoHostAvatar" src="/icons/icons8-avatar-24.png" class="w-10 h-10 rounded-md" />
+                                <div>
+                                    <div class="text-sm font-semibold text-white" id="modalCoHostName">—</div>
+                                    <div class="text-xs text-gray-400" id="modalCoHostMeta">Co-Host</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass p-4 rounded-xl">
+                        <h4 class="text-lg font-semibold text-blue-400 mb-3">Shift Roles</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="p-3 rounded-lg bg-white/10">
+                                <div class="text-xs text-gray-400">Host</div>
+                                <div class="text-sm font-semibold text-white" id="modalShiftHost">—</div>
+                            </div>
+                            <div class="p-3 rounded-lg bg-white/10">
+                                <div class="text-xs text-gray-400">Co-Host</div>
+                                <div class="text-sm font-semibold text-white" id="modalShiftCoHost">—</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <div class="glass p-4 rounded-xl">
+                        <h4 class="text-lg font-semibold text-blue-400 mb-3">Main Server</h4>
+                        <div class="flex items-center gap-3 mb-2">
+                            <img id="modalMainHostAvatar" src="/icons/icons8-avatar-24.png" class="w-10 h-10 rounded-md" />
+                            <div>
+                                <div class="text-sm font-semibold text-white" id="modalMainHost">—</div>
+                                <div class="text-xs text-gray-400">Host</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <img id="modalMainCoHostAvatar" src="/icons/icons8-avatar-24.png" class="w-10 h-10 rounded-md" />
+                            <div>
+                                <div class="text-sm font-semibold text-white" id="modalMainCoHost">—</div>
+                                <div class="text-xs text-gray-400">Co-Host</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass p-3 rounded-xl max-h-64 overflow-y-auto">
+                        <h4 class="text-lg font-semibold text-blue-400 mb-3">Logs</h4>
+                        <ul id="modalLogs" class="space-y-2"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <button class="btn-primary rounded-md px-4 py-2">Take Action</button>
+                <button id="copyLogFormatBtnBottom" class="btn-secondary rounded-md px-4 py-2">Copy Logs</button>
+                <button onclick="closeSessionModal()" class="bg-transparent border border-gray-600 text-gray-300 rounded-md px-4 py-2 hover:border-gray-500">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const CSRF_TOKEN = '<%= csrfToken %>';
+    const WORKSPACE_ID = '<%= workspace.id %>'; // Inject workspace ID from EJS
+    const sessionsClient = <%- JSON.stringify(sessions || []) %>;
+
+    // ----------------------
+    // Session modal handling
+    // ----------------------
+    function openSessionModal(id) {
+        const s = sessionsClient.find(x => String(x.id) === String(id));
+        if (!s) return;
+
+        document.getElementById('modalTitle').textContent = s.title || 'Session';
+        document.getElementById('modalTime').textContent = s.timeFormatted || '';
+
+        document.getElementById('modalHostName').textContent = s.host?.name || 'None';
+        document.getElementById('modalHostAvatar').src = s.host?.avatar || '/icons/icons8-avatar-24.png';
+        document.getElementById('modalHostMeta').textContent = s.host?.tag || 'Host';
+
+        document.getElementById('modalCoHostName').textContent = s.coHost?.name || 'None';
+        document.getElementById('modalCoHostAvatar').src = s.coHost?.avatar || '/icons/icons8-avatar-24.png';
+        document.getElementById('modalCoHostMeta').textContent = s.coHost?.tag || 'Co-Host';
+
+        document.getElementById('modalShiftHost').textContent = s.shiftRoles?.host?.name || s.host?.name || 'None';
+        document.getElementById('modalShiftCoHost').textContent = s.shiftRoles?.coHost?.name || s.coHost?.name || 'None';
+
+        document.getElementById('modalMainHost').textContent = s.mainServer?.host?.name || s.host?.name || 'None';
+        document.getElementById('modalMainHostAvatar').src = s.mainServer?.host?.avatar || s.host?.avatar || '/icons/icons8-avatar-24.png';
+
+        document.getElementById('modalMainCoHost').textContent = s.mainServer?.coHost?.name || s.coHost?.name || 'None';
+        document.getElementById('modalMainCoHostAvatar').src = s.mainServer?.coHost?.avatar || s.coHost?.avatar || '/icons/icons8-avatar-24.png';
+
+        const liveFlag = document.getElementById('modalLiveFlag');
+        s.isLive ? liveFlag.classList.remove('hidden') : liveFlag.classList.add('hidden');
+
+        const logsEl = document.getElementById('modalLogs');
+        logsEl.innerHTML = '';
+        if (Array.isArray(s.logs) && s.logs.length) {
+            s.logs.slice().reverse().forEach(l => {
+                const li = document.createElement('li');
+                li.className = 'log-entry';
+                li.innerHTML = `
+                    <img src="${l.actorAvatar || '/icons/icons8-avatar-24.png'}" class="w-7 h-7 rounded-full">
+                    <div>
+                        <div class="text-sm font-semibold text-white">${l.actor || 'Unknown'}</div>
+                        <div class="text-xs text-gray-400">${l.message || ''}</div>
+                    </div>`;
+                logsEl.appendChild(li);
+            });
+        } else {
+            logsEl.innerHTML = '<li class="text-xs text-gray-400 p-2">No logs yet.</li>';
+        }
+
+        document.getElementById('sessionModal').classList.remove('hidden');
+        document.getElementById('sessionModal').classList.add('flex');
+    }
+
+    function closeSessionModal() {
+        document.getElementById('sessionModal').classList.add('hidden');
+        document.getElementById('sessionModal').classList.remove('flex');
+    }
+
+    const copyLogs = () => {
+        const logs = Array.from(document.getElementById('modalLogs').querySelectorAll('.text-xs.text-gray-400'))
+            .map(e => e.textContent.trim())
+            .join('\n');
+        navigator.clipboard.writeText(logs || 'No logs available.');
+        alert('Logs copied!');
+    };
+    document.getElementById('copyLogFormatBtnTop').addEventListener('click', copyLogs);
+    document.getElementById('copyLogFormatBtnBottom').addEventListener('click', copyLogs);
+
+    // ----------------------
+    // Date buttons
+    // ----------------------
+    let activeIdx = <%= days.findIndex(d => d.active) %>;
+    const btns = document.querySelectorAll('.day-button');
+    function setActiveDay(i) {
+        if (i < 0 || i >= btns.length) return;
+        btns[activeIdx]?.classList.remove('btn-primary');
+        btns[activeIdx]?.classList.add('btn-secondary');
+        activeIdx = i;
+        btns[activeIdx].classList.add('btn-primary');
+        btns[activeIdx].classList.remove('btn-secondary');
+    }
+    btns.forEach((b,i)=>b.addEventListener('click',()=>setActiveDay(i)));
+    document.getElementById('prevDay').addEventListener('click',()=>setActiveDay(activeIdx-1));
+    document.getElementById('nextDay').addEventListener('click',()=>setActiveDay(activeIdx+1));
+
+    // ----------------------
+    // Create Session modal
+    // ----------------------
+    const createBtn = document.getElementById('createSessionBtn');
+    const createModal = document.getElementById('createSessionModal');
+    const cancelCreate = document.getElementById('cancelCreateSession');
+
+    createBtn.addEventListener('click', ()=>createModal.classList.remove('hidden'));
+    cancelCreate.addEventListener('click', ()=>createModal.classList.add('hidden'));
+
+    document.getElementById('createSessionForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const title = document.getElementById('sessionTitle').value.trim();
+        const type = document.getElementById('sessionType').value.trim();
+        const startTime = document.getElementById('startTime').value;
+        const durationMinutes = parseInt(document.getElementById('durationMinutes').value, 10);
+        const hostId = parseInt(document.getElementById('hostId').value, 10);
+        const coHostIdVal = document.getElementById('coHostId').value;
+        const coHostId = coHostIdVal ? parseInt(coHostIdVal, 10) : null;
+
+        if (!title || !type || !startTime || isNaN(durationMinutes) || durationMinutes < 1 || isNaN(hostId) || hostId < 1) {
+            return alert('Please fill all required fields correctly.');
+        }
+
+        const payload = { title, type, startTime, durationMinutes, hostId, coHostId, groups: [] };
+
+        try {
+            const res = await fetch(`/api/sessions/${WORKSPACE_ID}/entry/new`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'CSRF-Token': CSRF_TOKEN },
+                body: JSON.stringify(payload)
+            });
+            if(res.ok) {
+                alert('Session created!');
+                location.reload();
+            } else {
+                const err = await res.json();
+                alert('Error: ' + (err.error || err.message || 'Unknown error creating session.'));
+            }
+        } catch(err) {
+            alert('Network Error: ' + err.message);
+        }
+    });
+</script>
+
+</body>
+</html>

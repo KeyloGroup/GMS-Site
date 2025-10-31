@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keylo Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0d0d0d] text-white min-h-screen flex flex-col">
+
+  <header class="bg-[#111] p-4 flex justify-between items-center border-b border-[#1a1a1a]">
+    <h1 class="font-bold text-xl">Keylo Admin</h1>
+    <form action="/admin/logout" method="POST">
+      <button class="bg-red-600 px-4 py-2 rounded hover:bg-red-500 transition">Logout</button>
+    </form>
+  </header>
+
+  <main class="flex-1 p-6 max-w-6xl mx-auto">
+    <h2 class="text-2xl font-semibold mb-6">Dashboard</h2>
+
+    <% if (admin.role === 'owner') { %>
+      <section class="mb-6 p-4 bg-[#111] rounded-lg shadow">
+        <h3 class="font-bold mb-2">Maintenance Mode</h3>
+        <form action="/admin/maintenance" method="POST" class="flex gap-4">
+          <button type="submit" name="action" value="<%= siteState.maintenance ? 'off' : 'on' %>"
+                  class="px-4 py-2 rounded bg-white text-black hover:bg-gray-200 transition">
+            <%= siteState.maintenance ? 'Disable Maintenance' : 'Enable Maintenance' %>
+          </button>
+        </form>
+      </section>
+    <% } %>
+
+    <!-- Ban User Section -->
+    <section class="mb-6 p-4 bg-[#111] rounded-lg shadow">
+      <h3 class="font-bold mb-2">Banned Users</h3>
+
+      <!-- Ban User Form -->
+      <form action="/admin/ban-user" method="POST" class="flex gap-2 mb-4">
+        <input type="text" name="user_id" placeholder="Roblox User ID" required
+               class="p-2 rounded bg-[#222] border border-[#333] text-white">
+        <input type="text" name="reason" placeholder="Reason" required
+               class="p-2 rounded bg-[#222] border border-[#333] text-white">
+        <button type="submit" class="bg-red-600 px-3 py-1 rounded hover:bg-red-500 transition">Ban</button>
+      </form>
+
+      <!-- Banned Users List -->
+      <ul class="space-y-1">
+        <% bans.forEach(b => { %>
+          <li class="flex justify-between bg-[#222] p-2 rounded">
+            <span><%= b.user_id %> — <%= b.reason %></span>
+            <% if (admin.role === 'owner' || admin.role === 'staff') { %>
+              <form action="/admin/unban-user" method="POST">
+                <input type="hidden" name="id" value="<%= b.id %>">
+                <button class="bg-green-600 px-2 py-1 rounded hover:bg-green-500 transition">Unban</button>
+              </form>
+            <% } %>
+          </li>
+        <% }) %>
+      </ul>
+    </section>
+
+    <!-- Ban Group Section -->
+    <section class="mb-6 p-4 bg-[#111] rounded-lg shadow">
+      <h3 class="font-bold mb-2">Banned Groups</h3>
+
+      <!-- Ban Group Form -->
+      <form action="/admin/ban-group" method="POST" class="flex gap-2 mb-4">
+        <input type="text" name="group_id" placeholder="Roblox Group ID" required
+               class="p-2 rounded bg-[#222] border border-[#333] text-white">
+        <input type="text" name="reason" placeholder="Reason" required
+               class="p-2 rounded bg-[#222] border border-[#333] text-white">
+        <button type="submit" class="bg-red-600 px-3 py-1 rounded hover:bg-red-500 transition">Ban</button>
+      </form>
+
+      <!-- Banned Groups List -->
+      <ul class="space-y-1">
+        <% groups.forEach(g => { %>
+          <li class="flex justify-between bg-[#222] p-2 rounded">
+            <span><%= g.group_id %> — <%= g.reason %></span>
+            <% if (admin.role === 'owner' || admin.role === 'staff') { %>
+              <form action="/admin/unban-group" method="POST">
+                <input type="hidden" name="id" value="<%= g.id %>">
+                <button class="bg-green-600 px-2 py-1 rounded hover:bg-green-500 transition">Unban</button>
+              </form>
+            <% } %>
+          </li>
+        <% }) %>
+      </ul>
+    </section>
+
+  </main>
+
+</body>
+</html>

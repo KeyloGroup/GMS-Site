@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Access Denied - Keylo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px) saturate(200%);
+      -webkit-backdrop-filter: blur(20px) saturate(200%);
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .glow-text {
+      text-shadow: 0 0 5px rgba(200, 150, 255, 0.5);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-6px); }
+      80% { transform: translateX(6px); }
+    }
+    .shake {
+      animation: shake 0.8s infinite;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 via-purple-50 to-purple-100 flex items-center justify-center min-h-screen">
+
+  <div class="glass p-10 max-w-lg w-full text-center">
+    <div class="text-6xl mb-6 text-red-500 shake">🚫</div>
+    <h1 class="text-3xl font-extrabold text-purple-800 glow-text mb-4">Access Denied</h1>
+    <p class="text-slate-700 mb-6">
+      Sorry <span class="font-semibold"><%= user %></span>, you don’t have the required group rank to access this workspace.
+    </p>
+    <p class="text-slate-600 mb-4">
+      Redirecting in <span id="countdown" class="font-bold text-purple-700">10</span> seconds…
+    </p>
+    <a href="<%= redirectUrl %>" class="inline-block mt-4 px-6 py-3 rounded-xl font-semibold bg-purple-600 text-white shadow hover:bg-purple-700 transition">
+      Return to Workspaces
+    </a>
+  </div>
+
+  <script>
+    let seconds = 10;
+    const countdownEl = document.getElementById("countdown");
+    const redirectUrl = "<%= redirectUrl %>";
+
+    const interval = setInterval(() => {
+      seconds--;
+      countdownEl.textContent = seconds;
+      if (seconds <= 0) {
+        clearInterval(interval);
+        window.location.href = redirectUrl;
+      }
+    }, 1000);
+  </script>
+
+</body>
+</html>

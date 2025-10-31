@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keylo — Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: radial-gradient(circle at 70% 50%, rgba(0, 51, 153, 0.5), rgba(0, 0, 0, 0.9) 70%),
+                  linear-gradient(135deg, rgba(0, 0, 64, 0.8), rgba(0, 0, 0, 0.95));
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 22px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(to right, #2563eb, #1d4ed8);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover { background: linear-gradient(to right, #1e40af, #1d4ed8); }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
+
+    input {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 0.75rem;
+      width: 100%;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center px-4">
+
+<div class="glass max-w-md w-full p-8">
+  <h2 class="text-4xl font-extrabold text-center mb-8 glow-text">Login</h2>
+
+  <!-- Step 0: Choose Method -->
+  <div id="step0" class="<%= oauthSuccess ? 'hidden' : '' %> text-center">
+    <p class="mb-6 text-gray-300">Choose how you’d like to log in:</p>
+    <div class="flex flex-col gap-4">
+      <a href="/auth/roblox" class="btn-primary py-3 rounded-lg font-semibold">Login with Roblox OAuth</a>
+      <button onclick="manualLogin()" class="btn-secondary py-3 rounded-lg font-semibold border border-white/20">Login with Password</button>
+    </div>
+  </div>
+
+  <!-- Step 1: Manual Login -->
+  <div id="step1" class="<%= oauthSuccess ? '' : 'hidden' %>">
+    <form method="POST" action="/login">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label for="robloxUsername" class="block text-sm font-medium text-gray-300 mb-2">Roblox Username</label>
+      <input 
+        id="robloxUsername" 
+        name="robloxUsername" 
+        type="text" 
+        placeholder="Enter your Roblox username"
+        value="<%= robloxUsername %>" 
+        required
+      >
+
+      <label for="password" class="block text-sm font-medium text-gray-300 mt-4 mb-2">Password</label>
+      <input name="password" type="password" placeholder="Enter your password" required>
+
+      <button type="submit" class="btn-primary w-full py-3 mt-4 rounded-lg font-semibold">Login</button>
+    </form>
+
+    <p class="text-sm text-center text-gray-400 mt-4">
+      Don’t have an account? 
+      <a href="/register" class="text-blue-400 font-semibold hover:underline">Register</a>
+    </p>
+  </div>
+</div>
+
+<script>
+function manualLogin() {
+  document.getElementById('step0').classList.add('hidden');
+  document.getElementById('step1').classList.remove('hidden');
+}
+</script>
+
+</body>
+</html>

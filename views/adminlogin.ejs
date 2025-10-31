@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keylo Admin Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0d0d0d] text-white flex items-center justify-center min-h-screen">
+
+  <div class="bg-[#111] p-12 rounded-2xl shadow-2xl w-full max-w-md">
+    <h1 class="text-3xl font-bold mb-6 text-center">Admin Login</h1>
+
+    <form action="/admin/login" method="POST" class="space-y-4">
+      <input type="email" name="email" placeholder="Email" required
+             class="w-full p-3 rounded-lg bg-[#222] border border-[#333] focus:outline-none focus:border-white">
+      <input type="password" name="password" placeholder="Password" required
+             class="w-full p-3 rounded-lg bg-[#222] border border-[#333] focus:outline-none focus:border-white">
+      <button type="submit" class="w-full py-3 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition">Login</button>
+    </form>
+
+    <p class="mt-6 text-center text-gray-400">
+      No account? <a href="/admin" class="text-white underline">Sign up</a>
+    </p>
+  </div>
+
+</body>
+</html>

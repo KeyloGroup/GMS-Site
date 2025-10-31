@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keylo — Support</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="/assets/keylo-logo.png" />
+
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+    }
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
+
+    .gradient-bg {
+      background: radial-gradient(circle at 70% 50%, rgba(0, 51, 153, 0.5), rgba(0, 0, 0, 0.9) 70%),
+                  linear-gradient(135deg, rgba(0, 0, 64, 0.8), rgba(0, 0, 0, 0.95));
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 22px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(to right, #2563eb, #1d4ed8);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover { background: linear-gradient(to right, #1e40af, #1d4ed8); }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
+
+    .glow-text {
+      text-shadow: 0 0 6px rgba(60, 100, 255, 0.4);
+    }
+  </style>
+</head>
+
+<body class="gradient-bg min-h-screen flex flex-col">
+
+<!-- Header -->
+<header class="fixed w-full glass z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between relative">
+    <a href="/" class="text-2xl font-extrabold glow-text text-white">Keylo</a>
+    <nav class="flex gap-6 text-sm font-medium text-gray-300">
+      <a href="/launch" class="hover:text-blue-400">Launch</a>
+      <a href="/support" class="text-blue-400 font-semibold">Support</a>
+      <a href="/logout" class="hover:text-blue-400">Sign Out</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="flex-grow pt-32 pb-20 px-6 text-center">
+  <section class="max-w-3xl mx-auto">
+    <h1 class="text-5xl sm:text-6xl font-extrabold mb-6 glow-text leading-tight">
+      Need Help? <span class="text-blue-400">We’ve Got You.</span>
+    </h1>
+    <p class="text-lg sm:text-xl text-gray-300 leading-relaxed mb-10">
+      Whether it’s account issues, business inquiries, or privacy concerns — our support team is ready to assist.
+    </p>
+  </section>
+
+  <!-- Support Options -->
+  <section class="max-w-5xl mx-auto mt-10 grid gap-8 md:grid-cols-3">
+    <!-- Discord -->
+    <div class="glass p-8 rounded-2xl text-center">
+      <div class="text-4xl mb-4">💬</div>
+      <h3 class="text-2xl font-semibold mb-3 text-blue-400">Join Our Discord</h3>
+      <p class="text-gray-300 mb-4 leading-relaxed">
+        The fastest way to reach us — open a support ticket directly with our team on Discord.
+      </p>
+      <a href="https://discord.gg/HXj8m4wM" target="_blank" class="btn-primary px-6 py-3 rounded-lg font-medium shadow-md inline-block">
+        Join Discord
+      </a>
+    </div>
+
+    <!-- Email: Support -->
+    <div class="glass p-8 rounded-2xl text-center">
+      <div class="text-4xl mb-4">📧</div>
+      <h3 class="text-2xl font-semibold mb-3 text-blue-400">General Support</h3>
+      <p class="text-gray-300 mb-4 leading-relaxed">
+        For any technical or account-related issues, you can email our support team.
+      </p>
+      <a href="mailto:support@keyloroblox.xyz" class="btn-primary px-6 py-3 rounded-lg font-medium shadow-md inline-block">
+        support@keyloroblox.xyz
+      </a>
+    </div>
+
+    <!-- Email: PR / Privacy -->
+    <div class="glass p-8 rounded-2xl text-center">
+      <div class="text-4xl mb-4">📰</div>
+      <h3 class="text-2xl font-semibold mb-3 text-blue-400">PR & Privacy</h3>
+      <p class="text-gray-300 mb-4 leading-relaxed">
+        For media, partnerships, or privacy-related inquiries, please contact our public relations team.
+      </p>
+      <div class="flex flex-col gap-3">
+        <a href="mailto:pr@keyloroblox.xyz" class="btn-secondary px-6 py-3 rounded-lg font-medium inline-block">pr@keyloroblox.xyz</a>
+        <a href="mailto:privacy@keyloroblox.xyz" class="btn-secondary px-6 py-3 rounded-lg font-medium inline-block">privacy@keyloroblox.xyz</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-black/80 text-gray-400 py-8 mt-16 border-t border-gray-800">
+  <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+    <p class="text-sm">© <%= new Date().getFullYear() %> Keylo. All rights reserved.</p>
+    <nav class="flex gap-6 text-sm">
+      <a href="/" class="hover:text-blue-400">Home</a>
+      <a href="/launch" class="hover:text-blue-400">Launch</a>
+      <a href="/support" class="text-blue-400 font-semibold">Support</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
