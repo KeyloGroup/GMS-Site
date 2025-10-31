@@ -1,5 +1,4 @@
 #!/bin/bash
-cd /Keylo
 git fetch origin main
 LOCAL=$(git rev-parse HEAD)
 REMOTE=$(git rev-parse origin/main)
