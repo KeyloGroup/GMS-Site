@@ -1,23 +1,24 @@
 #!/bin/bash
 
-SCRIPT_PATH="$(realpath "$0")"
-SCRIPT_NAME="$(basename "$SCRIPT_PATH")"
+set -e
 
-cd "$(dirname "$SCRIPT_PATH")" || exit 1
+cd "$(dirname "$(realpath "$0")")"
 
-git fetch origin main >/dev/null 2>&1
-
-LOCAL=$(git rev-parse HEAD)
-REMOTE=$(git rev-parse origin/main)
-
-if [ "$LOCAL" != "$REMOTE" ]; then
-    echo "🔄 New commit detected. Updating repository..."
-    git reset --hard origin/main
-
-    chmod +x "$SCRIPT_NAME"
-
-    npm install --silent
-    pm2 restart KeyloSite
-else
-    echo "✅ Already up to date."
-fi
+while true; do
+  git fetch --depth=1 origin main --quiet
+  LOCAL_COMMIT=$(git rev-parse HEAD)
+  REMOTE_COMMIT=$(git rev-parse origin/main)
+  if [ "$LOCAL_COMMIT" != "$REMOTE_COMMIT" ]; then
+      echo "🔄 Fast update in progress..."
+      git reset --hard origin/main --quiet
+      if ! cmp -s package-lock.json .package-lock.last 2>/dev/null; then
+          npm install --silent
+          cp package-lock.json .package-lock.last
+      fi
+      pm2 restart KeyloSite
+      echo "✅ Update complete."
+  else
+      echo "✅ Already up to date."
+  fi
+  sleep 10
+done
