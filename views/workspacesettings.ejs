@@ -299,7 +299,7 @@ aside {
           <button type="button" id="toggleApiKey" class="btn-secondary glass px-4 py-2 rounded-xl text-xl hover:bg-white/15 transition" aria-label="Toggle API key visibility">
             <i class="fa-solid fa-eye text-gray-400"></i>
           </button>
-          <form method="POST" action="/workspace/<%= workspace?.id %>/generate-api-key" class="m-0">
+          <form method="POST" action="/workspace/<%= workspace?.id %>/regenerate-api-key" class="m-0">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-xl hover:bg-red-700 transition">Re-generate</button>
           </form>
