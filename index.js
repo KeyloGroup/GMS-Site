@@ -608,6 +608,53 @@ app.post('/workspace/:id/generate-api-key', async (req, res) => {
     }
 });
 
+app.post('/workspace/:id/regenerate-api-key', async (req, res) => {
+  try {
+    // Auth check
+    if (!req.cookies.user_id) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const workspaceId = req.params.id;
+    if (!workspaceId) {
+      return res.status(400).json({ error: "Invalid workspace ID" });
+    }
+
+    // Generate a new API key and encrypt it
+    const newPlainKey = generateApiKey(48);
+    const combinedEncryptedKey = encryptApiKey(newPlainKey);
+
+    if (!combinedEncryptedKey) {
+      return res.status(500).json({ error: "Failed to encrypt API key." });
+    }
+
+    // Update the workspace with new encrypted key
+    const { error } = await supabaseWorkspaces
+      .from("existing workspaces")
+      .update({
+        API_Key: combinedEncryptedKey,
+        api_key: null,
+        api_key_encrypted: null,
+        api_iv: null,
+        api_tag: null,
+      })
+      .eq("id", workspaceId);
+
+    if (error) {
+      console.error("❌ Supabase update error:", error);
+      return res.status(500).json({ error: "Database update failed." });
+    }
+
+    console.log(`✅ Regenerated API key for workspace ${workspaceId}`);
+
+
+  } catch (err) {
+    console.error("❌ Unhandled error during API key regeneration:", err);
+    return res.status(500).json({ error: "Server error regenerating API key." });
+  }
+});
+
+
 app.get('/workspace/:id', async (req, res) => {
     try {
         if (!req.cookies.user_id) {
