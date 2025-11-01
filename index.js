@@ -421,6 +421,7 @@ app.post('/api/register', async (req, res) => {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
+        // 1️⃣ Lookup Roblox user
         const lookupRes = await axios.post(
             'https://users.roblox.com/v1/usernames/users',
             { usernames: [robloxUsername], excludeBannedUsers: false },
@@ -431,8 +432,26 @@ app.post('/api/register', async (req, res) => {
         }
 
         const robloxId = lookupRes.data.data[0].id;
-        const hashedPassword = await bcrypt.hash(password, 12);
 
+        // 2️⃣ Check if user is banned
+        const { data: bannedUsers, error: banError } = await supabaseAccounts
+            .from('AccountsBan')
+            .select('*')
+            .eq('username', robloxUsername);
+
+        if (banError) {
+            console.error('❌ Supabase ban check error:', banError);
+            return res.status(500).json({ error: 'Error checking ban list' });
+        }
+
+        if (bannedUsers?.length) {
+            // User is banned, redirect to banned page with reason
+            const reason = bannedUsers[0].reason || 'No reason provided';
+            return res.render('banned', { username: robloxUsername, reason });
+        }
+
+        // 3️⃣ Hash password and insert account
+        const hashedPassword = await bcrypt.hash(password, 12);
         const { error } = await supabaseAccounts
             .from('Accounts')
             .insert([{ 'roblox username': robloxUsername, 'hashed password': hashedPassword }]);
@@ -442,15 +461,19 @@ app.post('/api/register', async (req, res) => {
             return res.status(500).json({ error: 'Database insert failed' });
         }
 
+        // 4️⃣ Get avatar URL and set cookies
         const avatarUrl = await getAvatarUrl(robloxId);
         setUserCookies(res, { id: robloxId, username: robloxUsername, avatar: avatarUrl, theme: 'n/a' });
 
+        // 5️⃣ Redirect to launch
         res.redirect('/launch');
+
     } catch (err) {
         console.error('❌ Registration error:', err);
         res.status(500).send('Server error during registration');
     }
 });
+
 
 /* -------------------- LOGIN -------------------- */
 app.post('/login', async (req, res) => {
@@ -460,6 +483,7 @@ app.post('/login', async (req, res) => {
             return res.status(400).json({ error: 'Missing credentials' });
         }
 
+        // 1️⃣ Fetch user from Accounts table
         const { data: users, error } = await supabaseAccounts
             .from('Accounts')
             .select('*')
@@ -475,9 +499,28 @@ app.post('/login', async (req, res) => {
         }
 
         const user = users[0];
+
+        // 2️⃣ Check password
         const match = await bcrypt.compare(password, user['hashed password']);
         if (!match) return res.status(401).json({ error: 'Invalid password' });
 
+        // 3️⃣ Check if user is banned
+        const { data: bannedUsers, error: banError } = await supabaseAccounts
+            .from('AccountsBan')
+            .select('*')
+            .eq('username', robloxUsername);
+
+        if (banError) {
+            console.error('❌ Supabase ban check error:', banError);
+            return res.status(500).json({ error: 'Error checking ban list' });
+        }
+
+        if (bannedUsers?.length) {
+            const reason = bannedUsers[0].reason || 'No reason provided';
+            return res.render('banned', { username: robloxUsername, reason });
+        }
+
+        // 4️⃣ Get Roblox ID and avatar
         const lookupRes = await axios.post(
             'https://users.roblox.com/v1/usernames/users',
             { usernames: [user['roblox username']], excludeBannedUsers: false },
@@ -488,12 +531,15 @@ app.post('/login', async (req, res) => {
         const avatarUrl = await getAvatarUrl(robloxId);
         setUserCookies(res, { id: robloxId, username: user['roblox username'], avatar: avatarUrl, theme: 'n/a' });
 
+        // 5️⃣ Redirect to launch
         res.redirect('/launch');
+
     } catch (err) {
         console.error('❌ Login error:', err);
         res.status(500).send('Server error during login');
     }
 });
+
 
 /* -------------------- LAUNCH -------------------- */
 app.get('/launch', (req, res) => {
