@@ -610,7 +610,6 @@ app.post('/workspace/:id/generate-api-key', async (req, res) => {
 
 app.post('/workspace/:id/regenerate-api-key', async (req, res) => {
   try {
-    // Auth check
     if (!req.cookies.user_id) {
       return res.status(401).json({ error: "Unauthorized" });
     }
@@ -620,7 +619,6 @@ app.post('/workspace/:id/regenerate-api-key', async (req, res) => {
       return res.status(400).json({ error: "Invalid workspace ID" });
     }
 
-    // Generate a new API key and encrypt it
     const newPlainKey = generateApiKey(48);
     const combinedEncryptedKey = encryptApiKey(newPlainKey);
 
@@ -628,7 +626,6 @@ app.post('/workspace/:id/regenerate-api-key', async (req, res) => {
       return res.status(500).json({ error: "Failed to encrypt API key." });
     }
 
-    // Update the workspace with new encrypted key
     const { error } = await supabaseWorkspaces
       .from("existing workspaces")
       .update({
@@ -647,13 +644,14 @@ app.post('/workspace/:id/regenerate-api-key', async (req, res) => {
 
     console.log(`✅ Regenerated API key for workspace ${workspaceId}`);
 
+    // ✅ Redirect back to settings page
+    return res.redirect(`/workspace/${workspaceId}/settings`);
 
   } catch (err) {
     console.error("❌ Unhandled error during API key regeneration:", err);
     return res.status(500).json({ error: "Server error regenerating API key." });
   }
 });
-
 
 app.get('/workspace/:id', async (req, res) => {
     try {
