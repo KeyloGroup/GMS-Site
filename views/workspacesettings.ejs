@@ -5,13 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title><%= workspace?.name || 'Workspace' %> — Settings</title>
 
-<!-- Tailwind + Fonts + Font Awesome -->
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
 <style>
-/* --- Base / layout --- */
 body {
   background-color: #0d0d0d;
   color: #fff;
@@ -88,7 +86,6 @@ aside {
   box-shadow: 0 0 10px rgba(59,130,246,0.15);
 }
 
-/* toggles */
 .toggle {
   position: relative;
   display: inline-flex;
@@ -158,11 +155,9 @@ aside {
   word-break: break-word;
 }
 
-/* tabs */
 .tab-content { display: none; }
 .tab-content.active { display: block; }
 
-/* small screens */
 @media (max-width: 900px) {
   .settings-sidebar-glass { display: none; }
 }
@@ -210,7 +205,6 @@ aside {
       </div>
     </aside>
 
-    <!-- Right side settings tabs -->
     <aside class="w-64 p-4 settings-sidebar-glass border-l border-gray-800">
       <h2 class="font-bold text-xl mb-4 text-blue-400">Workspace Settings</h2>
       <ul class="space-y-1 flex-1">
@@ -222,7 +216,6 @@ aside {
     </aside>
 
     <main class="flex-1 p-8 overflow-y-auto space-y-10 relative z-10">
-      <!-- GENERAL -->
       <section id="general" class="tab-content active glass p-6">
         <h3 class="text-2xl font-semibold mb-6 text-blue-400">General Settings</h3>
         <form method="POST" action="/workspace/<%= workspace?.id %>/settings/general" class="space-y-6">
@@ -246,7 +239,6 @@ aside {
         </form>
       </section>
 
-      <!-- FEATURES -->
       <section id="features" class="tab-content glass p-6">
         <h3 class="text-2xl font-semibold mb-6 text-blue-400">Feature Toggles</h3>
         <form method="POST" action="/workspace/<%= workspace?.id %>/settings/features" class="space-y-6">
@@ -297,7 +289,6 @@ aside {
         </form>
       </section>
 
-      <!-- API -->
       <section id="api" class="tab-content glass p-6">
         <h3 class="text-2xl font-semibold mb-6 text-blue-400">API Key Management</h3>
 
@@ -318,7 +309,6 @@ aside {
         <p class="text-sm text-gray-400 mt-3">Keep your API key secret. Regenerating will invalidate the current key.</p>
       </section>
 
-      <!-- PERMISSIONS -->
       <section id="permissions" class="tab-content glass p-6">
         <div class="flex justify-between items-center mb-6">
           <h3 class="text-2xl font-semibold text-blue-400">Role Permissions</h3>
@@ -329,7 +319,6 @@ aside {
 
         <div id="rolesList" class="space-y-4">
           <% 
-            // default roles if your server doesn't provide them
             const roles = typeof workspace?.roles !== 'undefined' ? workspace.roles : [
               {
                 name: 'Admin', id: 'admin', permissions: {
@@ -412,8 +401,6 @@ aside {
             </div>
           <% }) %>
         </div>
-
-        <!-- Create Role Modal -->
         <div id="createRoleModal" class="fixed inset-0 bg-black/70 backdrop-blur-md hidden items-center justify-center z-50">
           <div class="glass p-6 rounded-2xl w-full max-w-lg border border-white/10 relative">
             <button id="closeCreateRole" class="absolute top-3 right-3 text-gray-400 hover:text-red-400 transition" aria-label="Close create role">
@@ -434,8 +421,6 @@ aside {
       </section>
     </main>
   </div>
-
-  <!-- --- Scripts: all in one file --- -->
   <script>
     // Tabs
     (function () {
@@ -457,7 +442,6 @@ aside {
         });
       });
 
-      // initial state
       document.addEventListener('DOMContentLoaded', () => {
         const initialLink = document.querySelector('.mini-link[data-tab="general"]');
         const initialSection = document.getElementById('general');
@@ -479,8 +463,6 @@ aside {
         if (icon) { icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); }
       }
     });
-
-    // Role panel toggles + delete
     function toggleRole(id) {
       const panel = document.getElementById('role-perms-' + id);
       const icon = document.getElementById('chevron-' + id);
