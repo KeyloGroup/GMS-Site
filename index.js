@@ -629,7 +629,7 @@ app.post('/workspace/:id/regenerate-api-key', async (req, res) => {
     const { error } = await supabaseWorkspaces
       .from("existing workspaces")
         .update({
-            API_Key: encryptedKey
+            API_Key: combinedEncryptedKey
         })
 
       .eq("id", workspaceId);
