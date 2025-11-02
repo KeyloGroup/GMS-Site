@@ -568,6 +568,23 @@ const EMOJIS = ['😀', '🎮', '🌟', '🚀', '🐱', '🔥', '🎲', '💎', 
 function generateEmojiCode(len = 5) {
     return Array.from({ length: len }, () => EMOJIS[Math.floor(Math.random() * EMOJIS.length)]).join('');
 }
+app.get('/api/roblox/user/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const profileRes = await axios.get(`https://users.roblox.com/v1/users/${id}`);
+        const profile = profileRes.data;
+        const avatarUrl = await getAvatarUrl(id);
+
+        res.json({
+            id: profile.id,
+            name: profile.name,
+            avatar: avatarUrl
+        });
+    } catch (err) {
+        console.error('❌ Roblox user lookup error:', err.message);
+        next(err);
+    }
+});
 
 app.get('/api/register/get/robloxusername/:id', async (req, res, next) => {
     try {
