@@ -232,6 +232,42 @@ aside {
                 class="glass px-4 py-2 rounded-xl text-white w-full border-none focus:ring-2 focus:ring-blue-400"/>
           </div>
 
+          <div class="glass p-5 rounded-2xl border border-white/10">
+            <h4 class="text-lg font-semibold text-blue-400 mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-eye"></i> Workspace Visibility
+            </h4>
+            <p class="text-sm text-gray-400 mb-4">Control who has the ability to view and see this workspace.</p>
+
+            <div class="flex flex-col md:flex-row gap-4 mb-4">
+              <label class="flex-1 glass p-4 rounded-xl border border-white/10 cursor-pointer hover:bg-white/5 transition">
+                <input type="radio" name="workspace_visibility" value="everyone" <%= workspace?.visibility === 'everyone' ? 'checked' : '' %> class="mr-2 accent-blue-500">
+                <span class="font-semibold text-white">Community Access</span>
+                <p class="text-sm text-gray-400 mt-1">Anyone linked to your community can access this workspace via the minimum role ID set.</p>
+              </label>
+
+              <label class="flex-1 glass p-4 rounded-xl border border-white/10 cursor-pointer hover:bg-white/5 transition">
+                <input type="radio" name="workspace_visibility" value="invite" <%= workspace?.visibility === 'invite' ? 'checked' : '' %> class="mr-2 accent-blue-500">
+                <span class="font-semibold text-white">Invitational Access</span>
+                <p class="text-sm text-gray-400 mt-1">Only invited users or staff may access this workspace via an invitiation link.</p>
+              </label>
+            </div>
+
+            <div>
+              <label class="block mb-2 font-medium text-gray-300">Minimum Roblox Role Required</label>
+              <select id="roleDropdown" name="minimum_role" class="glass w-full px-4 py-2 rounded-xl text-white border-none focus:ring-2 focus:ring-blue-400">
+                <option>Loading roles...</option>
+              </select>
+              <p class="text-sm text-gray-500 mt-2">Select the minimum group role required to view and use this workspace.</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition">Save Changes</button>
+            <a href="/workspace/<%= workspace?.id %>/" class="bg-gray-700 text-white px-4 py-2 rounded-xl hover:bg-gray-600 transition">Back to Workspace</a>
+          </div>
+        </form>
+      </section>
+
           <div class="flex flex-wrap gap-3">
             <button type="submit" class="btn-primary bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition">Save Changes</button>
             <a href="/workspace/<%= workspace?.id %>/" class="bg-gray-700 text-white px-4 py-2 rounded-xl hover:bg-gray-600 transition">Back to Workspace</a>
