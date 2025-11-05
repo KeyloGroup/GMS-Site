@@ -232,6 +232,11 @@ aside {
                 class="glass px-4 py-2 rounded-xl text-white w-full border-none focus:ring-2 focus:ring-blue-400"/>
           </div>
 
+          <div>
+            <label class="block mb-2 font-medium text-grey-300">Workspace Visibility</label>
+            <input type="checkbox" name="worksapce_visibility_public" <%= worksapce?.visibility ? checked >
+          </div<
+
           <div class="flex flex-wrap gap-3">
             <button type="submit" class="btn-primary bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition">Save Changes</button>
             <a href="/workspace/<%= workspace?.id %>/" class="bg-gray-700 text-white px-4 py-2 rounded-xl hover:bg-gray-600 transition">Back to Workspace</a>
