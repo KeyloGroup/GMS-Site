@@ -118,6 +118,7 @@
 
     <nav class="flex flex-col gap-2 flex-1">
         <a href="/workspace/<%= workspace.id %>/" class="sidebar-link sidebar-active"><img src="/icons/icons8-home-48.png" class="w-5 h-5"><span>Home</span></a>
+        <a href="#" class="sidebar-link"><img src="/icons/icons8-folder-50.png" class="w-5 h-5"><span>Announcements</span></a>
         <a href="#" class="sidebar-link"><img src="/icons/icons8-checked-box-50.png" class="w-5 h-5"><span>Tasks</span></a>
         <a href="#" class="sidebar-link"><img src="/icons/icons8-open-book-50.png" class="w-5 h-5"><span>Logbook</span></a>
         <a href="/workspace/<%= workspace.id %>/sessions" class="sidebar-link"><img src="/icons/icons8-calendar-50.png" class="w-5 h-5"><span>Sessions</span></a>
@@ -197,6 +198,22 @@
                     </div>
                     <p class="text-gray-400 text-sm">By HR</p>
                     <p class="text-gray-500 text-xs">Updated: Aug 2025</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10 relative z-10">
+            <h2 class="text-xl font-semibold mb-4">Announcements</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card-bg p-5 cursor-pointer hover:shadow-lg hover:bg-[#151515]">
+                    <div class="flex items-center mb-2">
+                        <div class="p-2 bg-gray-700/50 rounded-full mr-3 text-white">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h3 class="font-semibold text-white">Staff Handbook</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm">By Admin</p>
+                    <p class="text-gray-500 text-xs">Updated: Sep 2025</p>
                 </div>
             </div>
         </section>
