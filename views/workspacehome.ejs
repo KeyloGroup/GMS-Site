@@ -107,7 +107,6 @@
 
 <body class="text-white flex min-h-screen">
 
-<!-- Sidebar — REPLACE existing <aside> with this -->
 <aside class="w-20 md:w-64 p-4 glass flex flex-col shadow-xl sticky top-0 h-screen overflow-y-auto scrollbar-hide">
     <div class="flex flex-col items-center mb-10 flex-shrink-0">
         <img src="<%= workspace.image %>" alt="Workspace Icon" class="w-14 h-14 rounded-full mb-2 shadow-md">
@@ -118,7 +117,7 @@
 
     <nav class="flex flex-col gap-2 flex-1">
         <a href="/workspace/<%= workspace.id %>/" class="sidebar-link sidebar-active"><img src="/icons/icons8-home-48.png" class="w-5 h-5"><span>Home</span></a>
-        <a href="#" class="sidebar-link"><img src="/icons/icons8-folder-50.png" class="w-5 h-5"><span>Announcements</span></a>
+        <a href="#" class="sidebar-link"><img src="/icons/iconoir--megaphone.png" class="w-5 h-5"><span>Announcements</span></a>
         <a href="#" class="sidebar-link"><img src="/icons/icons8-checked-box-50.png" class="w-5 h-5"><span>Tasks</span></a>
         <a href="#" class="sidebar-link"><img src="/icons/icons8-open-book-50.png" class="w-5 h-5"><span>Logbook</span></a>
         <a href="/workspace/<%= workspace.id %>/sessions" class="sidebar-link"><img src="/icons/icons8-calendar-50.png" class="w-5 h-5"><span>Sessions</span></a>
