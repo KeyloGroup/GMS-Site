@@ -78,6 +78,7 @@
             color: #9ca3af;
             font-weight: 500;
             transition: all 0.2s ease;
+
         }
         .sidebar-link:hover {
             background-color: rgba(255, 255, 255, 0.08); /* Slight white hover for dark theme */
@@ -91,6 +92,11 @@
         }
         .sidebar-active:hover {
             transform: translateX(0); /* Remove slide effect on active */
+        }
+
+        .sidebar-link img {
+            filter: brightness(0) invert(1);
+            transition: filter 0.2s ease;
         }
 
         /* Hide scrollbar but keep scroll functionality */
