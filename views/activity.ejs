@@ -7,102 +7,87 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    <style>
-        body {
-            background-color: #0d0d0d;
-            color: #fff;
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-        }
-
-        .dotted-bg {
-            background-image: radial-gradient(#222 1px, transparent 1px);
-            background-size: 24px 24px;
-        }
-        .dotted-bg::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(#1a1a1a 1px, transparent 1px);
-            background-size: 24px 24px;
-            opacity: 0.5;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .btn-primary {
-            background-color: #fff;
-            color: #000;
-            font-weight: 600;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-        .btn-primary:hover { background-color: #eaeaea; }
-
-        .btn-secondary {
-            background-color: transparent;
-            color: #fff;
-            border: 1px solid #333;
-            font-weight: 600;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-        .btn-secondary:hover {
-            border-color: #555;
-            background-color: #111;
-        }
-
-        .card-bg {
-            background-color: #111;
-            border: 1px solid #1a1a1a;
-            border-radius: 12px;
-            transition: all 0.2s ease;
-        }
-        .card-bg:hover {
-            border-color: #333;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .sidebar-link {
-            display: flex;
-            align-items: center;
-            gap: .75rem;
-            padding: .75rem .9rem;
-            border-radius: .75rem;
-            color: #9ca3af;
-            font-weight: 500;
-            transition: all 0.2s ease;
-
-        }
-        .sidebar-link:hover {
-            background-color: rgba(255, 255, 255, 0.08);
-            color: #fff;
-            transform: translateX(4px);
-        }
-        .sidebar-active {
-            background-color: rgba(255, 255, 255, 0.15);
-            color: #fff;
-            font-weight: 600;
-        }
-        .sidebar-active:hover {
-            transform: translateX(0);
-        }
-
-        .sidebar-link img {
-            filter: brightness(0) invert(1);
-            transition: filter 0.2s ease;
-        }
-
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .scrollbar-hide {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;     /* Firefox */
-        }
-
-    </style>
+  <style>
+    body {
+      background-color: #0d0d0d;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      min-width: 100vw;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      position: relative;
+    }
+    h1, h2, h3, h4 {
+      font-family: 'Outfit', sans-serif;
+    }
+    .dotted-bg {
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(#222 1px, transparent 1px);
+      background-size: 24px 24px;
+      z-index: 0;
+    }
+    .dotted-bg::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(#1a1a1a 1px, transparent 1px);
+      background-size: 24px 24px;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .glass {
+      background: rgba(24, 24, 24, 0.74);
+      backdrop-filter: blur(16px);
+      border-radius: 22px;
+      border: 1px solid #232323;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.30);
+      z-index: 1;
+    }
+    .sidebar-link img {
+      filter: brightness(0) invert(1);
+    }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: .75rem .9rem;
+      border-radius: .75rem;
+      color: #9ca3af;
+      font-weight: 500;
+      transition: all 0.24s cubic-bezier(.4,0,.2,1);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .sidebar-link:hover {
+      background-color: rgba(37, 99, 235, 0.18);
+      color: #60a5fa;
+      transform: translateX(4px) scale(1.025);
+    }
+    .sidebar-active {
+      background-color: rgba(37, 99, 235, 0.29);
+      color: #3b82f6;
+      font-weight: 600;
+    }
+    .glow-text {
+      text-shadow: 0 0 8px rgba(60, 100, 255, 0.53);
+    }
+    ::selection {
+      background: #3b82f6;
+      color: #fff;
+    }
+    @media (max-width: 800px) {
+      main { padding: 1.2rem !important; }
+      .glass { padding: 1.2rem 0.7rem; }
+      aside { min-width: 4.5rem !important; }
+    }
+    @media (max-width: 600px) {
+      .glass { padding: 1rem 0.4rem; }
+      aside { min-width: 3.5rem !important; }
+    }
+  </style>
 </head>
 
 <body class="dotted-bg text-white flex min-h-screen">
@@ -225,4 +210,3 @@
   </main>
 </body>
 </html>
-
