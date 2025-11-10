@@ -1565,6 +1565,29 @@ app.get('/workspace/:id/staff', async (req, res) => {
     }
 });
 
+app.get("/api/settings/update/:id/worksapcename",async (req, res) => {
+    const workspaceId = req.params.id;
+    let ws;
+    try {
+        const { data, error } = await supabaseWorkspaces
+            .from('exsisting workspaces')
+            .select('*')
+            .eq('id', workspaceId)
+            .single();
+
+       if (error || !data) {
+           console.error('❌ Worksapce not found ofr ID:', workspaceId, 'Error:', error);
+           return res.status(404).send('Workspace not found');
+       }
+        ws = data;
+    } catch (err) {
+        console.error('❌ Error fetching workspace from Supabase:', err);
+        return res.status(500).send('Database error');
+    }
+
+    // Make it find the ID of worksapce and update the worksapce name value
+});
+
 /* -------------------- START SERVER -------------------- */
 app.listen(PORT, () => {
     console.log(`✅ Server running at http://localhost:${PORT}`);
