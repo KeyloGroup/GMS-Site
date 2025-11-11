@@ -1719,6 +1719,7 @@ app.get('/workspace/:id/announcements', async (req, res) => {
       workspace: { id: ws.id, name: ws.workspace_name, image: ws.workspace_img_url },
       announcements,
       csrfToken: req.csrfToken(),
+      isAdmin: ws.min_rank
     });
   } catch (err) {
     if (err.code === 'EBADCSRFTOKEN') {
