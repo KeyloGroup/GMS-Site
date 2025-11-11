@@ -1691,14 +1691,14 @@ app.get('/workspace/:id/announcements', async (req, res) => {
       {
         id: 1,
         title: "🚀 Welcome to Keylo!",
-        message: "We’re thrilled to have you onboard. Stay tuned for upcoming workspace features.",
+        content: "We’re thrilled to have you onboard. Stay tuned for upcoming workspace features.",
         author: "System",
         date: "11-11-2025",
       },
       {
         id: 2,
         title: "🧩 Chirstmas Break",
-        message: "Please note our christmas and new year holidays start at 19th Dec - 2nd Jan.",
+        content: "Please note our christmas and new year holidays start at 19th Dec - 2nd Jan.",
         author: "System",
         date: "10-11-2025",
       },
