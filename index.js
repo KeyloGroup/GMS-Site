@@ -1634,6 +1634,55 @@ app.get('/:id/settings/visability/update', async (req, res) => {
     // Make it find the ID of workspace for ws_settings_{worskpaceid} and update the DO TO FINISH HERE IDK DB RN
 });
 
+app.get('/announcements', async (req, res) => {
+  try {
+    // Ensure user is logged in
+    if (!req.cookies.user_id) {
+      return res.redirect('/login');
+    }
+
+    const robloxId = req.cookies.user_id;
+    const username = req.cookies.username || (await fetchRobloxUsernameById(robloxId));
+    const avatarUrl = req.cookies.profile_pic || (await getAvatarUrl(robloxId));
+
+    // 🔹 Fake announcement data (static for now)
+    const announcements = [
+      {
+        id: 1,
+        title: "🚀 Welcome to Keylo!",
+        message: "We’re thrilled to have you onboard. Stay tuned for upcoming workspace features.",
+        author: "System",
+        date: "2025-11-01",
+      },
+      {
+        id: 2,
+        title: "🧩 Workspace API Update",
+        message: "We’ve improved our API key encryption process for better security. No action required.",
+        author: "Admin Team",
+        date: "2025-11-05",
+      },
+      {
+        id: 3,
+        title: "🎉 Holiday Event Coming Soon",
+        message: "Join our Roblox group for a special December event with prizes and new tools!",
+        author: "Community Team",
+        date: "2025-11-10",
+      },
+    ];
+
+    res.render('announcements', {
+      title: "Keylo - Announcements",
+      user: username,
+      userProfileURL: avatarUrl,
+      announcements,
+      csrfToken: req.csrfToken(),
+    });
+  } catch (err) {
+    console.error("❌ Error rendering announcements:", err);
+    res.status(500).send("Server error loading announcements");
+  }
+});
+
 /* -------------------- START SERVER -------------------- */
 app.listen(PORT, () => {
     console.log(`✅ Server running at http://localhost:${PORT}`);
