@@ -1691,9 +1691,17 @@ app.get('/workspace/:id/announcements', async (req, res) => {
       {
         id: 1,
         title: "🚀 Welcome to Keylo!",
-        content: "We’re thrilled to have you onboard. Stay tuned for upcoming workspace features.",
+        content: "We’re thrilled to have you onboard. Stay tuned for upcoming workspace features. Please also check your new staff rules.",
         author: "System",
-        date: "11-11-2025",
+        date: "2025-11-11",
+        timeAgo: dayjs("2025-11-11").fromNow(),
+        tags: ["Welcome", "Info"],
+        attachments: [
+          { name: "Keylo Updated Staff Responsibilites", url: "https://docs.google.com/document/d/1r2wvE_rDwwIqHNiIcmz7RTkz93VzYCSC/edit?usp=sharing&ouid=105835574033665853701&rtpof=true&sd=true" }
+        ],
+        pinned: true,
+        likes: 12,
+        comments: 3
       },
       {
         id: 2,
