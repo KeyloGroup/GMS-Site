@@ -1622,7 +1622,7 @@ app.get('/:id/settings/visability/update', async (req, res) => {
             .signle();
 
         if (error || !data) {
-            console.error('❌ Workspace not found for ID:' worksapceId, 'Error:', error)
+            console.error('❌ Workspace not found for ID:', worksapceId, 'Error:', error)
             return res.tatus(404).send('Workspace not found');
         }
           ws = data;
