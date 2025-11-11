@@ -1712,7 +1712,7 @@ app.get('/workspace/:id/announcements', async (req, res) => {
     ];
 
     // --- Step 6: Render the announcements page ---
-    res.render('announcements', {
+    res.render('workspaceannouncements', {
       title: `${ws.workspace_name} - Announcements`,
       user: username,
       userProfileURL: avatarUrl,
