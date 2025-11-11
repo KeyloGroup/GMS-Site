@@ -1693,21 +1693,14 @@ app.get('/workspace/:id/announcements', async (req, res) => {
         title: "🚀 Welcome to Keylo!",
         message: "We’re thrilled to have you onboard. Stay tuned for upcoming workspace features.",
         author: "System",
-        date: "2025-11-01",
+        date: "11-11-2025",
       },
       {
         id: 2,
-        title: "🧩 Workspace API Update",
-        message: "We’ve improved our API key encryption process for better security. No action required.",
-        author: "Admin Team",
-        date: "2025-11-05",
-      },
-      {
-        id: 3,
-        title: "🎉 Holiday Event Coming Soon",
-        message: "Join our Roblox group for a special December event with prizes and new tools!",
-        author: "Community Team",
-        date: "2025-11-10",
+        title: "🧩 Chirstmas Break",
+        message: "Please note our christmas and new year holidays start at 19th Dec - 2nd Jan.",
+        author: "System",
+        date: "10-11-2025",
       },
     ];
 
