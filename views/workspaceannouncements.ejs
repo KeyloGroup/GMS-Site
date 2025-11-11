@@ -87,6 +87,12 @@
     }
     .sidebar-active:hover { transform: translateX(0); }
 
+    /* Force all sidebar icons white */
+    .sidebar-link img {
+      filter: brightness(0) invert(1);
+      transition: filter 0.2s ease;
+    }
+
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
@@ -129,9 +135,8 @@
   <main class="flex-1 p-8 overflow-y-auto relative dotted-bg">
     <header class="flex justify-between items-center mb-12 relative z-10">
       <div class="flex items-center gap-4">
-        <div class="w-10 h-10 rounded-full border border-[#333] bg-[#0d0d0d] flex items-center justify-center">
-          <i class="fas fa-bullhorn text-gray-400"></i>
-        </div>
+        <!-- Fixed working avatar (same as sidebar) -->
+        <img src="<%= userProfileURL %>" alt="User Profile" class="w-10 h-10 rounded-full border border-[#333] object-cover">
         <div>
           <h1 class="text-3xl font-extrabold tracking-tight">Announcements</h1>
           <p class="text-gray-400 text-sm">Stay up to date with the latest workspace updates.</p>
