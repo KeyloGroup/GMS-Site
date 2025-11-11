@@ -1693,8 +1693,7 @@ app.get('/workspace/:id/announcements', async (req, res) => {
         title: "🚀 Welcome to Keylo!",
         content: "We’re thrilled to have you onboard. Stay tuned for upcoming workspace features. Please also check your new staff rules.",
         author: "System",
-        date: "2025-11-11",
-        timeAgo: dayjs("2025-11-11").fromNow(),
+        date: "11-11-2025",
         tags: ["Welcome", "Info"],
         attachments: [
           { name: "Keylo Updated Staff Responsibilites", url: "https://docs.google.com/document/d/1r2wvE_rDwwIqHNiIcmz7RTkz93VzYCSC/edit?usp=sharing&ouid=105835574033665853701&rtpof=true&sd=true" }
