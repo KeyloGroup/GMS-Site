@@ -1565,7 +1565,7 @@ app.get('/workspace/:id/staff', async (req, res) => {
     }
 });
 
-app.get("/api/settings/update/:id/worksapcename",async (req, res) => {
+app.get('/:id/settings/worksapcename/update',async (req, res) => {
     const workspaceId = req.params.id;
     let ws;
     try {
@@ -1576,7 +1576,7 @@ app.get("/api/settings/update/:id/worksapcename",async (req, res) => {
             .single();
 
        if (error || !data) {
-           console.error('❌ Worksapce not found ofr ID:', workspaceId, 'Error:', error);
+           console.error('❌ Worksapce not found for ID:', workspaceId, 'Error:', error);
            return res.status(404).send('Workspace not found');
        }
         ws = data;
@@ -1586,6 +1586,52 @@ app.get("/api/settings/update/:id/worksapcename",async (req, res) => {
     }
 
     // Make it find the ID of worksapce and update the worksapce name value
+});
+
+app.get('/:id/settings/features/update', async (req, res) => {
+    const worksapceId = req.params.id;
+    let ws;
+    try {
+        const { data, error } = await supabaseWorkspaces
+            .from('exsisting workspaces')
+            .select('*')
+            .eq('id', worksapceId)
+            .signle();
+
+        if (error || !data) {
+            console.error('❌ Workspace not found for ID:' worksapceId, 'Error:', error)
+            return res.tatus(404).send('Workspace not found');
+        }
+          ws = data;
+    } catch (err) {
+        console.error('❌ Error etchng workspace from Supabase:', err);
+        return res.status(500).send('Database error');
+    }
+
+    // Make it find the ID of workspace for ws_settings_{worskpaceid} and update the features in json
+});
+
+app.get('/:id/settings/visability/update', async (req, res) => {
+    const worksapceId = req.params.id;
+    let ws;
+    try {
+        const { data, error } = await supabaseWorkspaces
+            .from('exsisting workspaces')
+            .select('*')
+            .eq('id', worksapceId)
+            .signle();
+
+        if (error || !data) {
+            console.error('❌ Workspace not found for ID:' worksapceId, 'Error:', error)
+            return res.tatus(404).send('Workspace not found');
+        }
+          ws = data;
+    } catch (err) {
+        console.error('❌ Error etchng workspace from Supabase:', err);
+        return res.status(500).send('Database error');
+    }
+
+    // Make it find the ID of workspace for ws_settings_{worskpaceid} and update the DO TO FINISH HERE IDK DB RN
 });
 
 /* -------------------- START SERVER -------------------- */
