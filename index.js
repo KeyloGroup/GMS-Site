@@ -1634,7 +1634,7 @@ app.get('/:id/settings/visability/update', async (req, res) => {
     // Make it find the ID of workspace for ws_settings_{worskpaceid} and update the DO TO FINISH HERE IDK DB RN
 });
 
-app.get('/announcements', async (req, res) => {
+app.get('/workspace/:id/announcements', async (req, res) => {
   try {
     // Ensure user is logged in
     if (!req.cookies.user_id) {
