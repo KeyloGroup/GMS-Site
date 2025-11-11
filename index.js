@@ -1593,7 +1593,7 @@ app.get('/:id/settings/features/update', async (req, res) => {
     let ws;
     try {
         const { data, error } = await supabaseWorkspaces
-            .from('exsisting workspaces')
+            .from(`ws_settings_${worksapceId}`)
             .select('*')
             .eq('id', worksapceId)
             .signle();
@@ -1608,7 +1608,7 @@ app.get('/:id/settings/features/update', async (req, res) => {
         return res.status(500).send('Database error');
     }
 
-    // Make it find the ID of workspace for ws_settings_{worskpaceid} and update the features in json
+    // Make it find the ID of workspace for ws_settings_{worskpaceid} and update the features in json i n table each feature has its own boolean row. features_sessions features_logbook features_auditlogs features_activity features_documents
 });
 
 app.get('/:id/settings/visability/update', async (req, res) => {
@@ -1616,7 +1616,7 @@ app.get('/:id/settings/visability/update', async (req, res) => {
     let ws;
     try {
         const { data, error } = await supabaseWorkspaces
-            .from('exsisting workspaces')
+            .from(`ws_settings_${workspaceId}`)
             .select('*')
             .eq('id', worksapceId)
             .signle();
