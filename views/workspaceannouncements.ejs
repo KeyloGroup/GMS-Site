@@ -16,18 +16,83 @@
       font-family: 'Inter', sans-serif;
       overflow-x: hidden;
     }
-    .card-bg { background-color: #111; border: 1px solid #1a1a1a; border-radius: 12px; transition: all 0.2s ease; }
-    .card-bg:hover { border-color: #333; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); }
-    .sidebar-link { display: flex; align-items: center; gap: .75rem; padding: .75rem .9rem; border-radius: .75rem; color: #9ca3af; font-weight: 500; transition: all 0.2s ease; }
-    .sidebar-link:hover { background-color: rgba(255,255,255,0.08); color: #fff; transform: translateX(4px); }
-    .sidebar-active { background-color: rgba(255,255,255,0.15); color: #fff; font-weight: 600; }
+
+    .dotted-bg {
+      background-image: radial-gradient(#222 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .dotted-bg::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(#1a1a1a 1px, transparent 1px);
+      background-size: 24px 24px;
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .btn-primary {
+      background-color: #fff;
+      color: #000;
+      font-weight: 600;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+    .btn-primary:hover { background-color: #eaeaea; }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: #fff;
+      border: 1px solid #333;
+      font-weight: 600;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+    .btn-secondary:hover {
+      border-color: #555;
+      background-color: #111;
+    }
+
+    .card-bg {
+      background-color: #111;
+      border: 1px solid #1a1a1a;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+    }
+    .card-bg:hover {
+      border-color: #333;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: .75rem .9rem;
+      border-radius: .75rem;
+      color: #9ca3af;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    .sidebar-link:hover {
+      background-color: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      transform: translateX(4px);
+    }
+    .sidebar-active {
+      background-color: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-weight: 600;
+    }
     .sidebar-active:hover { transform: translateX(0); }
+
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 
-<body class="flex min-h-screen">
+<body class="flex min-h-screen text-white">
 
   <!-- Sidebar -->
   <aside class="w-20 md:w-64 p-4 glass flex flex-col shadow-xl sticky top-0 h-screen overflow-y-auto scrollbar-hide">
@@ -61,28 +126,33 @@
   </aside>
 
   <!-- Main Content -->
-  <main class="flex-1 p-8 overflow-y-auto relative">
-    <header class="flex justify-between items-center mb-10">
-      <div>
-        <h1 class="text-3xl font-extrabold">Announcements</h1>
-        <p class="text-gray-400 text-sm">Stay up to date with the latest workspace updates.</p>
+  <main class="flex-1 p-8 overflow-y-auto relative dotted-bg">
+    <header class="flex justify-between items-center mb-12 relative z-10">
+      <div class="flex items-center gap-4">
+        <div class="w-10 h-10 rounded-full border border-[#333] bg-[#0d0d0d] flex items-center justify-center">
+          <i class="fas fa-bullhorn text-gray-400"></i>
+        </div>
+        <div>
+          <h1 class="text-3xl font-extrabold tracking-tight">Announcements</h1>
+          <p class="text-gray-400 text-sm">Stay up to date with the latest workspace updates.</p>
+        </div>
       </div>
 
-      <div class="flex gap-3">
+      <div class="flex items-center gap-3">
         <input class="card-bg px-4 py-2 rounded-full placeholder-gray-400 text-white w-64 focus:outline-none focus:ring-2 focus:ring-gray-600 border border-[#333]" placeholder="Search announcements..." />
-        <button class="card-bg p-2 rounded-lg border border-[#333] hover:bg-white/10">
+        <button class="card-bg p-3 rounded-full border border-[#333] hover:bg-white/10 transition">
           <i class="fas fa-filter text-gray-400"></i>
         </button>
         <% if (isAdmin) { %>
-          <button class="bg-white text-black font-semibold px-4 py-2 rounded-lg hover:bg-gray-200">
-            <i class="fas fa-plus mr-2"></i> New Announcement
+          <button class="btn-primary px-4 py-2 flex items-center gap-2">
+            <i class="fas fa-plus"></i> New Post
           </button>
         <% } %>
       </div>
     </header>
 
     <!-- Announcements Section -->
-    <section class="space-y-6">
+    <section class="space-y-6 relative z-10">
       <% announcements.forEach(a => { %>
         <div class="card-bg p-6 hover:bg-[#151515] cursor-pointer transition">
           <div class="flex items-start justify-between">
@@ -110,7 +180,9 @@
               <% } %>
             </div>
 
-            <span class="text-xs bg-yellow-700/30 text-yellow-400 px-3 py-1 rounded-full font-semibold">Pinned</span>
+            <% if (a.pinned) { %>
+              <span class="text-xs bg-yellow-700/30 text-yellow-400 px-3 py-1 rounded-full font-semibold">Pinned</span>
+            <% } %>
           </div>
 
           <div class="mt-4 flex items-center gap-4 text-gray-500 text-sm">
