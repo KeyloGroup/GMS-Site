@@ -1636,16 +1636,57 @@ app.get('/:id/settings/visability/update', async (req, res) => {
 
 app.get('/workspace/:id/announcements', async (req, res) => {
   try {
-    // Ensure user is logged in
+    // --- Step 1: CSRF safety check ---
+    req.csrfToken();
+
+    // --- Step 2: Check login cookies ---
     if (!req.cookies.user_id) {
+      console.warn('⚠️ No user ID cookie found. Redirecting to login.');
       return res.redirect('/login');
     }
 
-    const robloxId = req.cookies.user_id;
-    const username = req.cookies.username || (await fetchRobloxUsernameById(robloxId));
-    const avatarUrl = req.cookies.profile_pic || (await getAvatarUrl(robloxId));
+    const workspaceId = req.params.id;
 
-    // 🔹 Fake announcement data (static for now)
+    // --- Step 3: Fetch workspace details from Supabase ---
+    let ws;
+    try {
+      const { data, error } = await supabaseWorkspaces
+        .from('existing workspaces')
+        .select('*')
+        .eq('id', workspaceId)
+        .single();
+
+      if (error || !data) {
+        console.error('❌ Supabase error: Workspace not found for ID:', workspaceId, 'Error:', error);
+        return res.status(404).send('Workspace not found');
+      }
+
+      ws = data;
+    } catch (err) {
+      console.error('❌ Error fetching workspace from Supabase:', err);
+      return res.status(500).send('Database error');
+    }
+
+    const robloxId = req.cookies.user_id;
+
+    // --- Step 4: Fetch Roblox user details ---
+    let username = req.cookies.username;
+    let avatarUrl = req.cookies.profile_pic;
+
+    try {
+      if (!username) {
+        username = await fetchRobloxUsernameById(robloxId);
+      }
+      if (!avatarUrl) {
+        avatarUrl = await getAvatarUrl(robloxId);
+      }
+    } catch (err) {
+      console.error('❌ Error fetching Roblox user details:', err);
+      username = username || 'Unknown User';
+      avatarUrl = avatarUrl || 'https://placehold.co/150x150';
+    }
+
+    // --- Step 5: Fake announcements (temporary static data) ---
     const announcements = [
       {
         id: 1,
@@ -1670,18 +1711,26 @@ app.get('/workspace/:id/announcements', async (req, res) => {
       },
     ];
 
+    // --- Step 6: Render the announcements page ---
     res.render('announcements', {
-      title: "Keylo - Announcements",
+      title: `${ws.workspace_name} - Announcements`,
       user: username,
       userProfileURL: avatarUrl,
+      workspace: { id: ws.id, name: ws.workspace_name, image: ws.workspace_img_url },
       announcements,
       csrfToken: req.csrfToken(),
     });
   } catch (err) {
-    console.error("❌ Error rendering announcements:", err);
-    res.status(500).send("Server error loading announcements");
+    if (err.code === 'EBADCSRFTOKEN') {
+      console.error('❌ Invalid CSRF token detected — redirecting to login.');
+      return res.redirect('/login');
+    }
+
+    console.error('❌ Unhandled error loading announcements:', err);
+    res.status(500).send('Server error');
   }
 });
+
 
 /* -------------------- START SERVER -------------------- */
 app.listen(PORT, () => {
