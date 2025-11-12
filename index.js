@@ -927,6 +927,7 @@ app.post('/workspace/create', async (req, res) => {
         const tasksTableName = `ws_tasks_${newWorkspaceId}`;
         const logbookTableName = `ws_logbook_${newWorkspaceId}`;
         const settingsTableName = `ws_settings_${newWorkspaceId}`;
+        const announcementsTableName = `ws_settings_${newWorkspaceId}`;
 
         try {
             // NOTE: SQL CREATE statements are unchanged as they define schema, not data values.
@@ -994,12 +995,27 @@ app.post('/workspace/create', async (req, res) => {
                     created_at TIMESTAMPTZ DEFAULT now()
                 );
             `;
+            const createAnnouncementsTableQuery = `
+                CREATE TABLE IF NOT EXSISTS ${announcementsTableName} (
+                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    announcmentId INTEGER NOT NULL,
+                    title TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    author TEXT NOT NULL,
+                    date TIMESTAMPTZ NOT NULL,
+                    tags JSONB,
+                    attachments JSONB,
+                    pinned BOOLEAN FEFAULT FALSE,
+                    likes INTEGER NOT NULL
+                    dislikes INTEGER NOT NULL
+                )`;
 
             await pgClient.query(createSessionsTableQuery);
             await pgClient.query(createActivityTableQuery);
             await pgClient.query(createTasksTableQuery);
             await pgClient.query(createLogbookTableQuery);
             await pgClient.query(createSettingsTableQuery);
+            await pgClient.query(createAnnouncementsTableQuery);
 
             console.log(`✅ All tables for new workspace '${newWorkspaceId}' created successfully.`);
         } catch (dbErr) {
@@ -1710,6 +1726,16 @@ app.get('/workspace/:id/announcements', async (req, res) => {
         date: "10-11-2025",
       },
     ];
+
+      // -- New step 5 soon (load actual data)
+      const tableName = `ws_announcements_${worksapceId}`
+      let announcementRows = [];
+      try {
+          const { rows } = await pg.Client.query(
+              `SELECT`,
+                  
+          );
+      }
 
     // --- Step 6: Render the announcements page ---
     res.render('workspaceannouncements', {
