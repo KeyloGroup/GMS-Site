@@ -460,39 +460,6 @@ aside {
           </div>
         </div>
       </section>
-      <section id="sessionsbot" class="tab-content glass p-6">
-        <h3 class="text-2xl font-semibold mb-6 text-blue-400">Sessions Bot</h3>
-        <form id="sessionsBotForm" method="POST" action="/workspace/<%= workspace?.id %>/settings/sessions-bot" class="space-y-6">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <div>
-                <label class="block mb-2 font-medium text-gray-300">Discord Server ID</label>
-                <input type="text" name="server_id" placeholder="123456789012345678" class="glass px-4 py-2 rounded-xl text-white w-full border-none focus:ring-2 focus:ring-blue-400" required>
-            </div>
-            
-            <div>
-                <label class="block mb-2 font-medium text-gray-300">Channel ID</label>
-                <input type="text" name="channel_id" placeholder="123456789012345678" class="glass px-4 py-2 rounded-xl text-white w-full border-none focus:ring-2 focus:ring-blue-400" required>
-            </div>
-            
-            <div>
-                <label class="block mb-2 font-medium text-gray-300">Ping Role ID (optional)</label>
-                <input type="text" name="ping_role" placeholder="Role ID (no <@ > needed)" class="glass px-4 py-2 rounded-xl text-white w-full border-none focus:ring-2 focus:ring-blue-400">
-                <p class="text-sm text-gray-500 mt-1">If provided, the bot will ping <code>&lt;@roleID&gt;</code></p>
-            </div>
-            
-            <div>
-                <label class="block mb-2 font-medium text-gray-300">Announcement Title</label>
-                <input type="text" name="title" placeholder="Session Starting Soon" class="glass px-4 py-2 rounded-xl text-white w-full border-none focus:ring-2 focus:ring-blue-400" required>
-            </div>
-            
-            <div>
-                <label class="block mb-2 font-medium text-gray-300">Message (Embed Body)</label>
-                <textarea name="message" rows="6" placeholder="Supports Discord markdown (**, __, etc)" class="glass px-4 py-2 rounded-xl text-white w-full border-none focus:ring-2 focus:ring-blue-400" required></textarea>
-            </div>
-            <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition">Send Test Announcement</button>
-            <button type="button" id="saveSessionsBot" class="bg-green-600 text-white px-5 py-2 rounded-xl hover:bg-green-700 transition">Save Settings</button>
-        </form>
-    </section>
     </main>
   </div>
   <script>
