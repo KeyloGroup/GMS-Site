@@ -189,7 +189,7 @@ aside {
         <a href="#" class="sidebar-link"><img src="/icons/icons8-checked-box-50.png" class="w-5 h-5"> <span>Tasks</span></a>
         <a href="#" class="sidebar-link"><img src="/icons/icons8-open-book-50.png" class="w-5 h-5"> <span>Logbook</span></a>
         <a href="/workspace/<%= workspace?.id %>/sessions" class="sidebar-link"><img src="/icons/icons8-calendar-50.png" class="w-5 h-5"> <span>Sessions</span></a>
-        <a href="#" class="sidebar-link"><img src="/icons/icons8-avatar-24.png" class="w-5 h-5"> <span>Staff</span></a>
+        <a href="/workspace/<%= workspace?.id %>/staff" class="sidebar-link"><img src="/icons/icons8-avatar-24.png" class="w-5 h-5"> <span>Staff</span></a>
         <a href="/workspace/<%= workspace?.id %>/activity" class="sidebar-link"><img src="/icons/icons8-clock-24.png" class="w-5 h-5"> <span>Activity</span></a>
         <a href="#" class="sidebar-link"><img src="/icons/icons8-airplane-take-off-50.png" class="w-5 h-5"> <span>Leave</span></a>
         <a href="#" class="sidebar-link"><img src="/icons/icons8-folder-50.png" class="w-5 h-5"> <span>Documents</span></a>
@@ -217,6 +217,7 @@ aside {
         <li><button data-tab="features" class="mini-link"><i class="fa-solid fa-toggle-on"></i> Features</button></li>
         <li><button data-tab="api" class="mini-link"><i class="fa-solid fa-key"></i> API</button></li>
         <li><button data-tab="permissions" class="mini-link"><i class="fa-solid fa-users-gear"></i> Permissions</button></li>
+        <li><button data-tab="permissions" class="mini-link"><i class="fa-solid fa-users-gear"></i> Sessions Bot</button></li>
       </ul>
     </aside>
 
@@ -647,8 +648,6 @@ aside {
 
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <script>
-  document.querySelector("aside.settings-sidebar-glass ul").insertAdjacentHTML("beforeend",`<li><button data-tab="sessionsbot" class="mini-link"><i class=\"fa-solid fa-robot\"></i> Sessions Bot</button></li>`);
-
   const saveBtn = document.getElementById("saveSessionsBot");
   if (saveBtn) {
     saveBtn.addEventListener("click", async () => {
@@ -671,7 +670,6 @@ if (sessionsBotForm) {
     sessionsBotForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-
 const data = Object.fromEntries(new FormData(sessionsBotForm).entries());
 const payload = {
     serverId: data.server_id,
@@ -680,7 +678,6 @@ const payload = {
     title: data.title,
     message: data.message
 };
-
 
 try {
     const res = await fetch("https://api.keyloroblox.xyz/sessions/bot/announce", {
@@ -695,15 +692,6 @@ try {
 }
 });
 }
-const miniSidebar = document.querySelector("aside.settings-sidebar-mini ul");
-if (miniSidebar) {
-miniSidebar.insertAdjacentHTML(
-"beforeend",
-`<li><button data-tab="sessionsbot" class="mini-link"><i class=\"fa-solid fa-robot\"></i></button></li>`
-);
-}
-
-
 </script>
 </body>
 </html>
