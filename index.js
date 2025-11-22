@@ -1702,7 +1702,7 @@ app.get('/workspace/:id/announcements', async (req, res) => {
       avatarUrl = avatarUrl || 'https://placehold.co/150x150';
     }
 
-    // --- Step 5: Fake announcements (temporary static data) ---
+    // --- Step 5: Static announcements ---
     const announcements = [
       {
         id: 1,
@@ -1720,22 +1720,12 @@ app.get('/workspace/:id/announcements', async (req, res) => {
       },
       {
         id: 2,
-        title: "🧩 Chirstmas Break",
-        content: "Please note our christmas and new year holidays start at 19th Dec - 2nd Jan.",
+        title: "🧩 Christmas Break",
+        content: "Please note our Christmas and New Year holidays start at 19th Dec - 2nd Jan.",
         author: "System",
         date: "10-11-2025",
       },
     ];
-
-      // -- New step 5 soon (load actual data)
-      const tableName = `ws_announcements_${worksapceId}`
-      let announcementRows = [];
-      try {
-          const { rows } = await pg.Client.query(
-              `SELECT`,
-                  
-          );
-      }
 
     // --- Step 6: Render the announcements page ---
     res.render('workspaceannouncements', {
@@ -1747,6 +1737,7 @@ app.get('/workspace/:id/announcements', async (req, res) => {
       csrfToken: req.csrfToken(),
       isAdmin: ws.min_rank_id
     });
+
   } catch (err) {
     if (err.code === 'EBADCSRFTOKEN') {
       console.error('❌ Invalid CSRF token detected — redirecting to login.');
