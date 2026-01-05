@@ -89,20 +89,6 @@ app.use(
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-function requireAdmin(role = null) {
-  return (req, res, next) => {
-    const admin = req.session.admin;
-    if (!admin) return res.redirect('/admin/login');
-    if (role && admin.role !== role) return res.status(403).send('Forbidden');
-    next();
-  };
-}
-
-async function ownerExists() {
-  const [rows] = await pool.query('SELECT COUNT(*) as cnt FROM admins WHERE role="owner"');
-  return rows[0].cnt > 0;
-}
-
 // Step 1: Redirect user to Roblox OAuth
 app.get("/auth/roblox", (req, res) => {
   const clientId = process.env.ROBLOX_OAUTH_CLIENT_ID;
@@ -330,37 +316,6 @@ function decryptApiKey(combinedKey, encoding = "base64") {
         return null;
     }
 }
-
-/* -------------------- APPLY ROUTE -------------------- */
-app.post('/apply', async (req, res) => {
-    try {
-        const { role, roblox, discord, email, age, why, experience } = req.body;
-        if (!role || !roblox || !discord || !email || !age || !why) {
-            return res.status(400).json({ error: 'Missing required fields' });
-        }
-
-        const mailOptions = {
-            from: '"Keylo Recruitment" <recruitment@keyloroblox.xyz>',
-            to: 'recruitment@keyloroblox.xyz',
-            subject: `Application for ${role}`,
-            html: `
-                <h2>New Application for ${role}</h2>
-                <p><strong>Roblox Username:</strong> ${roblox}</p>
-                <p><strong>Discord Username:</strong> ${discord}</p>
-                <p><strong>Email:</strong> ${email}</p>
-                <p><strong>Age:</strong> ${age}</p>
-                <p><strong>Why they want to work here:</strong> ${why}</p>
-                <p><strong>Previous experience / portfolio:</strong> ${experience || 'N/A'}</p>
-            `,
-        };
-
-        await recruitmentTransporter.sendMail(mailOptions);
-        res.json({ success: true });
-    } catch (err) {
-        console.error('❌ Error sending recruitment email:', err);
-        res.status(500).json({ error: 'Failed to send application' });
-    }
-});
 
 /* -------------------- BASIC ROUTES -------------------- */
 app.get('/', (req, res) => {
