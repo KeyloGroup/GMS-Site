@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Keylo — The Next Chapter</title>
+  <title>Keylo â€” The Next Chapter</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="icon" href="/assets/keylo-logo.png" />
@@ -119,23 +119,23 @@
   <section class="py-24 animate-fadeUp delay-1">
     <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8 relative z-10">
       <div class="bg-[#111] p-10 rounded-2xl text-center border border-[#1c1c1c]">
-        <h3 class="text-2xl font-semibold mb-3">🚀 Beta Access</h3>
+        <h3 class="text-2xl font-semibold mb-3">ðŸš€ Beta Access</h3>
         <p class="text-gray-400 mb-6">
-          Be among the first to explore Keylo’s newest features. Join the beta and help shape the future.
+          Be among the first to explore Keyloâ€™s newest features. Join the beta and help shape the future.
         </p>
         <a href="#" class="btn-secondary px-6 py-3 inline-block">Closed</a>
       </div>
 
       <div class="bg-[#111] p-10 rounded-2xl text-center border border-[#1c1c1c]">
-        <h3 class="text-2xl font-semibold mb-3">💼 Careers</h3>
+        <h3 class="text-2xl font-semibold mb-3">ðŸ’¼ Careers</h3>
         <p class="text-gray-400 mb-6">
-          We’re building the future of Roblox community tools. Explore roles and grow with us.
+          Weâ€™re building the future of Roblox community tools. Explore roles and grow with us.
         </p>
         <button onclick="openRolesModal()" class="btn-primary px-6 py-3">See Roles</button>
       </div>
 
       <div class="bg-[#111] p-10 rounded-2xl text-center border border-[#1c1c1c]">
-        <h3 class="text-2xl font-semibold mb-3">💬 Support</h3>
+        <h3 class="text-2xl font-semibold mb-3">ðŸ’¬ Support</h3>
         <p class="text-gray-400 mb-6">
           Have questions or need help? Our support team is always here for you.
         </p>
@@ -149,13 +149,13 @@
   <!-- Roles Modal -->
   <div id="rolesModal" class="fixed inset-0 bg-black/80 hidden items-start justify-center overflow-y-auto pt-24 sm:pt-32 z-50">
     <div class="bg-[#111] p-8 w-full max-w-2xl relative rounded-2xl border border-[#1c1c1c]">
-      <button class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl" onclick="closeRolesModal()">✕</button>
+      <button class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl" onclick="closeRolesModal()">âœ•</button>
       <h2 class="text-2xl font-bold mb-6 text-center">Open Roles</h2>
 
       <div class="grid gap-6">
         <div class="bg-[#0d0d0d] p-6 rounded-xl border border-[#1c1c1c]">
           <h3 class="text-xl font-semibold mb-2">Developer</h3>
-          <p class="text-gray-400 mb-3">Work on Keylo’s systems, APIs, and interfaces. Portfolio links encouraged.</p>
+          <p class="text-gray-400 mb-3">Work on Keyloâ€™s systems, APIs, and interfaces. Portfolio links encouraged.</p>
           <button class="btn-primary px-4 py-2 rounded-lg" onclick="openApplyForm('Developer')">Apply</button>
         </div>
 
@@ -171,7 +171,7 @@
   <!-- Apply Modal -->
   <div id="applyModal" class="fixed inset-0 bg-black/80 hidden items-start justify-center overflow-y-auto pt-24 sm:pt-32 z-50">
     <div class="bg-[#111] p-8 w-full max-w-lg relative rounded-2xl border border-[#1c1c1c]">
-      <button class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl" onclick="closeApplyForm()">✕</button>
+      <button class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl" onclick="closeApplyForm()">âœ•</button>
       <h2 class="text-2xl font-bold mb-4 text-center" id="applyRoleTitle">Apply</h2>
 
       <form id="applyForm" class="space-y-4">
@@ -189,7 +189,7 @@
   <!-- Footer -->
   <footer class="relative bg-[#0d0d0d] py-12 text-gray-500 text-sm animate-fadeUp delay-3 dotted-bg">
     <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-      <p>© <%= new Date().getFullYear() %> Keylo. All rights reserved.</p>
+      <p>Â© <%= new Date().getFullYear() %> Keylo. All rights reserved.</p>
       <nav class="flex gap-6 text-sm">
         <a href="#" class="hover:text-white">Privacy</a>
         <a href="#" class="hover:text-white">Terms</a>
@@ -234,14 +234,14 @@
         });
         const data = await res.json();
         if (data.success) {
-          alert('✅ Application submitted successfully!');
+          alert('âœ… Application submitted successfully!');
           closeApplyForm();
         } else {
-          alert('❌ Failed to submit application: ' + (data.error || 'Unknown error'));
+          alert('âŒ Failed to submit application: ' + (data.error || 'Unknown error'));
         }
       } catch (err) {
         console.error(err);
-        alert('❌ Error submitting application.');
+        alert('âŒ Error submitting application.');
       }
     });
   </script>
