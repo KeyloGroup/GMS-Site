@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Keylo — Workspaces</title>
+  <title>Keylo â€” Workspaces</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
 
@@ -164,7 +164,7 @@
 <!-- New Workspace Modal -->
 <div id="workspaceModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-start justify-center overflow-y-auto pt-24 hidden z-50">
   <div class="glass p-8 w-full max-w-lg relative">
-    <button class="absolute top-4 right-4 text-gray-400 hover:text-white" onclick="closeNewWorkspaceModal()">✕</button>
+    <button class="absolute top-4 right-4 text-gray-400 hover:text-white" onclick="closeNewWorkspaceModal()">âœ•</button>
     <h2 class="text-3xl font-bold text-blue-400 mb-6 text-center">Create New Workspace</h2>
 
     <form id="workspaceForm" class="space-y-4">
@@ -202,14 +202,14 @@
       });
       const data = await res.json();
       if (data.success) {
-        alert('✅ Workspace created!');
+        alert('âœ… Workspace created!');
         location.reload();
       } else {
-        alert('❌ Failed: ' + (data.error || 'Unknown error'));
+        alert('âŒ Failed: ' + (data.error || 'Unknown error'));
       }
     } catch (err) {
       console.error(err);
-      alert('❌ Error creating workspace');
+      alert('âŒ Error creating workspace');
     }
   });
 </script>
