@@ -22,7 +22,7 @@ console.log("ðŸ” ROBLOX_OAUTH_CLIENT_SECRET:", process.env.ROBLOX_OAUTH_CL
 
 dotenv.config();
 const app = express();
-const PORT = 3050;
+const PORT = 3000;
 
 
 const AccountsPool = new Pool({
