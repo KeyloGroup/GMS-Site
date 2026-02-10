@@ -24,7 +24,6 @@ dotenv.config();
 const app = express();
 const PORT = 3000;
 
-
 const AccountsPool = new Pool({
   connectionString: process.env.PG_URL
 });
