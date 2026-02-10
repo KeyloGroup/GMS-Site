@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Keylo â€” Smarter Community Management, Simplified</title>
+  <title>Keylo - Smarter Community Management, Simplified</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="icon" href="/assets/keylo-logo.png">
@@ -64,6 +65,7 @@
     .dotted-bg {
       background-image: radial-gradient(#222 1px, transparent 1px);
       background-size: 24px 24px;
+      position: relative;
     }
     .dotted-bg::before {
       content: "";
@@ -82,12 +84,14 @@
   <header class="fixed top-0 w-full z-50">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
       <a href="/" class="text-lg font-bold tracking-tight">Keylo</a>
+
       <nav class="hidden md:flex gap-6 text-sm text-gray-400">
         <a href="#features" class="hover:text-white transition">Features</a>
         <a href="#services" class="hover:text-white transition">Services</a>
         <a href="#pricing" class="hover:text-white transition">Pricing</a>
         <a href="#contact" class="hover:text-white transition">Contact</a>
       </nav>
+
       <div class="flex items-center gap-3">
         <a href="/register" class="btn-primary px-4 py-2 text-sm">Get Started</a>
         <a href="/login" class="btn-secondary px-4 py-2 text-sm">Login</a>
@@ -100,16 +104,20 @@
       <h1 class="text-5xl sm:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
         Keylo is a purpose-built tool<br class="hidden md:block">for managing Roblox communities
       </h1>
+
       <p class="text-gray-400 text-lg max-w-xl mx-auto mb-8">
         Smarter Community Management, Simplified. Empower Roblox leaders with automation, analytics, and effortless control.
       </p>
+
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <a href="#pricing" class="btn-primary px-8 py-4">View Plans</a>
         <button onclick="openModal('videoModal')" class="btn-secondary px-8 py-4">Watch Demo</button>
       </div>
+
       <div class="mt-16 rounded-xl overflow-hidden shadow-2xl border border-[#1c1c1c] bg-[#111]">
         <img src="/icons/dashprev.png" alt="Dashboard Preview" class="w-full opacity-90 hover:opacity-100 transition">
       </div>
+
       <br><br>
     </div>
   </section>
@@ -119,23 +127,28 @@
   <section id="services" class="py-24 animate-fadeUp delay-1">
     <div class="max-w-6xl mx-auto px-6 text-center">
       <h2 class="text-3xl font-bold mb-12">What Keylo Does Best</h2>
+
       <div class="grid grid-cols-1 md:grid-cols-5 gap-10 text-gray-400 text-sm">
         <div>
           <h3 class="text-white font-semibold mb-2">Built for group leaders</h3>
           <p>Tools designed to make Roblox management effortless.</p>
         </div>
+
         <div>
           <h3 class="text-white font-semibold mb-2">Step-by-step setup</h3>
           <p>Simple onboarding with visual automation flow.</p>
         </div>
+
         <div>
           <h3 class="text-white font-semibold mb-2">Real-time analytics</h3>
           <p>Insights that actually help your community grow.</p>
         </div>
+
         <div>
           <h3 class="text-white font-semibold mb-2">Multi-device access</h3>
           <p>Manage your group anywhere, anytime.</p>
         </div>
+
         <div>
           <h3 class="text-white font-semibold mb-2">Confidence-driven tools</h3>
           <p>Control roles, ranks, and permissions with ease.</p>
@@ -149,21 +162,25 @@
   <section id="features" class="relative py-24 animate-fadeUp delay-2 overflow-hidden dotted-bg">
     <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
       <h2 class="text-4xl font-bold mb-16">Everything You Need</h2>
+
       <div class="grid md:grid-cols-2 gap-8">
         <div class="bg-[#111] p-10 rounded-2xl text-left">
-          <h3 class="text-xl font-semibold mb-3">âš¡ Instant Setup</h3>
+          <h3 class="text-xl font-semibold mb-3">Instant Setup</h3>
           <p class="text-gray-400">Connect your group in seconds and get started with zero hassle.</p>
         </div>
+
         <div class="bg-[#111] p-10 rounded-2xl text-left">
-          <h3 class="text-xl font-semibold mb-3">ðŸ”’ Secure & Reliable</h3>
+          <h3 class="text-xl font-semibold mb-3">Secure and Reliable</h3>
           <p class="text-gray-400">Enterprise-grade integrations ensure your data and actions are safe.</p>
         </div>
+
         <div class="bg-[#111] p-10 rounded-2xl text-left">
-          <h3 class="text-xl font-semibold mb-3">ðŸ“Š Analytics That Matter</h3>
+          <h3 class="text-xl font-semibold mb-3">Analytics That Matter</h3>
           <p class="text-gray-400">Track growth, activity, and trends with clear, actionable visuals.</p>
         </div>
+
         <div class="bg-[#111] p-10 rounded-2xl text-left">
-          <h3 class="text-xl font-semibold mb-3">ðŸ¤– Automation at Scale</h3>
+          <h3 class="text-xl font-semibold mb-3">Automation at Scale</h3>
           <p class="text-gray-400">Eliminate repetitive work by automating promotions, logs, and more.</p>
         </div>
       </div>
@@ -175,10 +192,12 @@
   <section id="pricing" class="py-24 animate-fadeUp delay-3">
     <div class="max-w-6xl mx-auto px-6 text-center">
       <h2 class="text-4xl font-bold mb-16">Flexible Pricing, Clear Value</h2>
+
       <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
         <div class="bg-[#111] p-10 rounded-2xl text-left">
           <h3 class="text-xl font-semibold mb-4">Starter</h3>
-          <p class="text-4xl font-bold mb-4">Â£0<span class="text-lg font-normal">/mo</span></p>
+          <p class="text-4xl font-bold mb-4">0 GBP<span class="text-lg font-normal">/mo</span></p>
+
           <ul class="text-gray-400 text-sm space-y-2 list-disc list-inside">
             <li>1 Workspace</li>
             <li>1,000 members (extra 100 robux per 1k)</li>
@@ -186,12 +205,14 @@
             <li>1 Application Center</li>
             <li>Optional Auto-Ranking (125 robux fee)</li>
           </ul>
+
           <button class="btn-secondary mt-6 px-6 py-3 w-full">Unavailable</button>
         </div>
 
         <div class="bg-[#111] p-10 rounded-2xl border border-gray-700 hover:border-gray-500 transition text-left">
           <h3 class="text-xl font-semibold mb-4">Pro</h3>
           <p class="text-4xl font-bold mb-4">400 robux<span class="text-lg font-normal"> - 1 time</span></p>
+
           <ul class="text-gray-400 text-sm space-y-2 list-disc list-inside">
             <li>Everything in Starter</li>
             <li>3 Workspaces</li>
@@ -202,6 +223,7 @@
             <li>2 Application Centers</li>
             <li>1 Ranking Center</li>
           </ul>
+
           <button class="btn-primary mt-6 px-6 py-3 w-full">Unavailable</button>
         </div>
       </div>
@@ -220,79 +242,101 @@
 
   <div class="divider"></div>
 
-<footer id="contact" class="relative bg-[#0d0d0d] py-12 text-gray-500 text-sm animate-fadeUp delay-3 dotted-bg">
-  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
-    <div>
-      <h4 class="text-white font-semibold mb-3">Keylo</h4>
-      <p>Streamline your community operations with ease and security.</p>
-    </div>
-    <div>
-      <h4 class="text-white font-semibold mb-3">Product</h4>
-      <ul class="space-y-2">
-        <li><a href="#features" class="hover:text-white">Features</a></li>
-        <li><a href="#services" class="hover:text-white">Services</a></li>
-        <li><a href="#pricing" class="hover:text-white">Pricing</a></li>
-      </ul>
-    </div>
-    <div>
-      <h4 class="text-white font-semibold mb-3">Company</h4>
-      <ul class="space-y-2">
-        <li><a href="#how" class="hover:text-white">How It Works</a></li>
-        <li><a href="#faq" class="hover:text-white">FAQ</a></li>
-      </ul>
-    </div>
-    <div>
-      <h4 class="text-white font-semibold mb-3">Support</h4>
-      <ul class="space-y-2">
-        <li><a href="mailto:support@keyloroblox.xyz" class="hover:text-white">support@keyloroblox.xyz</a></li>
-        <li><a href="#" class="hover:text-white">Discord Tickets</a></li>
-      </ul>
-    </div>
-  </div>
+  <footer id="contact" class="relative bg-[#0d0d0d] py-12 text-gray-500 text-sm animate-fadeUp delay-3 dotted-bg">
+    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10 relative z-10">
+      <div>
+        <h4 class="text-white font-semibold mb-3">Keylo</h4>
+        <p>Streamline your community operations with ease and security.</p>
+      </div>
 
-  <div class="absolute bottom-4 left-6">
-    <iframe
-      src="https://status.keyloroblox.xyz/badge?theme=dark"
-      width="250"
-      height="30"
-      frameborder="0"
-      scrolling="no"
-      style="color-scheme: normal; border: none; overflow: hidden;"
-    ></iframe>
-  </div>
+      <div>
+        <h4 class="text-white font-semibold mb-3">Product</h4>
+        <ul class="space-y-2">
+          <li><a href="#features" class="hover:text-white">Features</a></li>
+          <li><a href="#services" class="hover:text-white">Services</a></li>
+          <li><a href="#pricing" class="hover:text-white">Pricing</a></li>
+        </ul>
+      </div>
 
-  <div class="text-center mt-10 text-gray-600">
-    Â© <%= new Date().getFullYear() %> Keylo. All rights reserved.
-  </div>
-</footer>
+      <div>
+        <h4 class="text-white font-semibold mb-3">Company</h4>
+        <ul class="space-y-2">
+          <li><a href="#how" class="hover:text-white">How It Works</a></li>
+          <li><a href="#faq" class="hover:text-white">FAQ</a></li>
+        </ul>
+      </div>
 
-  
+      <div>
+        <h4 class="text-white font-semibold mb-3">Support</h4>
+        <ul class="space-y-2">
+          <li><a href="mailto:support@keyloroblox.xyz" class="hover:text-white">support@keyloroblox.xyz</a></li>
+          <li><a href="#" class="hover:text-white">Discord Tickets</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="absolute bottom-4 left-6 z-10">
+      <iframe
+        src="https://status.keyloroblox.xyz/badge?theme=dark"
+        width="250"
+        height="30"
+        frameborder="0"
+        scrolling="no"
+        style="color-scheme: normal; border: none; overflow: hidden;"
+      ></iframe>
+    </div>
+
+    <div class="text-center mt-10 text-gray-600 relative z-10">
+      (c) <%= new Date().getFullYear() %> Keylo. All rights reserved.
+    </div>
+  </footer>
+
   <!-- Video Modal -->
   <div id="videoModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center p-4 z-50">
-    <div class="bg-[#111] max-w-3xl w-full relative rounded-xl">
-      <button onclick="closeModal('videoModal')" class="absolute top-3 right-3 text-gray-400 hover:text-white text-2xl leading-none">âœ•</button>
+    <div class="bg-[#111] max-w-3xl w-full relative rounded-xl border border-[#1c1c1c]">
+      <button onclick="closeModal('videoModal')" class="absolute top-3 right-3 text-gray-400 hover:text-white text-2xl leading-none">
+        X
+      </button>
+
       <div class="p-6">
         <h3 class="text-2xl font-bold mb-4 text-center">Watch Our Demo</h3>
+
         <div class="aspect-video">
-          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" class="w-full h-full rounded-xl" frameborder="0" allowfullscreen></iframe>
+          <iframe
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            class="w-full h-full rounded-xl"
+            frameborder="0"
+            allowfullscreen
+          ></iframe>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    function openModal(id) { document.getElementById(id).style.display='flex'; }
-    function closeModal(id) { document.getElementById(id).style.display='none'; }
+    function openModal(id) {
+      const el = document.getElementById(id);
+      el.classList.remove('hidden');
+      el.classList.add('flex');
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      el.classList.add('hidden');
+      el.classList.remove('flex');
+    }
 
     // Reveal sections on scroll
     const sections = document.querySelectorAll('section');
+
     const reveal = () => {
       const trigger = window.innerHeight * 0.9;
       sections.forEach(s => {
         const top = s.getBoundingClientRect().top;
-        if(top < trigger) s.style.opacity = 1;
+        if (top < trigger) s.style.opacity = 1;
       });
     };
+
     window.addEventListener('scroll', reveal);
     reveal();
   </script>
