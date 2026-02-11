@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title> Keylo | Support </title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="/assets/keylo-logo.png" />
+
+<style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+    }
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
+
+    .gradient-bg {
+      background: radial-gradient(circle at 70% 50%, rgba(0, 51, 153, 0.5), rgba(0, 0, 0, 0.9) 70%),
+                  linear-gradient(135deg, rgba(0, 0, 64, 0.8), rgba(0, 0, 0, 0.95));
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 22px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(to right, #2563eb, #1d4ed8);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover { background: linear-gradient(to right, #1e40af, #1d4ed8); }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
+
+    .glow-text {
+      text-shadow: 0 0 6px rgba(60, 100, 255, 0.4);
+    }
+  </style>
+</head>
+
+<body class="gradient-bg min-h-screen flex felx-col">
+
+<header class="fixed w-full glass z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between relative">
+    <a href="/" class="text 2xl font-extrabold glow-text text-white">Keylo</a>
+    <nav class="flex gap-6 text-sm font-medium text-gray-300">
+      <a href="/launch" class="hover:text-blue-400">
