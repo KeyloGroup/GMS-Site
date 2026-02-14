@@ -6,27 +6,41 @@
   <title>404</title>
 
   <style>
-    html, body {
+    * {
       margin: 0;
       padding: 0;
-      width: 100%;
-      height: 100%;
-      background: black;
-      overflow: hidden;
+      box-sizing: border-box;
     }
 
-    video {
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: black;
+    }
+
+    .wrap {
       position: fixed;
       inset: 0;
       width: 100vw;
       height: 100vh;
+      overflow: hidden;
+      background: black;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
+      display: block;
     }
   </style>
 </head>
 <body>
-  <video autoplay muted loop playsinline>
-    <source src="/videos/404-error-404.mp4" type="video/mp4" />
-  </video>
+  <div class="wrap">
+    <video autoplay muted loop playsinline>
+      <source src="/videos/404-error-404.mp4" type="video/mp4" />
+    </video>
+  </div>
 </body>
 </html>
