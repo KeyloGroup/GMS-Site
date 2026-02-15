@@ -118,6 +118,7 @@ app.get("/", (req, res) => {
 app.get("/auth/roblox", (req, res) => {
   const state = crypto.randomBytes(16).toString("hex");
   req.session.oauthState = state;
+  console.log("SETTING STATE:", state);
 
   req.session.save((err) => {
     if (err) {
@@ -149,11 +150,16 @@ app.get("/auth/roblox/callback", async (req, res) => {
 
     if (!req.session.oauthState)
       return res.status(400).send("Session expired");
+    console.log("SESSION STATE:", req.session.oauthState);
 
     if (state !== req.session.oauthState)
       return res.status(400).send("Invalid OAuth state");
+    console.log("SESSION STATE:", req.session.oauthState);
+
 
     req.session.oauthState = null;
+    console.log("SESSION STATE:", req.session.oauthState);
+
 
     const tokenRes = await axios.post(
       "https://apis.roblox.com/oauth/v1/token",
