@@ -55,25 +55,22 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(
-  session({
-    store: new RedisStore({
-      client: redisClient
-    }),
-    name: "keylo.sid",
-    secret: SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    proxy: true,
-    cookie: {
-      secure: true,
-      httpOnly: true,
-      sameSite: "none",
-      domain: ".keyloroblox.xyz",
-      maxAge: 30 * 24 * 60 * 60 * 1000
-    }
-  })
-);
+app.use(session({
+  store: new RedisStore({ client: redisClient }),
+  name: "keylo.sid",
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  proxy: true,
+  cookie: {
+    secure: true,
+    httpOnly: true,
+    sameSite: "lax",
+    domain: ".keyloroblox.xyz",
+    maxAge: 30 * 24 * 60 * 60 * 1000
+  }
+}));
+
 
 const csrfProtection = csurf({
   cookie: {
