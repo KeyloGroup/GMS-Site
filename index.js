@@ -52,10 +52,7 @@ app.use(
   })
 );
 
-
-
-const SESSION_SECRET =
-  process.env.SESSION_SECRET || crypto.randomBytes(64).toString('hex');
+const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(64).toString('hex');
 
 app.use(
   session({
@@ -103,7 +100,9 @@ app.get("/auth/roblox/callback", async (req, res, next) => {
   try {
     const cookieOptions = {
       secure: true,
-      sameSite: "lax"
+      httpOnly: true,
+      sameSite: "none",
+      domain: ".keyloroblox.xyz"
     };
 
     ["id", "username", "avatar"].forEach((c) => {
