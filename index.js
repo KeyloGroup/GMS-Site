@@ -12,7 +12,7 @@ const querystring = require("querystring");
 require("dotenv").config({ path: "/root/KeyloENV/.env" });
 
 const app = express();
-app.set("trust proxy", 1); // required if behind Nginx/Cloudflare
+app.set("trust proxy", 1);
 const PORT = 3000;
 
 if (!process.env.PG_URL_USERDATA) process.exit(1);
@@ -26,7 +26,6 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// --- SESSION ---
 const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(64).toString("hex");
 
 app.use(session({
@@ -36,10 +35,10 @@ app.use(session({
   saveUninitialized: false,
   proxy: true,
   cookie: {
-    secure: true,               // HTTPS only
-    httpOnly: true,             // client cannot access
-    sameSite: "none",           // required for cross-site subdomain
-    domain: ".keyloroblox.xyz", // leading dot allows subdomains
+    secure: true,               
+    httpOnly: true,          
+    sameSite: "none",           
+    domain: ".keyloroblox.xyz",
     maxAge: 1000 * 60 * 60 * 24 * 30,
     path: "/"
   }
@@ -65,7 +64,6 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
-// --- COOKIE HELPERS ---
 function setLoginCookies(res, { id, username, avatar }) {
   const base = {
     secure: true,
@@ -91,14 +89,11 @@ function clearLoginCookies(res) {
   ["id","username","avatar","theme"].forEach(c => res.clearCookie(c, base));
 }
 
-// --- ROUTES ---
 
-// Home
 app.get("/", (req, res) => {
   return res.render("index", { title: "Keylo" });
 });
 
-// OAuth Login
 app.get("/auth/roblox", (req, res) => {
   const state = crypto.randomBytes(16).toString("hex");
   req.session.oauthState = state;
@@ -115,7 +110,6 @@ app.get("/auth/roblox", (req, res) => {
   });
 });
 
-// OAuth Callback
 app.get("/auth/roblox/callback", async (req, res) => {
   try {
     const { code, state, error, error_description } = req.query;
@@ -175,7 +169,6 @@ app.get("/auth/roblox/callback", async (req, res) => {
   }
 });
 
-// Register page
 app.get("/register", (req, res) => {
   const pending = req.session.pendingRoblox;
   if (req.query.oauth === "success" && pending) {
@@ -189,7 +182,6 @@ app.get("/register", (req, res) => {
   return res.render("register", { title: "Keylo - Register", csrfToken: req.csrfToken() });
 });
 
-// Registration API
 app.post("/api/register", async (req, res) => {
   try {
     const pending = req.session.pendingRoblox;
@@ -211,7 +203,6 @@ app.post("/api/register", async (req, res) => {
   }
 });
 
-// Login page
 app.get("/login", (req, res) => {
   res.render("login", {
     csrfToken: req.csrfToken(),
@@ -221,7 +212,6 @@ app.get("/login", (req, res) => {
   });
 });
 
-// Login API
 app.post("/login", async (req, res) => {
   try {
     const { robloxUsername, password } = req.body;
@@ -243,13 +233,11 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// Logout
 app.get("/logout", (req, res) => {
   clearLoginCookies(res);
   req.session.destroy(() => res.redirect("/"));
 });
 
-// 404
 app.use((req, res) => res.status(404).render("404"));
 
 app.listen(PORT, () => console.log(`keyloroblox.xyz running on port ${PORT}`));
