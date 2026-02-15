@@ -1,9 +1,8 @@
-// keyloroblox.xyz
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
-const RedisStore = require("connect-redis").default; // v4+ fix
+const RedisStore = require("connect-redis").default;
 const redis = require("redis");
 const csurf = require("csurf");
 const crypto = require("crypto");
@@ -15,10 +14,9 @@ const { Pool } = require("pg");
 require("dotenv").config({ path: "/root/KeyloENV/.env" });
 
 const app = express();
-app.set("trust proxy", 1); // behind Cloudflare
+app.set("trust proxy", 1);
 const PORT = 3000;
 
-// --- ENV CHECK ---
 [
   "PG_URL_USERDATA",
   "ROBLOX_OAUTH_CLIENT_ID",
@@ -30,14 +28,11 @@ const PORT = 3000;
   if (!process.env[v]) { console.error(`Missing ${v}`); process.exit(1); }
 });
 
-// --- DATABASE ---
 const userdataPool = new Pool({ connectionString: process.env.PG_URL_USERDATA });
 
-// --- REDIS CLIENT ---
 const redisClient = redis.createClient({ url: process.env.REDIS_URL });
 redisClient.connect().catch(console.error);
 
-// --- SESSION ---
 const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(64).toString("hex");
 
 app.use(cookieParser());
@@ -60,7 +55,6 @@ app.use(session({
   }
 }));
 
-// --- CSRF ---
 const csrfProtection = csurf({
   cookie: {
     secure: true,
@@ -71,12 +65,10 @@ const csrfProtection = csurf({
   }
 });
 
-// --- VIEW ENGINE ---
 app.set("views", path.join(__dirname,"views"));
 app.set("view engine","ejs");
 app.use(express.static(path.join(__dirname,"public")));
 
-// --- COOKIE HELPERS ---
 function setLoginCookies(res,{id,username,avatar}){
   const base = { secure:true, sameSite:"none", httpOnly:false, domain:".keyloroblox.xyz", path:"/", maxAge:30*24*60*60*1000 };
   res.cookie("id", String(id), base);
@@ -89,7 +81,6 @@ function clearLoginCookies(res){
   ["id","username","avatar","theme"].forEach(c=>res.clearCookie(c,base));
 }
 
-// --- LOGIN CHECK ---
 function requireLogin(req,res,next){
   const { id, username } = req.cookies;
   if(!id || !username || !req.session || !req.session.loggedIn){
@@ -99,12 +90,9 @@ function requireLogin(req,res,next){
   next();
 }
 
-// --- ROUTES ---
 
-// Home
 app.get("/", (req,res) => res.render("index",{ title:"Keylo" }));
 
-// OAuth Start
 app.get("/auth/roblox", (req,res)=>{
   const state = crypto.randomBytes(16).toString("hex");
   req.session.oauthState = state;
@@ -120,7 +108,6 @@ app.get("/auth/roblox", (req,res)=>{
   });
 });
 
-// OAuth Callback
 app.get("/auth/roblox/callback", async (req,res)=>{
   try{
     const { code, state, error, error_description } = req.query;
@@ -147,7 +134,6 @@ app.get("/auth/roblox/callback", async (req,res)=>{
     const robloxUsername = userRes.data.name;
     const avatarUrl = userRes.data.picture;
 
-    // Check bans
     const banned = await userdataPool.query(
       'SELECT * FROM "AccountsBan" WHERE username=$1 LIMIT 1', [robloxUsername]
     );
@@ -176,7 +162,6 @@ app.get("/auth/roblox/callback", async (req,res)=>{
   }
 });
 
-// Register Page
 app.get("/register", csrfProtection, (req,res)=>{
   const pending = req.session.pendingRoblox;
   if(req.query.oauth==="success" && pending){
@@ -190,7 +175,6 @@ app.get("/register", csrfProtection, (req,res)=>{
   return res.render("register",{ title:"Keylo - Register", csrfToken:req.csrfToken() });
 });
 
-// Registration API
 app.post("/api/register", csrfProtection, async (req,res)=>{
   try{
     const pending = req.session.pendingRoblox;
@@ -213,7 +197,6 @@ app.post("/api/register", csrfProtection, async (req,res)=>{
   }
 });
 
-// Login Page
 app.get("/login", csrfProtection, (req,res)=>{
   res.render("login",{
     csrfToken:req.csrfToken(),
@@ -223,7 +206,6 @@ app.get("/login", csrfProtection, (req,res)=>{
   });
 });
 
-// Login API
 app.post("/login", csrfProtection, async (req,res)=>{
   try{
     const { robloxUsername, password } = req.body;
@@ -244,14 +226,11 @@ app.post("/login", csrfProtection, async (req,res)=>{
   }
 });
 
-// Logout
 app.get("/logout",(req,res)=>{
   clearLoginCookies(res);
   req.session.destroy(()=>res.redirect("/"));
 });
 
-// 404
 app.use((req,res)=>res.status(404).render("404"));
 
-// --- START SERVER ---
 app.listen(PORT,()=>console.log(`keyloroblox.xyz running on port ${PORT}`));
