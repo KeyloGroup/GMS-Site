@@ -22,6 +22,7 @@ console.log("ðŸ” ROBLOX_OAUTH_CLIENT_SECRET:", process.env.ROBLOX_OAUTH_CL
 
 dotenv.config();
 const app = express();
+app.set("trust proxy", 1);
 const PORT = 3000;
 
 const AccountsPool = new Pool({
@@ -40,7 +41,18 @@ AccountsPool.connect()
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(csurf({ cookie: true }));
+app.use(
+  csurf({
+    cookie: {
+      secure: true,
+      httpOnly: true,
+      sameSite: "none",
+      domain: ".keyloroblox.xyz",
+    },
+  })
+);
+
+
 
 const SESSION_SECRET =
   process.env.SESSION_SECRET || crypto.randomBytes(64).toString('hex');
@@ -50,14 +62,17 @@ app.use(
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    proxy: true,
     cookie: {
-      secure: process.env.NODE_ENV === 'production',
+      secure: true,
       httpOnly: true,
-      sameSite: 'lax',
-      maxAge: 100 * 60 * 60 * 24 * 30,
+      sameSite: "none",
+      domain: ".keyloroblox.xyz",
+      maxAge: 1000 * 60 * 60 * 24 * 30,
     },
   })
 );
+
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
