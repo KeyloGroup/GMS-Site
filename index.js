@@ -156,8 +156,6 @@ app.get("/auth/roblox/callback", async (req, res) => {
       return res.status(400).send("Invalid OAuth state");
     console.log("SESSION STATE:", req.session.oauthState);
 
-
-    req.session.oauthState = null;
     console.log("SESSION STATE:", req.session.oauthState);
 
 
