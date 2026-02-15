@@ -3,13 +3,12 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const { createClient } = require("redis");
-const { RedisStore } = require("connect-redis"); // ✅ FIXED (v7+)
-const csurf = require("csurf");
+const { RedisStore } = require("connect-redis");
 const crypto = require("crypto");
 const axios = require("axios");
 const bcrypt = require("bcrypt");
-const { Pool } = require("pg");
 const querystring = require("querystring");
+const { Pool } = require("pg");
 
 require("dotenv").config({ path: "/root/KeyloENV/.env" });
 
@@ -24,54 +23,45 @@ const PORT = 3000;
   "ROBLOX_OAUTH_REDIRECT_URI",
   "SESSION_SECRET",
   "REDIS_URL"
-].forEach(v => {
+].forEach((v) => {
   if (!process.env[v]) {
-    console.error(`Missing ${v}`);
+    console.error(`Missing environment variable: ${v}`);
     process.exit(1);
   }
 });
 
+// Database connection
 const userdataPool = new Pool({
   connectionString: process.env.PG_URL_USERDATA
 });
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL
-});
-
-redisClient.on("error", (err) => {
-  console.error("Redis Client Error:", err);
-});
-
-(async () => {
-  await redisClient.connect();
-})();
-
-const SESSION_SECRET =
-  process.env.SESSION_SECRET ||
-  crypto.randomBytes(64).toString("hex");
+const redisClient = createClient({ url: process.env.REDIS_URL });
+redisClient.on("error", (err) => console.error("Redis error:", err));
+redisClient.connect();
 
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(session({
-  store: new RedisStore({ client: redisClient }),
-  name: "keylo.sid",
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  proxy: true,
-  cookie: {
-    secure: true,
-    httpOnly: true,
-    sameSite: "lax",
-    domain: ".keyloroblox.xyz",
-    maxAge: 30 * 24 * 60 * 60 * 1000
-  }
-}));
+app.use(
+  session({
+    store: new RedisStore({ client: redisClient }),
+    name: "keylo.sid",
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    proxy: true,
+    cookie: {
+      secure: true,
+      httpOnly: true,
+      sameSite: "none",
+      domain: ".keyloroblox.xyz",
+      maxAge: 30 * 24 * 60 * 60 * 1000
+    }
+  })
+);
 
-
+const csurf = require("csurf");
 const csrfProtection = csurf({
   cookie: {
     secure: true,
@@ -87,7 +77,7 @@ app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
 function setLoginCookies(res, { id, username, avatar }) {
-  const base = {
+  const opts = {
     secure: true,
     sameSite: "none",
     httpOnly: false,
@@ -96,13 +86,13 @@ function setLoginCookies(res, { id, username, avatar }) {
     maxAge: 30 * 24 * 60 * 60 * 1000
   };
 
-  res.cookie("id", String(id), base);
-  res.cookie("username", String(username), base);
-  res.cookie("avatar", String(avatar), base);
+  res.cookie("id", String(id), opts);
+  res.cookie("username", String(username), opts);
+  res.cookie("avatar", String(avatar), opts);
 }
 
 function clearLoginCookies(res) {
-  const base = {
+  const opts = {
     secure: true,
     sameSite: "none",
     httpOnly: false,
@@ -110,22 +100,21 @@ function clearLoginCookies(res) {
     path: "/"
   };
 
-  ["id", "username", "avatar", "theme"].forEach(c =>
-    res.clearCookie(c, base)
+  ["id", "username", "avatar", "theme"].forEach((c) =>
+    res.clearCookie(c, opts)
   );
 }
 
 app.get("/", (req, res) => {
-  return res.render("index", { title: "Keylo" });
+  res.render("index", { title: "Keylo" });
 });
 
 app.get("/auth/roblox", (req, res) => {
   const state = crypto.randomBytes(16).toString("hex");
-
   req.session.oauthState = state;
 
   req.session.save(() => {
-    const authUrl =
+    const url =
       "https://apis.roblox.com/oauth/v1/authorize?" +
       querystring.stringify({
         client_id: process.env.ROBLOX_OAUTH_CLIENT_ID,
@@ -135,7 +124,7 @@ app.get("/auth/roblox", (req, res) => {
         state
       });
 
-    return res.redirect(authUrl);
+    res.redirect(url);
   });
 });
 
@@ -145,12 +134,7 @@ app.get("/auth/roblox/callback", async (req, res) => {
 
     if (error) return res.status(400).send(error_description || error);
 
-    if (
-      !code ||
-      !state ||
-      !req.session.oauthState ||
-      state !== req.session.oauthState
-    ) {
+    if (!code || !state || state !== req.session.oauthState) {
       return res.status(400).send("Invalid OAuth session");
     }
 
@@ -168,11 +152,7 @@ app.get("/auth/roblox/callback", async (req, res) => {
 
     const userRes = await axios.get(
       "https://apis.roblox.com/oauth/v1/userinfo",
-      {
-        headers: {
-          Authorization: `Bearer ${tokenRes.data.access_token}`
-        }
-      }
+      { headers: { Authorization: `Bearer ${tokenRes.data.access_token}` } }
     );
 
     const robloxId = userRes.data.sub;
@@ -192,7 +172,7 @@ app.get("/auth/roblox/callback", async (req, res) => {
       );
     }
 
-    const users = await userdataPool.query(
+    const existing = await userdataPool.query(
       'SELECT * FROM "Accounts" WHERE "roblox username"=$1 LIMIT 1',
       [robloxUsername]
     );
@@ -204,8 +184,9 @@ app.get("/auth/roblox/callback", async (req, res) => {
       avatar: avatarUrl
     });
 
-    if (users.rows.length > 0) {
-      req.session.oauthState = null;
+    req.session.oauthState = null;
+
+    if (existing.rows.length > 0) {
       req.session.loggedIn = true;
       return req.session.save(() =>
         res.redirect("https://app.keyloroblox.xyz/")
@@ -222,7 +203,7 @@ app.get("/auth/roblox/callback", async (req, res) => {
   } catch (err) {
     console.error(err);
     clearLoginCookies(res);
-    return res.status(500).send("OAuth failed");
+    res.status(500).send("OAuth failed");
   }
 });
 
@@ -231,15 +212,15 @@ app.get("/register", csrfProtection, (req, res) => {
 
   if (req.query.oauth === "success" && pending) {
     return res.render("passwordregister", {
-      title: "Keylo - Complete Registration",
+      title: "Complete Registration",
       csrfToken: req.csrfToken(),
       robloxUsername: pending.robloxUsername,
       avatarUrl: pending.avatarUrl
     });
   }
 
-  return res.render("register", {
-    title: "Keylo - Register",
+  res.render("register", {
+    title: "Register",
     csrfToken: req.csrfToken()
   });
 });
@@ -253,23 +234,24 @@ app.post("/api/register", csrfProtection, async (req, res) => {
     if (!password || password.length < 6)
       return res.status(400).send("Password too short");
 
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashed = await bcrypt.hash(password, 12);
 
     await userdataPool.query(
       'INSERT INTO "Accounts" ("roblox username","hashed password") VALUES ($1,$2)',
-      [pending.robloxUsername, hashedPassword]
+      [pending.robloxUsername, hashed]
     );
 
     req.session.pendingRoblox = null;
     req.session.loggedIn = true;
 
-    return res.redirect("https://app.keyloroblox.xyz/");
+    res.redirect("https://app.keyloroblox.xyz/");
   } catch (err) {
     console.error(err);
-    return res.status(500).send("Registration failed");
+    res.status(500).send("Registration failed");
   }
 });
 
+// Login page
 app.get("/login", csrfProtection, (req, res) => {
   res.render("login", {
     csrfToken: req.csrfToken(),
@@ -282,6 +264,7 @@ app.get("/login", csrfProtection, (req, res) => {
 app.post("/login", csrfProtection, async (req, res) => {
   try {
     const { robloxUsername, password } = req.body;
+
     if (!robloxUsername || !password)
       return res.status(400).send("Missing credentials");
 
@@ -290,25 +273,23 @@ app.post("/login", csrfProtection, async (req, res) => {
       [robloxUsername]
     );
 
-    if (!users.rows.length)
-      return res.status(401).send("User not found");
+    if (!users.rows.length) return res.status(401).send("User not found");
 
     const match = await bcrypt.compare(
       password,
       users.rows[0]["hashed password"]
     );
 
-    if (!match)
-      return res.status(401).send("Invalid password");
+    if (!match) return res.status(401).send("Invalid password");
 
     req.session.loggedIn = true;
 
-    return req.session.save(() =>
+    req.session.save(() =>
       res.redirect("https://app.keyloroblox.xyz/")
     );
   } catch (err) {
     console.error(err);
-    return res.status(500).send("Login failed");
+    res.status(500).send("Login failed");
   }
 });
 
