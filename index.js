@@ -116,7 +116,7 @@ const csrfProtection = csurf({
     secure: true,
     httpOnly: true,
     sameSite: "none",
-    domain: ".keyloroblox.xyz",
+    domain: ".keylogroup.co.uk",
     path: "/"
   }
 });
@@ -130,7 +130,7 @@ function setLoginCookies(res, { id, username, avatar }) {
     secure: true,
     sameSite: "none",
     httpOnly: false,
-    domain: ".keylogroup.xyz",
+    domain: ".keylogroup.co.uk",
     path: "/",
     maxAge: 30 * 24 * 60 * 60 * 1000
   };
@@ -145,7 +145,7 @@ function clearLoginCookies(res) {
     secure: true,
     sameSite: "none",
     httpOnly: false,
-    domain: ".keyloroblox.xyz",
+    domain: ".keylogroup.co.uk",
     path: "/"
   };
   console.log("COOKIES_CLEAR", { cookies: ["id", "username", "avatar", "theme"] });
@@ -257,7 +257,7 @@ app.get("/auth/roblox/callback", async (req, res) => {
         reason: banned.rows[0].reason
       });
       return res.redirect(
-        `https://app.keyloroblox.xyz/account/restricted?reason=${encodeURIComponent(
+        `https://app.keylogroup.co.uk/account/restricted?reason=${encodeURIComponent(
           banned.rows[0].reason || "Restricted"
         )}`
       );
@@ -284,7 +284,7 @@ app.get("/auth/roblox/callback", async (req, res) => {
       });
       req.session.loggedIn = true;
       return req.session.save(() =>
-        res.redirect("https://app.keyloroblox.xyz/")
+        res.redirect("https://app.keylogroup.co.uk/")
       );
     }
 
@@ -367,7 +367,7 @@ app.post("/api/register", csrfProtection, async (req, res) => {
       robloxUsername: pending.robloxUsername
     });
 
-    res.redirect("https://app.keyloroblox.xyz/");
+    res.redirect("https://app.keylogroup.co.uk/");
   } catch (err) {
     console.error("API_REGISTER_EXCEPTION", {
       message: err.message,
@@ -426,7 +426,7 @@ app.post("/login", csrfProtection, async (req, res) => {
     console.log("LOGIN_SUCCESS", { robloxUsername });
 
     req.session.save(() =>
-      res.redirect("https://app.keyloroblox.xyz/")
+      res.redirect("https://app.keylogroup.co.uk/")
     );
   } catch (err) {
     console.error("LOGIN_EXCEPTION", {
@@ -461,5 +461,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () =>
-  console.log("SERVER_START", { host: "keyloroblox.xyz", port: PORT })
+  console.log("SERVER_START", { host: "keylogroup.co.uk", port: PORT })
 );
