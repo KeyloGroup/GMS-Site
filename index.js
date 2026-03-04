@@ -130,7 +130,7 @@ function setLoginCookies(res, { id, username, avatar }) {
     secure: true,
     sameSite: "none",
     httpOnly: false,
-    domain: ".keyloroblox.xyz",
+    domain: ".keylogroup.xyz",
     path: "/",
     maxAge: 30 * 24 * 60 * 60 * 1000
   };
