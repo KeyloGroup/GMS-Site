@@ -93,7 +93,7 @@ app.use(
       secure: true,
       httpOnly: true,
       sameSite: "none",
-      domain: ".keyloroblox.xyz",
+      domain: ".keyloroblox.co.uk",
       maxAge: 30 * 24 * 60 * 60 * 1000
     }
   })
