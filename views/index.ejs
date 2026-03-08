@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Keylo</title>
 
-<!-- Tailwind + AOS for animations -->
+<!-- Tailwind + AOS for scroll animations -->
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet">
 
+<!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="/assets/keylo-logo.png">
 
@@ -20,28 +21,62 @@ body {
   overflow-x: hidden;
 }
 
+/* Glass navbar */
 .glass-nav {
   background: rgba(13, 13, 13, 0.5);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid #333;
 }
 
+/* Gradient buttons */
 .gradient-btn {
   background: linear-gradient(90deg, #5c6ac4, #00c3ff);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.gradient-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 30px rgba(0,195,255,0.5);
 }
 
-.gradient-border {
-  border-image: linear-gradient(90deg, #5c6ac4, #00c3ff) 1;
+/* Glass cards hover effect */
+.card-hover {
+  transition: transform 0.3s, box-shadow 0.3s;
 }
-
 .card-hover:hover {
-  transform: translateY(-10px);
+  transform: translateY(-12px);
   box-shadow: 0 20px 40px rgba(0,255,255,0.15);
 }
+
+/* Floating particles */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0px); }
+}
+.float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Text wave */
+@keyframes wave {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-8px); }
+}
+.wave span {
+  display: inline-block;
+  animation: wave 1.2s infinite;
+}
+.wave span:nth-child(2) { animation-delay: 0.1s; }
+.wave span:nth-child(3) { animation-delay: 0.2s; }
+.wave span:nth-child(4) { animation-delay: 0.3s; }
+.wave span:nth-child(5) { animation-delay: 0.4s; }
+.wave span:nth-child(6) { animation-delay: 0.5s; }
+.wave span:nth-child(7) { animation-delay: 0.6s; }
+.wave span:nth-child(8) { animation-delay: 0.7s; }
 </style>
 </head>
 
-<body class="relative">
+<body>
 
 <!-- NAVBAR -->
 <header class="fixed top-0 w-full z-50 glass-nav shadow-lg">
@@ -54,7 +89,7 @@ body {
       <a href="#contact" class="hover:text-white transition">Contact</a>
     </nav>
     <div class="flex items-center gap-4">
-      <a href="/register" class="btn gradient-btn text-black font-semibold px-6 py-2 rounded-lg shadow-lg hover:scale-105 transition">Get Started</a>
+      <a href="/register" class="btn gradient-btn text-black font-semibold px-6 py-2 rounded-lg shadow-lg">Get Started</a>
       <a href="/login" class="btn btn-outline text-white border-white px-6 py-2 rounded-lg hover:bg-gray-900 transition">Login</a>
     </div>
   </div>
@@ -63,22 +98,31 @@ body {
 <!-- HERO -->
 <section class="pt-36 pb-28 relative overflow-hidden">
   <div class="max-w-7xl mx-auto px-8 grid lg:grid-cols-2 gap-12 items-center">
-    <div data-aos="fade-right" data-aos-delay="200" class="space-y-6 z-10 relative">
-      <h1 class="text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
-        Master Your Roblox Community<br>
-        <span class="text-cyan-400">Smarter, Faster, Brighter</span>
+    <div data-aos="fade-right" class="space-y-6 z-10 relative">
+      <h1 class="text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight wave">
+        <span>M</span><span>a</span><span>s</span><span>t</span><span>e</span><span>r</span> 
+        <span>Y</span><span>o</span><span>u</span><span>r</span> 
+        <span>C</span><span>o</span><span>m</span><span>m</span><span>u</span><span>n</span><span>i</span><span>t</span><span>y</span>
       </h1>
       <p class="text-xl text-gray-300 max-w-lg">
-        Automation, analytics, and effortless control — all in a sleek, premium UI.
+        Automate, Analyze, Grow — all in a sleek, premium UI designed for Roblox leaders.
       </p>
       <div class="flex gap-4 pt-4">
-        <a href="#pricing" class="btn gradient-btn text-black font-semibold px-8 py-3 rounded-lg shadow-lg hover:scale-105 transition">View Plans</a>
+        <a href="#pricing" class="btn gradient-btn text-black font-semibold px-8 py-3 rounded-lg shadow-lg">View Plans</a>
         <button onclick="openModal('videoModal')" class="btn border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-500 hover:text-black px-8 py-3 rounded-lg transition">Watch Demo</button>
       </div>
+      <!-- Ticker -->
+      <div class="overflow-hidden mt-6 text-gray-400">
+        <div class="whitespace-nowrap animate-marquee">
+          <span class="mx-8">🚀 1,000+ Roblox Groups Managed</span>
+          <span class="mx-8">📊 Analytics in Real-Time</span>
+          <span class="mx-8">⚡ Automations Deployed</span>
+        </div>
+      </div>
     </div>
-    <div data-aos="fade-left" data-aos-delay="400" class="relative z-10">
+    <div data-aos="fade-left" class="relative z-10">
       <div class="relative group">
-        <div class="rounded-3xl overflow-hidden ring-2 ring-cyan-400 group-hover:scale-105 transition duration-500 shadow-2xl">
+        <div class="rounded-3xl overflow-hidden ring-2 ring-cyan-400 group-hover:scale-105 transition duration-500 shadow-2xl float">
           <img src="/icons/dashprev.png" alt="Dashboard Preview" class="w-full">
         </div>
         <!-- floating neon shapes -->
@@ -127,19 +171,19 @@ body {
   <div class="max-w-6xl mx-auto px-8 space-y-10">
     <h2 data-aos="fade-up" class="text-4xl font-bold text-center text-white">Everything You Need</h2>
     <div class="grid md:grid-cols-2 gap-12">
-      <div data-aos="flip-left" class="p-8 bg-[#111217] rounded-3xl shadow-lg card-hover transition transform hover:-translate-y-2 hover:shadow-2xl">
+      <div data-aos="flip-left" class="p-8 bg-[#111217] rounded-3xl shadow-lg card-hover">
         <h3 class="text-xl font-semibold text-cyan-400">Instant Setup</h3>
         <p class="text-gray-300 mt-2">Get started in seconds — no friction.</p>
       </div>
-      <div data-aos="flip-right" class="p-8 bg-[#111217] rounded-3xl shadow-lg card-hover transition transform hover:-translate-y-2 hover:shadow-2xl">
+      <div data-aos="flip-right" class="p-8 bg-[#111217] rounded-3xl shadow-lg card-hover">
         <h3 class="text-xl font-semibold text-indigo-400">Secure & Reliable</h3>
         <p class="text-gray-300 mt-2">Enterprise-grade security you can trust.</p>
       </div>
-      <div data-aos="flip-left" class="p-8 bg-[#111217] rounded-3xl shadow-lg card-hover transition transform hover:-translate-y-2 hover:shadow-2xl">
+      <div data-aos="flip-left" class="p-8 bg-[#111217] rounded-3xl shadow-lg card-hover">
         <h3 class="text-xl font-semibold text-purple-400">Deep Analytics</h3>
         <p class="text-gray-300 mt-2">Charts that tell real stories.</p>
       </div>
-      <div data-aos="flip-right" class="p-8 bg-[#111217] rounded-3xl shadow-lg card-hover transition transform hover:-translate-y-2 hover:shadow-2xl">
+      <div data-aos="flip-right" class="p-8 bg-[#111217] rounded-3xl shadow-lg card-hover">
         <h3 class="text-xl font-semibold text-teal-400">Powerful Automation</h3>
         <p class="text-gray-300 mt-2">Cut manual work across your groups.</p>
       </div>
@@ -154,7 +198,7 @@ body {
   <div class="max-w-5xl mx-auto px-8 text-center space-y-10">
     <h2 data-aos="fade-up" class="text-4xl font-bold text-white">Flexible & Clear Pricing</h2>
     <div class="grid md:grid-cols-2 gap-10">
-      <div data-aos="fade-right" class="p-10 bg-[#111217] rounded-3xl border border-cyan-400 shadow-lg transition-transform hover:scale-105">
+      <div data-aos="fade-right" class="p-10 bg-[#111217] rounded-3xl border border-cyan-400 shadow-lg card-hover">
         <h3 class="text-2xl font-semibold mb-4 text-cyan-400">Starter</h3>
         <p class="text-5xl font-bold">0 GBP</p>
         <ul class="text-gray-300 text-sm space-y-2 mt-4 list-disc list-inside">
@@ -165,7 +209,7 @@ body {
         <button class="btn border-2 border-gray-500 text-gray-300 mt-6 w-full opacity-50 cursor-not-allowed rounded-lg">Unavailable</button>
       </div>
 
-      <div data-aos="fade-left" class="p-12 bg-[#111217] rounded-3xl border-2 border-indigo-500 shadow-2xl transform hover:scale-105 transition">
+      <div data-aos="fade-left" class="p-12 bg-[#111217] rounded-3xl border-2 border-indigo-500 shadow-2xl card-hover">
         <h3 class="text-2xl font-semibold mb-4 text-indigo-400">Pro</h3>
         <p class="text-5xl font-bold">400 robux</p>
         <ul class="text-gray-300 text-sm space-y-2 mt-4 list-disc list-inside">
@@ -186,7 +230,7 @@ body {
 <section class="py-20 text-center">
   <h2 data-aos="zoom-in" class="text-4xl font-bold mb-4 text-white">Time to Simplify Your Workflow?</h2>
   <p data-aos="zoom-in" data-aos-delay="200" class="text-gray-300 mb-6">Upgrade your Roblox community management today.</p>
-  <a data-aos="zoom-in" data-aos-delay="400" href="/register" class="btn gradient-btn text-black font-semibold px-10 py-3 rounded-lg shadow-lg hover:scale-105 transition animate-pulse">Get Started</a>
+  <a data-aos="zoom-in" data-aos-delay="400" href="/register" class="btn gradient-btn text-black font-semibold px-10 py-3 rounded-lg shadow-lg animate-pulse">Get Started</a>
 </section>
 
 <hr class="border-gray-700">
@@ -229,8 +273,8 @@ body {
 </div>
 
 <script>
-function openModal(id){const el=document.getElementById(id);el.classList.remove("hidden");el.classList.add("flex")}
-function closeModal(id){const el=document.getElementById(id);el.classList.add("hidden");el.classList.remove("flex")}
+function openModal(id){document.getElementById(id).classList.remove("hidden");document.getElementById(id).classList.add("flex")}
+function closeModal(id){document.getElementById(id).classList.add("hidden");document.getElementById(id).classList.remove("flex")}
 </script>
 
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
