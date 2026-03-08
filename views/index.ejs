@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Keylo</title>
+<title>Keylo — Premium Roblox Community Management</title>
 
 <!-- Tailwind + Vengeance Core -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -22,9 +22,15 @@ body {
   font-family: 'Inter', sans-serif;
 }
 .glass-nav {
-  background: rgba(10, 10, 10, 0.5);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid #222;
+  background: rgba(13, 13, 13, 0.6);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid #333;
+}
+.gradient-btn {
+  background: linear-gradient(90deg, #5c6ac4, #00c3ff);
+}
+.gradient-border {
+  border-image: linear-gradient(90deg, #5c6ac4, #00c3ff) 1;
 }
 </style>
 </head>
@@ -44,33 +50,33 @@ body {
     </nav>
 
     <div class="flex items-center gap-4">
-      <a href="/register" class="btn btn-primary btn-md">Get Started</a>
-      <a href="/login" class="btn btn-outline btn-md">Login</a>
+      <a href="/register" class="btn gradient-btn text-black font-semibold px-6 py-2 rounded-lg shadow-lg hover:scale-105 transition">Get Started</a>
+      <a href="/login" class="btn btn-outline text-white border-white px-6 py-2 rounded-lg hover:bg-gray-900 transition">Login</a>
     </div>
   </div>
 </header>
 
 <!-- HERO -->
-<section class="pt-32 pb-20">
+<section class="pt-32 pb-24">
   <div class="max-w-7xl mx-auto px-8 grid lg:grid-cols-2 gap-12 items-center">
     <div data-aos="fade-right" data-aos-delay="200" class="space-y-6">
-      <h1 class="text-5xl lg:text-6xl font-extrabold leading-tight">
+      <h1 class="text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
         Command Your Roblox Community<br>
-        with Clarity & Control
+        with Brighter Control & Insights
       </h1>
-      <p class="text-xl text-gray-400 max-w-lg">
-        Smart automation, deep analytics, and effortless management — powered by beautiful, intuitive UI.
+      <p class="text-xl text-gray-300 max-w-lg">
+        Smart automation, vivid analytics, and effortless management — powered by premium, intuitive UI.
       </p>
 
       <div class="flex gap-4 pt-4">
-        <a href="#pricing" class="btn btn-primary btn-xl">View Plans</a>
-        <button onclick="openModal('videoModal')" class="btn btn-outline btn-xl">Watch Demo</button>
+        <a href="#pricing" class="btn gradient-btn text-black font-semibold px-8 py-3 rounded-lg shadow-lg hover:scale-105 transition">View Plans</a>
+        <button onclick="openModal('videoModal')" class="btn border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-500 hover:text-black px-8 py-3 rounded-lg transition">Watch Demo</button>
       </div>
     </div>
 
     <div data-aos="fade-left" data-aos-delay="400">
       <div class="relative group">
-        <div class="rounded-3xl overflow-hidden ring-2 ring-indigo-700 group-hover:scale-105 transition duration-500 shadow-2xl">
+        <div class="rounded-3xl overflow-hidden ring-2 ring-cyan-400 group-hover:scale-105 transition duration-500 shadow-2xl">
           <img src="/icons/dashprev.png" alt="Dashboard Preview" class="w-full">
         </div>
       </div>
@@ -78,29 +84,29 @@ body {
   </div>
 </section>
 
-<hr class="border-gray-800">
+<hr class="border-gray-700">
 
 <!-- SERVICES -->
-<section id="services" class="py-20">
+<section id="services" class="py-20 bg-[#111217]">
   <div class="max-w-6xl mx-auto px-8 text-center space-y-8">
-    <h2 data-aos="fade-up" class="text-3xl font-bold">What Keylo Helps You Do Best</h2>
+    <h2 data-aos="fade-up" class="text-3xl font-bold text-white">What Keylo Helps You Do Best</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 text-gray-300 mt-10">
       <div data-aos="fade-up" data-aos-delay="100" class="space-y-2">
         <h3 class="text-white font-semibold">Leader Tools</h3>
-        <p class="text-sm">Manage roles and permissions effortlessly.</p>
+        <p class="text-sm">Manage roles, ranks, permissions effortlessly.</p>
       </div>
       <div data-aos="fade-up" data-aos-delay="200" class="space-y-2">
         <h3 class="text-white font-semibold">Step Setup</h3>
         <p class="text-sm">Quick guided onboarding for teams.</p>
       </div>
       <div data-aos="fade-up" data-aos-delay="300" class="space-y-2">
-        <h3 class="text-white font-semibold">Real Insight</h3>
-        <p class="text-sm">Analytics that actually inform decisions.</p>
+        <h3 class="text-white font-semibold">Real Insights</h3>
+        <p class="text-sm">Analytics that inform decisions clearly.</p>
       </div>
       <div data-aos="fade-up" data-aos-delay="400" class="space-y-2">
         <h3 class="text-white font-semibold">Anywhere Access</h3>
-        <p class="text-sm">Desktop or mobile — always synced.</p>
+        <p class="text-sm">Desktop, tablet, or mobile — always synced.</p>
       </div>
       <div data-aos="fade-up" data-aos-delay="500" class="space-y-2">
         <h3 class="text-white font-semibold">Automate Workflows</h3>
@@ -110,81 +116,81 @@ body {
   </div>
 </section>
 
-<hr class="border-gray-800">
+<hr class="border-gray-700">
 
 <!-- FEATURES -->
-<section id="features" class="py-24 bg-[#0f0f0f]">
+<section id="features" class="py-24">
   <div class="max-w-6xl mx-auto px-8 space-y-10">
-    <h2 data-aos="fade-up" class="text-4xl font-bold text-center">Everything You Need</h2>
+    <h2 data-aos="fade-up" class="text-4xl font-bold text-center text-white">Everything You Need</h2>
 
     <div class="grid md:grid-cols-2 gap-12">
-      <div data-aos="flip-left" class="feature-card p-8 bg-[#111] rounded-3xl shadow-xl transition transform hover:-translate-y-2">
-        <h3 class="text-xl font-semibold">Instant Setup</h3>
-        <p class="text-gray-400 mt-2">Get started in seconds — no friction.</p>
+      <div data-aos="flip-left" class="p-8 bg-[#111217] rounded-3xl shadow-lg transition transform hover:-translate-y-2 hover:shadow-2xl">
+        <h3 class="text-xl font-semibold text-cyan-400">Instant Setup</h3>
+        <p class="text-gray-300 mt-2">Get started in seconds — no friction.</p>
       </div>
 
-      <div data-aos="flip-right" class="feature-card p-8 bg-[#111] rounded-3xl shadow-xl transition transform hover:-translate-y-2">
-        <h3 class="text-xl font-semibold">Secure & Reliable</h3>
-        <p class="text-gray-400 mt-2">Enterprise‑grade security you can trust.</p>
+      <div data-aos="flip-right" class="p-8 bg-[#111217] rounded-3xl shadow-lg transition transform hover:-translate-y-2 hover:shadow-2xl">
+        <h3 class="text-xl font-semibold text-indigo-400">Secure & Reliable</h3>
+        <p class="text-gray-300 mt-2">Enterprise-grade security you can trust.</p>
       </div>
 
-      <div data-aos="flip-left" class="feature-card p-8 bg-[#111] rounded-3xl shadow-xl transition transform hover:-translate-y-2">
-        <h3 class="text-xl font-semibold">Deep Analytics</h3>
-        <p class="text-gray-400 mt-2">Charts that tell real stories.</p>
+      <div data-aos="flip-left" class="p-8 bg-[#111217] rounded-3xl shadow-lg transition transform hover:-translate-y-2 hover:shadow-2xl">
+        <h3 class="text-xl font-semibold text-purple-400">Deep Analytics</h3>
+        <p class="text-gray-300 mt-2">Charts that tell real stories.</p>
       </div>
 
-      <div data-aos="flip-right" class="feature-card p-8 bg-[#111] rounded-3xl shadow-xl transition transform hover:-translate-y-2">
-        <h3 class="text-xl font-semibold">Powerful Automation</h3>
-        <p class="text-gray-400 mt-2">Cut manual work across your groups.</p>
+      <div data-aos="flip-right" class="p-8 bg-[#111217] rounded-3xl shadow-lg transition transform hover:-translate-y-2 hover:shadow-2xl">
+        <h3 class="text-xl font-semibold text-teal-400">Powerful Automation</h3>
+        <p class="text-gray-300 mt-2">Cut manual work across your groups.</p>
       </div>
     </div>
   </div>
 </section>
 
-<hr class="border-gray-800">
+<hr class="border-gray-700">
 
 <!-- PRICING -->
 <section id="pricing" class="py-24">
   <div class="max-w-5xl mx-auto px-8 text-center space-y-10">
-    <h2 data-aos="fade-up" class="text-4xl font-bold">Flexible & Clear Pricing</h2>
+    <h2 data-aos="fade-up" class="text-4xl font-bold text-white">Flexible & Clear Pricing</h2>
 
     <div class="grid md:grid-cols-2 gap-10">
-      <div data-aos="fade-right" class="bg-[#111] p-10 rounded-3xl border border-gray-700 shadow-lg transition-transform hover:scale-105">
-        <h3 class="text-2xl font-semibold mb-4">Starter</h3>
+      <div data-aos="fade-right" class="p-10 bg-[#111217] rounded-3xl border border-cyan-400 shadow-lg transition-transform hover:scale-105">
+        <h3 class="text-2xl font-semibold mb-4 text-cyan-400">Starter</h3>
         <p class="text-5xl font-bold">0 GBP</p>
-        <ul class="text-gray-400 text-sm space-y-2 mt-4 list-disc list-inside">
+        <ul class="text-gray-300 text-sm space-y-2 mt-4 list-disc list-inside">
           <li>1 Workspace</li>
           <li>Basic API, Logs & Docs</li>
           <li>Support Center Access</li>
         </ul>
-        <button class="btn btn-outline btn-lg mt-6 w-full opacity-60 cursor-not-allowed">Unavailable</button>
+        <button class="btn border-2 border-gray-500 text-gray-300 mt-6 w-full opacity-50 cursor-not-allowed rounded-lg">Unavailable</button>
       </div>
 
-      <div data-aos="fade-left" class="bg-[#111] p-12 rounded-3xl border-2 border-indigo-700 shadow-2xl transform hover:scale-105 transition">
-        <h3 class="text-2xl font-semibold mb-4">Pro</h3>
+      <div data-aos="fade-left" class="p-12 bg-[#111217] rounded-3xl border-2 border-indigo-500 shadow-2xl transform hover:scale-105 transition">
+        <h3 class="text-2xl font-semibold mb-4 text-indigo-400">Pro</h3>
         <p class="text-5xl font-bold">400 robux</p>
         <ul class="text-gray-300 text-sm space-y-2 mt-4 list-disc list-inside">
           <li>Everything in Starter</li>
           <li>3 Workspaces</li>
           <li>Advanced Graphs & API</li>
-          <li>Auto‑Ranking Included</li>
+          <li>Auto-Ranking Included</li>
         </ul>
-        <button class="btn btn-primary btn-lg mt-6 w-full">Unavailable</button>
+        <button class="btn gradient-btn text-black font-semibold mt-6 w-full rounded-lg">Unavailable</button>
       </div>
     </div>
   </div>
 </section>
 
-<hr class="border-gray-800">
+<hr class="border-gray-700">
 
 <!-- CTA -->
 <section class="py-20 text-center">
-  <h2 data-aos="zoom-in" class="text-4xl font-bold mb-4">Time to Simplify Your Workflow?</h2>
-  <p data-aos="zoom-in" data-aos-delay="200" class="text-gray-400 mb-6">Upgrade your Roblox community management today.</p>
-  <a data-aos="zoom-in" data-aos-delay="400" href="/register" class="btn btn-primary btn-xl">Get Started</a>
+  <h2 data-aos="zoom-in" class="text-4xl font-bold mb-4 text-white">Time to Simplify Your Workflow?</h2>
+  <p data-aos="zoom-in" data-aos-delay="200" class="text-gray-300 mb-6">Upgrade your Roblox community management today.</p>
+  <a data-aos="zoom-in" data-aos-delay="400" href="/register" class="btn gradient-btn text-black font-semibold px-10 py-3 rounded-lg shadow-lg hover:scale-105 transition">Get Started</a>
 </section>
 
-<hr class="border-gray-800">
+<hr class="border-gray-700">
 
 <!-- FOOTER -->
 <footer id="contact" class="py-12 text-gray-400 text-sm">
@@ -193,25 +199,22 @@ body {
       <h4 class="text-white font-semibold mb-3">Product</h4>
       <p>Features • Services • Pricing</p>
     </div>
-
     <div>
       <h4 class="text-white font-semibold mb-3">Company</h4>
       <p>About • FAQ • Careers</p>
     </div>
-
     <div>
       <h4 class="text-white font-semibold mb-3">Support</h4>
       <p>team@keylogroup.co.uk</p>
       <p>Discord Tickets</p>
     </div>
-
     <div>
       <h4 class="text-white font-semibold mb-3">Legal</h4>
       <p>Privacy • Terms</p>
     </div>
   </div>
 
-  <div class="mt-8 text-center text-gray-600">
+  <div class="mt-8 text-center text-gray-500">
     © <%= new Date().getFullYear() %> Keylo. All rights reserved.
   </div>
 </footer>
@@ -225,12 +228,8 @@ function closeModal(id){const el=document.getElementById(id);el.classList.add("h
 <!-- AOS Init -->
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script>
-AOS.init({
-  duration: 800,
-  once: true,
-});
+AOS.init({duration:800, once:true});
 </script>
 
 </body>
 </html>
-
