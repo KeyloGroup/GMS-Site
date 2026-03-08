@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Keylo</title>
+
+<title>Keylo — Community Infrastructure</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet">
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet">
 
 <style>
 
@@ -17,42 +21,36 @@ background:#0f1117;
 color:#e5e7eb;
 }
 
-/* navbar */
-
 .navbar{
-backdrop-filter:blur(14px);
-background:rgba(15,17,23,.8);
+background:rgba(15,17,23,.85);
+backdrop-filter:blur(12px);
 border-bottom:1px solid rgba(255,255,255,.06);
 }
 
-/* buttons */
-
 .btn-primary{
 background:#4f46e5;
-color:white;
-padding:.7rem 1.6rem;
+padding:.75rem 1.6rem;
 border-radius:.6rem;
 font-weight:600;
-transition:.25s;
+color:white;
+transition:.2s;
 }
 
 .btn-primary:hover{
 background:#4338ca;
-transform:translateY(-2px);
+transform:translateY(-1px);
 }
 
-.btn-outline{
+.btn-secondary{
 border:1px solid rgba(255,255,255,.15);
-padding:.7rem 1.6rem;
+padding:.75rem 1.6rem;
 border-radius:.6rem;
-transition:.25s;
+transition:.2s;
 }
 
-.btn-outline:hover{
+.btn-secondary:hover{
 background:rgba(255,255,255,.05);
 }
-
-/* cards */
 
 .card{
 background:#151821;
@@ -66,12 +64,10 @@ transform:translateY(-4px);
 border-color:rgba(255,255,255,.12);
 }
 
-/* hero gradient */
-
-.hero-gradient{
+.hero-bg{
 background:linear-gradient(
 180deg,
-rgba(79,70,229,.15),
+rgba(79,70,229,.12),
 rgba(15,17,23,0)
 );
 }
@@ -84,57 +80,76 @@ rgba(15,17,23,0)
 <!-- NAVBAR -->
 
 <header class="navbar fixed top-0 w-full z-50">
+
 <div class="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
 
-<div class="font-bold text-xl">Keylo</div>
+<div class="text-xl font-bold text-white">
+Keylo
+</div>
 
 <nav class="hidden md:flex gap-8 text-sm text-gray-400">
+
 <a href="#features" class="hover:text-white">Features</a>
 <a href="#pricing" class="hover:text-white">Pricing</a>
 <a href="#contact" class="hover:text-white">Contact</a>
+
 </nav>
 
 <div class="flex gap-3">
-<a href="/login" class="btn-outline">Login</a>
+
+<a href="/login" class="btn-secondary">Login</a>
 <a href="/register" class="btn-primary">Get Started</a>
+
 </div>
 
 </div>
+
 </header>
-
 
 <!-- HERO -->
 
-<section class="hero-gradient pt-40 pb-28">
+<section class="hero-bg pt-40 pb-28">
 
 <div class="max-w-7xl mx-auto px-8 grid lg:grid-cols-2 gap-16 items-center">
 
-<div data-aos="fade-right">
+<div data-aos="fade-up">
 
-<h1 class="text-5xl lg:text-6xl font-extrabold leading-tight text-white">
-Master Your Community
+<h1 class="text-5xl lg:text-6xl font-extrabold text-white leading-tight">
+
+Community Infrastructure  
+for Modern Roblox Groups
+
 </h1>
 
-<p class="text-gray-400 mt-5 text-lg max-w-lg">
-Powerful tools for Roblox group management, analytics, and automation — all in one modern dashboard.
+<p class="mt-6 text-lg text-gray-400 max-w-lg">
+
+Manage, analyze and automate your Roblox communities with powerful infrastructure built for scale.
+
 </p>
 
-<div class="flex gap-4 mt-7">
-<a href="#pricing" class="btn-primary">View Plans</a>
-<a href="#features" class="btn-outline">Learn More</a>
-</div>
+<div class="mt-8 flex gap-4">
+
+<a href="#pricing" class="btn-primary">
+Get Started
+</a>
+
+<a href="#features" class="btn-secondary">
+View Features
+</a>
 
 </div>
 
+</div>
 
-<!-- DASHBOARD PREVIEW -->
+
+<!-- DASHBOARD IMAGE -->
 
 <div data-aos="fade-left">
 
 <img
 src="/icons/dashprev.png"
+class="rounded-xl border border-gray-800 shadow-xl w-full transition duration-500 hover:scale-[1.01]"
 alt="Dashboard Preview"
-class="rounded-xl shadow-2xl border border-gray-800 hover:scale-[1.02] transition duration-500"
 />
 
 </div>
@@ -143,68 +158,116 @@ class="rounded-xl shadow-2xl border border-gray-800 hover:scale-[1.02] transitio
 
 </section>
 
-
 <!-- METRICS -->
 
-<section class="py-20 border-t border-gray-800">
+<section class="border-t border-gray-800 py-20">
 
 <div class="max-w-6xl mx-auto px-8 grid grid-cols-2 md:grid-cols-4 gap-10 text-center">
 
 <div data-aos="fade-up">
-<div class="text-3xl font-bold text-white">1,000+</div>
-<p class="text-gray-400 mt-2 text-sm">Groups Managed</p>
+
+<div class="text-3xl font-bold text-white">1,200+</div>
+
+<p class="text-gray-400 mt-2 text-sm">
+Groups Managed
+</p>
+
 </div>
 
 <div data-aos="fade-up" data-aos-delay="100">
-<div class="text-3xl font-bold text-white">50K+</div>
-<p class="text-gray-400 mt-2 text-sm">Members Tracked</p>
+
+<div class="text-3xl font-bold text-white">60K+</div>
+
+<p class="text-gray-400 mt-2 text-sm">
+Members Tracked
+</p>
+
 </div>
 
 <div data-aos="fade-up" data-aos-delay="200">
-<div class="text-3xl font-bold text-white">120+</div>
-<p class="text-gray-400 mt-2 text-sm">Automations</p>
+
+<div class="text-3xl font-bold text-white">140+</div>
+
+<p class="text-gray-400 mt-2 text-sm">
+Automation Systems
+</p>
+
 </div>
 
 <div data-aos="fade-up" data-aos-delay="300">
+
 <div class="text-3xl font-bold text-white">24/7</div>
-<p class="text-gray-400 mt-2 text-sm">Support</p>
+
+<p class="text-gray-400 mt-2 text-sm">
+Infrastructure Monitoring
+</p>
+
 </div>
 
 </div>
 
 </section>
 
-
 <!-- FEATURES -->
 
-<section id="features" class="py-24 border-t border-gray-800">
+<section id="features" class="border-t border-gray-800 py-24">
 
 <div class="max-w-6xl mx-auto px-8">
 
-<h2 class="text-4xl font-bold text-center mb-16 text-white" data-aos="fade-up">
-Everything You Need
+<h2 class="text-4xl font-bold text-white text-center mb-16" data-aos="fade-up">
+
+Powerful Platform Features
+
 </h2>
 
 <div class="grid md:grid-cols-2 gap-10">
 
 <div class="card p-8" data-aos="fade-up">
-<h3 class="text-xl font-semibold text-white">Instant Setup</h3>
-<p class="text-gray-400 mt-2">Connect your Roblox group and start managing within seconds.</p>
+
+<h3 class="text-xl font-semibold text-white">
+Instant Setup
+</h3>
+
+<p class="text-gray-400 mt-2">
+Connect your Roblox group and deploy tools instantly.
+</p>
+
 </div>
 
 <div class="card p-8" data-aos="fade-up" data-aos-delay="100">
-<h3 class="text-xl font-semibold text-white">Secure Infrastructure</h3>
-<p class="text-gray-400 mt-2">Enterprise-grade protection and stable API integrations.</p>
+
+<h3 class="text-xl font-semibold text-white">
+Advanced Analytics
+</h3>
+
+<p class="text-gray-400 mt-2">
+Track engagement, rank activity and growth metrics.
+</p>
+
 </div>
 
 <div class="card p-8" data-aos="fade-up" data-aos-delay="200">
-<h3 class="text-xl font-semibold text-white">Advanced Analytics</h3>
-<p class="text-gray-400 mt-2">Understand growth, activity, and engagement across your community.</p>
+
+<h3 class="text-xl font-semibold text-white">
+Automation Systems
+</h3>
+
+<p class="text-gray-400 mt-2">
+Reduce manual moderation with automated workflows.
+</p>
+
 </div>
 
 <div class="card p-8" data-aos="fade-up" data-aos-delay="300">
-<h3 class="text-xl font-semibold text-white">Automation Tools</h3>
-<p class="text-gray-400 mt-2">Reduce manual moderation with powerful automated workflows.</p>
+
+<h3 class="text-xl font-semibold text-white">
+Secure Infrastructure
+</h3>
+
+<p class="text-gray-400 mt-2">
+Enterprise-grade protection and stable API connections.
+</p>
+
 </div>
 
 </div>
@@ -213,52 +276,58 @@ Everything You Need
 
 </section>
 
-
 <!-- PRICING -->
 
-<section id="pricing" class="py-24 border-t border-gray-800">
+<section id="pricing" class="border-t border-gray-800 py-24">
 
 <div class="max-w-5xl mx-auto px-8 text-center">
 
 <h2 class="text-4xl font-bold text-white mb-14" data-aos="fade-up">
-Simple Pricing
+Pricing
 </h2>
 
 <div class="grid md:grid-cols-2 gap-10">
 
 <div class="card p-10" data-aos="fade-right">
 
-<h3 class="text-xl font-semibold text-white mb-4">Starter</h3>
+<h3 class="text-xl font-semibold text-white mb-4">
+Starter
+</h3>
 
-<p class="text-4xl font-bold text-white">Free</p>
+<p class="text-4xl font-bold text-white">
+Free
+</p>
 
-<ul class="text-gray-400 text-sm mt-6 space-y-2">
+<ul class="mt-6 text-gray-400 text-sm space-y-2">
 <li>1 Workspace</li>
 <li>Basic Analytics</li>
 <li>API Access</li>
 </ul>
 
-<button class="btn-outline w-full mt-7 opacity-50 cursor-not-allowed">
+<button class="btn-secondary w-full mt-8 opacity-60 cursor-not-allowed">
 Unavailable
 </button>
 
 </div>
 
-
 <div class="card p-10" data-aos="fade-left">
 
-<h3 class="text-xl font-semibold text-white mb-4">Pro</h3>
+<h3 class="text-xl font-semibold text-white mb-4">
+Pro
+</h3>
 
-<p class="text-4xl font-bold text-white">400 Robux</p>
+<p class="text-4xl font-bold text-white">
+400 Robux
+</p>
 
-<ul class="text-gray-400 text-sm mt-6 space-y-2">
+<ul class="mt-6 text-gray-400 text-sm space-y-2">
 <li>3 Workspaces</li>
 <li>Advanced Analytics</li>
 <li>Automation Tools</li>
 <li>Priority Support</li>
 </ul>
 
-<button class="btn-primary w-full mt-7">
+<button class="btn-primary w-full mt-8">
 Unavailable
 </button>
 
@@ -270,25 +339,23 @@ Unavailable
 
 </section>
 
-
 <!-- CTA -->
 
-<section class="py-20 border-t border-gray-800 text-center">
+<section class="border-t border-gray-800 py-20 text-center">
 
 <h2 class="text-4xl font-bold text-white mb-4" data-aos="zoom-in">
-Simplify Your Workflow
+Simplify Your Community Operations
 </h2>
 
 <p class="text-gray-400 mb-6" data-aos="zoom-in" data-aos-delay="100">
-Upgrade your Roblox community management today.
+Infrastructure designed for modern Roblox groups.
 </p>
 
 <a href="/register" class="btn-primary" data-aos="zoom-in" data-aos-delay="200">
-Get Started
+Create Account
 </a>
 
 </section>
-
 
 <!-- FOOTER -->
 
@@ -328,8 +395,8 @@ Get Started
 
 </footer>
 
-
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
 <script>
 AOS.init({
 duration:700,
