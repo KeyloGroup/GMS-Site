@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Keylo</title>
+<title>Keylo — Premium Roblox Management</title>
 
 <!-- Tailwind + AOS -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -23,7 +23,7 @@ body {
 
 /* Glass nav */
 .glass-nav {
-  background: rgba(13, 13, 13, 0.5);
+  background: rgba(13, 13, 13, 0.6);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid #333;
 }
@@ -38,29 +38,14 @@ body {
   box-shadow: 0 12px 30px rgba(0,195,255,0.5);
 }
 
-/* Glass cards hover */
+/* Cards hover effect */
 .card-hover {
   transition: transform 0.3s, box-shadow 0.3s;
 }
 .card-hover:hover {
-  transform: translateY(-12px);
-  box-shadow: 0 20px 40px rgba(0,255,255,0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 25px rgba(0,255,255,0.15);
 }
-
-/* Floating animation */
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
-  100% { transform: translateY(0px); }
-}
-.float { animation: float 6s ease-in-out infinite; }
-
-/* Ticker marquee */
-@keyframes marquee {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
-.animate-marquee { display: inline-block; animation: marquee 15s linear infinite; }
 </style>
 </head>
 
@@ -91,30 +76,15 @@ body {
         Command Your Community
       </h1>
       <p class="text-xl text-gray-300 max-w-lg mt-4">
-        Automate, Analyze, Grow — all in a sleek, premium UI.
+        Automate, Analyze, Grow — in a sleek, premium UI.
       </p>
       <div class="flex gap-4 pt-4">
-        <a href="#pricing" class="btn gradient-btn text-black font-semibold px-8 py-3 rounded-lg shadow-lg">View Plans</a>
+        <a href="#pricing" class="btn gradient-btn text-black font-semibold px-8 py-3 rounded-lg shadow-lg hover:scale-105 transition">View Plans</a>
         <button onclick="openModal('videoModal')" class="btn border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-500 hover:text-black px-8 py-3 rounded-lg transition">Watch Demo</button>
-      </div>
-      <!-- Ticker -->
-      <div class="overflow-hidden mt-6 text-gray-400">
-        <div class="whitespace-nowrap animate-marquee">
-          <span class="mx-8">🚀 1,000+ Roblox Groups Managed</span>
-          <span class="mx-8">📊 Analytics in Real-Time</span>
-          <span class="mx-8">⚡ Automations Deployed</span>
-        </div>
       </div>
     </div>
     <div data-aos="fade-left" class="relative z-10">
-      <div class="relative group">
-        <div class="rounded-3xl overflow-hidden ring-2 ring-cyan-400 group-hover:scale-105 transition duration-500 shadow-2xl float">
-          <img src="/icons/dashprev.png" alt="Dashboard Preview" class="w-full">
-        </div>
-        <!-- floating shapes -->
-        <div class="absolute -top-10 -left-10 w-20 h-20 bg-cyan-500 rounded-full mix-blend-screen animate-pulse opacity-40"></div>
-        <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-indigo-500 rounded-full mix-blend-screen animate-pulse opacity-30"></div>
-      </div>
+      <img src="/icons/dashprev.png" loading="lazy" alt="Dashboard Preview" class="rounded-3xl shadow-lg hover:scale-105 transition duration-500">
     </div>
   </div>
 </section>
@@ -126,23 +96,23 @@ body {
   <div class="max-w-6xl mx-auto px-8 text-center space-y-8">
     <h2 data-aos="fade-up" class="text-3xl font-bold text-white">Keylo Empowers You</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 text-gray-300 mt-10">
-      <div data-aos="fade-up" data-aos-delay="100" class="space-y-2 card-hover transition">
+      <div data-aos="fade-up" data-aos-delay="100" class="space-y-2 card-hover">
         <h3 class="text-white font-semibold">Leader Tools</h3>
         <p class="text-sm">Manage roles, ranks, and permissions effortlessly.</p>
       </div>
-      <div data-aos="fade-up" data-aos-delay="200" class="space-y-2 card-hover transition">
+      <div data-aos="fade-up" data-aos-delay="200" class="space-y-2 card-hover">
         <h3 class="text-white font-semibold">Step Setup</h3>
         <p class="text-sm">Quick guided onboarding for teams.</p>
       </div>
-      <div data-aos="fade-up" data-aos-delay="300" class="space-y-2 card-hover transition">
+      <div data-aos="fade-up" data-aos-delay="300" class="space-y-2 card-hover">
         <h3 class="text-white font-semibold">Real Insights</h3>
         <p class="text-sm">Analytics that inform decisions clearly.</p>
       </div>
-      <div data-aos="fade-up" data-aos-delay="400" class="space-y-2 card-hover transition">
+      <div data-aos="fade-up" data-aos-delay="400" class="space-y-2 card-hover">
         <h3 class="text-white font-semibold">Anywhere Access</h3>
         <p class="text-sm">Desktop, tablet, or mobile — always synced.</p>
       </div>
-      <div data-aos="fade-up" data-aos-delay="500" class="space-y-2 card-hover transition">
+      <div data-aos="fade-up" data-aos-delay="500" class="space-y-2 card-hover">
         <h3 class="text-white font-semibold">Automate Workflows</h3>
         <p class="text-sm">Let Keylo take repetitive tasks off your plate.</p>
       </div>
@@ -215,7 +185,7 @@ body {
 <section class="py-20 text-center">
   <h2 data-aos="zoom-in" class="text-4xl font-bold mb-4 text-white">Time to Simplify Your Workflow?</h2>
   <p data-aos="zoom-in" data-aos-delay="200" class="text-gray-300 mb-6">Upgrade your Roblox community management today.</p>
-  <a data-aos="zoom-in" data-aos-delay="400" href="/register" class="btn gradient-btn text-black font-semibold px-10 py-3 rounded-lg shadow-lg animate-pulse">Get Started</a>
+  <a data-aos="zoom-in" data-aos-delay="400" href="/register" class="btn gradient-btn text-black font-semibold px-10 py-3 rounded-lg shadow-lg">Get Started</a>
 </section>
 
 <hr class="border-gray-700">
@@ -251,7 +221,7 @@ body {
     <div class="p-6">
       <h3 class="text-2xl font-bold mb-4 text-center">Watch Our Demo</h3>
       <div class="aspect-video">
-        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" class="w-full h-full rounded-xl" frameborder="0" allowfullscreen></iframe>
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" class="w-full h-full rounded-xl" frameborder="0" allowfullscreen loading="lazy"></iframe>
       </div>
     </div>
   </div>
@@ -264,8 +234,9 @@ function closeModal(id){document.getElementById(id).classList.add("hidden");docu
 
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script>
-AOS.init({duration:800, once:false, mirror:true});
+AOS.init({duration:700, easing:'ease-out-cubic', once:false, mirror:true});
 </script>
 
 </body>
 </html>
+
