@@ -1,409 +1,299 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Keylo — Community Infrastructure</title>
+<title>Keylo — Master Your Community</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
 <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="/assets/keylo-logo.png">
 
 <style>
-
-body{
-font-family:'Inter',sans-serif;
-background:#0f1117;
-color:#e5e7eb;
+/* Global */
+body {
+  font-family: 'Inter', sans-serif;
+  background: #0f0f14;
+  color: #f5f5f5;
+  overflow-x: hidden;
 }
 
-.navbar{
-background:rgba(15,17,23,.85);
-backdrop-filter:blur(12px);
-border-bottom:1px solid rgba(255,255,255,.06);
+/* Glass navbar */
+.glass-nav {
+  backdrop-filter: blur(15px);
+  background: rgba(20,20,30,0.7);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
-.btn-primary{
-background:#4f46e5;
-padding:.75rem 1.6rem;
-border-radius:.6rem;
-font-weight:600;
-color:white;
-transition:.2s;
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(135deg,#4f5dba,#3a3f5c);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  padding: 0.75rem 2rem;
+  transition: all 0.3s ease;
 }
-
 .btn-primary:hover{
-background:#4338ca;
-transform:translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
-.btn-secondary{
-border:1px solid rgba(255,255,255,.15);
-padding:.75rem 1.6rem;
-border-radius:.6rem;
-transition:.2s;
+.btn-secondary {
+  border: 1px solid #555;
+  color: #f5f5f5;
+  padding: 0.7rem 1.8rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.05);
 }
 
-.btn-secondary:hover{
-background:rgba(255,255,255,.05);
+/* Glass cards */
+.glass-card {
+  background: rgba(25,25,35,0.7);
+  border-radius: 1rem;
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.glass-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
-.card{
-background:#151821;
-border:1px solid rgba(255,255,255,.05);
-border-radius:1rem;
-transition:.25s;
+/* Gradient headline */
+.gradient-text {
+  background: linear-gradient(90deg,#6c7aa4,#3f465b);
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
-.card:hover{
-transform:translateY(-4px);
-border-color:rgba(255,255,255,.12);
+/* Floating shapes subtle */
+.floating-shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.08;
+  animation: float 8s ease-in-out infinite alternate;
+}
+@keyframes float {
+  0%{transform:translateY(0);}
+  100%{transform:translateY(-15px);}
 }
 
-.hero-bg{
-background:linear-gradient(
-180deg,
-rgba(79,70,229,.12),
-rgba(15,17,23,0)
-);
-}
-
+/* Counter numbers */
+.counter { font-weight: 700; font-size: 2rem; color:#7c88b0; }
 </style>
 </head>
-
 <body>
 
 <!-- NAVBAR -->
-
-<header class="navbar fixed top-0 w-full z-50">
-
-<div class="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
-
-<div class="text-xl font-bold text-white">
-Keylo
-</div>
-
-<nav class="hidden md:flex gap-8 text-sm text-gray-400">
-
-<a href="#features" class="hover:text-white">Features</a>
-<a href="#pricing" class="hover:text-white">Pricing</a>
-<a href="#contact" class="hover:text-white">Contact</a>
-
-</nav>
-
-<div class="flex gap-3">
-
-<a href="/login" class="btn-secondary">Login</a>
-<a href="/register" class="btn-primary">Get Started</a>
-
-</div>
-
-</div>
-
+<header class="fixed top-0 w-full z-50 glass-nav">
+  <div class="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
+    <a href="/" class="text-2xl font-bold tracking-tight">Keylo</a>
+    <nav class="hidden lg:flex gap-8 text-gray-400 text-sm font-semibold uppercase">
+      <a href="#features" class="hover:text-white transition">Features</a>
+      <a href="#services" class="hover:text-white transition">Services</a>
+      <a href="#pricing" class="hover:text-white transition">Pricing</a>
+      <a href="#contact" class="hover:text-white transition">Contact</a>
+    </nav>
+    <div class="flex items-center gap-4">
+      <a href="/register" class="btn-primary">Get Started</a>
+      <a href="/login" class="btn-secondary">Login</a>
+    </div>
+  </div>
 </header>
 
 <!-- HERO -->
+<section class="relative pt-36 pb-28 overflow-hidden">
+  <!-- Floating vibrant shapes -->
+  <div class="floating-shape w-56 h-56 bg-gradient-to-r from-indigo-600 via-cyan-500 to-indigo-500 top-10 left-10"></div>
+  <div class="floating-shape w-40 h-40 bg-gradient-to-r from-purple-500 via-indigo-500 to-cyan-400 top-52 right-32"></div>
+  <div class="floating-shape w-32 h-32 bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 bottom-20 left-1/3"></div>
 
-<section class="hero-bg pt-40 pb-28">
+  <div class="max-w-7xl mx-auto px-8 grid lg:grid-cols-2 gap-12 items-center relative z-10">
+    <!-- Text -->
+    <div data-aos="fade-right">
+      <h1 class="text-5xl lg:text-6xl font-extrabold tracking-tight gradient-text leading-tight">
+        Master Your Community
+      </h1>
+      <p class="text-lg text-gray-300 max-w-lg mt-4">
+        Effortless Roblox community management, analytics, and automation in one sleek platform.
+      </p>
+      <div class="flex gap-4 pt-6">
+        <a href="#pricing" class="btn-primary">View Plans</a>
+        <button onclick="openModal('videoModal')" class="btn-secondary">Watch Demo</button>
+      </div>
+    </div>
 
-<div class="max-w-7xl mx-auto px-8 grid lg:grid-cols-2 gap-16 items-center">
-
-<div data-aos="fade-up">
-
-<h1 class="text-5xl lg:text-6xl font-extrabold text-white leading-tight">
-
-Community Infrastructure  
-for Modern Roblox Groups
-
-</h1>
-
-<p class="mt-6 text-lg text-gray-400 max-w-lg">
-
-Manage, analyze and automate your Roblox communities with powerful infrastructure built for scale.
-
-</p>
-
-<div class="mt-8 flex gap-4">
-
-<a href="#pricing" class="btn-primary">
-Get Started
-</a>
-
-<a href="#features" class="btn-secondary">
-View Features
-</a>
-
-</div>
-
-</div>
-
-
-<!-- DASHBOARD IMAGE -->
-
-<div data-aos="fade-left">
-
-<img
-src="/icons/dashprev.png"
-class="rounded-xl border border-gray-800 shadow-xl w-full transition duration-500 hover:scale-[1.01]"
-alt="Dashboard Preview"
-/>
-
-</div>
-
-</div>
-
+    <!-- Dashboard Preview with subtle glow -->
+    <div data-aos="fade-left" class="relative">
+      <div class="glass-card p-1 rounded-3xl shadow-xl border border-gray-600 overflow-hidden hover:scale-105 transition-transform duration-500">
+        <img src="/icons/dashprev.png" alt="Dashboard Preview" class="rounded-3xl shadow-2xl transition duration-500 hover:shadow-indigo-500/50">
+      </div>
+      <!-- Glow ring behind image -->
+      <div class="absolute -inset-2 rounded-3xl bg-gradient-to-r from-indigo-500 via-cyan-400 to-purple-500 opacity-20 blur-3xl animate-pulse pointer-events-none"></div>
+    </div>
+  </div>
 </section>
+
+<hr class="border-gray-700">
 
 <!-- METRICS -->
-
-<section class="border-t border-gray-800 py-20">
-
-<div class="max-w-6xl mx-auto px-8 grid grid-cols-2 md:grid-cols-4 gap-10 text-center">
-
-<div data-aos="fade-up">
-
-<div class="text-3xl font-bold text-white">1,200+</div>
-
-<p class="text-gray-400 mt-2 text-sm">
-Groups Managed
-</p>
-
-</div>
-
-<div data-aos="fade-up" data-aos-delay="100">
-
-<div class="text-3xl font-bold text-white">60K+</div>
-
-<p class="text-gray-400 mt-2 text-sm">
-Members Tracked
-</p>
-
-</div>
-
-<div data-aos="fade-up" data-aos-delay="200">
-
-<div class="text-3xl font-bold text-white">140+</div>
-
-<p class="text-gray-400 mt-2 text-sm">
-Automation Systems
-</p>
-
-</div>
-
-<div data-aos="fade-up" data-aos-delay="300">
-
-<div class="text-3xl font-bold text-white">24/7</div>
-
-<p class="text-gray-400 mt-2 text-sm">
-Infrastructure Monitoring
-</p>
-
-</div>
-
-</div>
-
+<section class="py-20 bg-[#111217]">
+  <div class="max-w-6xl mx-auto px-8 text-center grid grid-cols-2 md:grid-cols-4 gap-10">
+    <div data-aos="fade-up">
+      <div class="counter" data-target="1000">0</div>
+      <p class="text-gray-300 mt-2">Active Groups</p>
+    </div>
+    <div data-aos="fade-up" data-aos-delay="100">
+      <div class="counter" data-target="50000">0</div>
+      <p class="text-gray-300 mt-2">Members Managed</p>
+    </div>
+    <div data-aos="fade-up" data-aos-delay="200">
+      <div class="counter" data-target="120">0</div>
+      <p class="text-gray-300 mt-2">Automations</p>
+    </div>
+    <div data-aos="fade-up" data-aos-delay="300">
+      <div class="counter" data-target="24">0</div>
+      <p class="text-gray-300 mt-2">/7 Support</p>
+    </div>
+  </div>
 </section>
+
+<hr class="border-gray-700">
 
 <!-- FEATURES -->
-
-<section id="features" class="border-t border-gray-800 py-24">
-
-<div class="max-w-6xl mx-auto px-8">
-
-<h2 class="text-4xl font-bold text-white text-center mb-16" data-aos="fade-up">
-
-Powerful Platform Features
-
-</h2>
-
-<div class="grid md:grid-cols-2 gap-10">
-
-<div class="card p-8" data-aos="fade-up">
-
-<h3 class="text-xl font-semibold text-white">
-Instant Setup
-</h3>
-
-<p class="text-gray-400 mt-2">
-Connect your Roblox group and deploy tools instantly.
-</p>
-
-</div>
-
-<div class="card p-8" data-aos="fade-up" data-aos-delay="100">
-
-<h3 class="text-xl font-semibold text-white">
-Advanced Analytics
-</h3>
-
-<p class="text-gray-400 mt-2">
-Track engagement, rank activity and growth metrics.
-</p>
-
-</div>
-
-<div class="card p-8" data-aos="fade-up" data-aos-delay="200">
-
-<h3 class="text-xl font-semibold text-white">
-Automation Systems
-</h3>
-
-<p class="text-gray-400 mt-2">
-Reduce manual moderation with automated workflows.
-</p>
-
-</div>
-
-<div class="card p-8" data-aos="fade-up" data-aos-delay="300">
-
-<h3 class="text-xl font-semibold text-white">
-Secure Infrastructure
-</h3>
-
-<p class="text-gray-400 mt-2">
-Enterprise-grade protection and stable API connections.
-</p>
-
-</div>
-
-</div>
-
-</div>
-
+<section id="features" class="py-24">
+  <div class="max-w-6xl mx-auto px-8 space-y-10">
+    <h2 data-aos="fade-up" class="text-4xl font-bold text-center text-white">Everything You Need</h2>
+    <div class="grid md:grid-cols-2 gap-12">
+      <div data-aos="flip-left" class="glass-card p-8">
+        <h3 class="text-xl font-semibold text-gray-200">Instant Setup</h3>
+        <p class="text-gray-400 mt-2">Connect your group in seconds with zero hassle.</p>
+      </div>
+      <div data-aos="flip-right" class="glass-card p-8">
+        <h3 class="text-xl font-semibold text-gray-200">Secure & Reliable</h3>
+        <p class="text-gray-400 mt-2">Enterprise-grade security you can trust.</p>
+      </div>
+      <div data-aos="flip-left" class="glass-card p-8">
+        <h3 class="text-xl font-semibold text-gray-200">Deep Analytics</h3>
+        <p class="text-gray-400 mt-2">Track growth and trends with clarity.</p>
+      </div>
+      <div data-aos="flip-right" class="glass-card p-8">
+        <h3 class="text-xl font-semibold text-gray-200">Powerful Automation</h3>
+        <p class="text-gray-400 mt-2">Reduce repetitive tasks across your community.</p>
+      </div>
+    </div>
+  </div>
 </section>
+
+<hr class="border-gray-700">
 
 <!-- PRICING -->
-
-<section id="pricing" class="border-t border-gray-800 py-24">
-
-<div class="max-w-5xl mx-auto px-8 text-center">
-
-<h2 class="text-4xl font-bold text-white mb-14" data-aos="fade-up">
-Pricing
-</h2>
-
-<div class="grid md:grid-cols-2 gap-10">
-
-<div class="card p-10" data-aos="fade-right">
-
-<h3 class="text-xl font-semibold text-white mb-4">
-Starter
-</h3>
-
-<p class="text-4xl font-bold text-white">
-Free
-</p>
-
-<ul class="mt-6 text-gray-400 text-sm space-y-2">
-<li>1 Workspace</li>
-<li>Basic Analytics</li>
-<li>API Access</li>
-</ul>
-
-<button class="btn-secondary w-full mt-8 opacity-60 cursor-not-allowed">
-Unavailable
-</button>
-
-</div>
-
-<div class="card p-10" data-aos="fade-left">
-
-<h3 class="text-xl font-semibold text-white mb-4">
-Pro
-</h3>
-
-<p class="text-4xl font-bold text-white">
-400 Robux
-</p>
-
-<ul class="mt-6 text-gray-400 text-sm space-y-2">
-<li>3 Workspaces</li>
-<li>Advanced Analytics</li>
-<li>Automation Tools</li>
-<li>Priority Support</li>
-</ul>
-
-<button class="btn-primary w-full mt-8">
-Unavailable
-</button>
-
-</div>
-
-</div>
-
-</div>
-
+<section id="pricing" class="py-24">
+  <div class="max-w-5xl mx-auto px-8 text-center space-y-10">
+    <h2 data-aos="fade-up" class="text-4xl font-bold text-white">Flexible & Clear Pricing</h2>
+    <div class="grid md:grid-cols-2 gap-10">
+      <div data-aos="fade-right" class="glass-card p-10">
+        <h3 class="text-2xl font-semibold mb-4 text-gray-200">Starter</h3>
+        <p class="text-4xl font-bold">0 GBP</p>
+        <ul class="text-gray-400 text-sm space-y-2 mt-4 list-disc list-inside">
+          <li>1 Workspace</li>
+          <li>Basic API, Logs & Docs</li>
+          <li>Support Center Access</li>
+        </ul>
+        <button class="btn-secondary mt-6 w-full opacity-50 cursor-not-allowed rounded-lg">Unavailable</button>
+      </div>
+      <div data-aos="fade-left" class="glass-card p-12 shadow-lg">
+        <h3 class="text-2xl font-semibold mb-4 text-gray-200">Pro</h3>
+        <p class="text-4xl font-bold">400 robux</p>
+        <ul class="text-gray-400 text-sm space-y-2 mt-4 list-disc list-inside">
+          <li>Everything in Starter</li>
+          <li>3 Workspaces</li>
+          <li>Advanced Graphs & API</li>
+          <li>Auto-Ranking Included</li>
+        </ul>
+        <button class="btn-primary mt-6 w-full">Unavailable</button>
+      </div>
+    </div>
+  </div>
 </section>
+
+<hr class="border-gray-700">
 
 <!-- CTA -->
-
-<section class="border-t border-gray-800 py-20 text-center">
-
-<h2 class="text-4xl font-bold text-white mb-4" data-aos="zoom-in">
-Simplify Your Community Operations
-</h2>
-
-<p class="text-gray-400 mb-6" data-aos="zoom-in" data-aos-delay="100">
-Infrastructure designed for modern Roblox groups.
-</p>
-
-<a href="/register" class="btn-primary" data-aos="zoom-in" data-aos-delay="200">
-Create Account
-</a>
-
+<section class="py-20 text-center">
+  <h2 data-aos="zoom-in" class="text-4xl font-bold mb-4 text-white">Simplify Your Workflow Today</h2>
+  <p data-aos="zoom-in" data-aos-delay="200" class="text-gray-400 mb-6">Upgrade your Roblox community management.</p>
+  <a data-aos="zoom-in" data-aos-delay="400" href="/register" class="btn-primary">Get Started</a>
 </section>
 
+<hr class="border-gray-700">
+
 <!-- FOOTER -->
-
-<footer id="contact" class="border-t border-gray-800 py-12 text-gray-400 text-sm">
-
-<div class="max-w-7xl mx-auto px-8 grid md:grid-cols-4 gap-10">
-
-<div>
-<h4 class="text-white font-semibold mb-3">Product</h4>
-<p>Features</p>
-<p>Pricing</p>
-</div>
-
-<div>
-<h4 class="text-white font-semibold mb-3">Company</h4>
-<p>About</p>
-<p>Careers</p>
-</div>
-
-<div>
-<h4 class="text-white font-semibold mb-3">Support</h4>
-<p>team@keylogroup.co.uk</p>
-<p>Discord Tickets</p>
-</div>
-
-<div>
-<h4 class="text-white font-semibold mb-3">Legal</h4>
-<p>Privacy Policy</p>
-<p>Terms of Service</p>
-</div>
-
-</div>
-
-<div class="text-center text-gray-500 mt-10">
-© <%= new Date().getFullYear() %> Keylo
-</div>
-
+<footer id="contact" class="py-12 text-gray-400 text-sm">
+  <div class="max-w-7xl mx-auto px-8 grid md:grid-cols-4 gap-10">
+    <div>
+      <h4 class="text-white font-semibold mb-3">Product</h4>
+      <p>Features • Services • Pricing</p>
+    </div>
+    <div>
+      <h4 class="text-white font-semibold mb-3">Company</h4>
+      <p>About • FAQ • Careers</p>
+    </div>
+    <div>
+      <h4 class="text-white font-semibold mb-3">Support</h4>
+      <p>team@keylogroup.co.uk</p>
+      <p>Discord Tickets</p>
+    </div>
+    <div>
+      <h4 class="text-white font-semibold mb-3">Legal</h4>
+      <p>Privacy • Terms</p>
+    </div>
+  </div>
+  <div class="mt-8 text-center text-gray-500">© <%= new Date().getFullYear() %> Keylo. All rights reserved.</div>
 </footer>
 
-<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<!-- Video Modal -->
+<div id="videoModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center p-4 z-50">
+  <div class="bg-[#111] max-w-3xl w-full relative rounded-xl border border-[#1c1c1c]">
+    <button onclick="closeModal('videoModal')" class="absolute top-3 right-3 text-gray-400 hover:text-white text-2xl leading-none">X</button>
+    <div class="p-6">
+      <h3 class="text-2xl font-bold mb-4 text-center">Watch Our Demo</h3>
+      <div class="aspect-video">
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" class="w-full h-full rounded-xl" frameborder="0" allowfullscreen loading="lazy"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-AOS.init({
-duration:700,
-easing:"ease-out-cubic",
-once:false,
-mirror:true
+function openModal(id){document.getElementById(id).classList.remove("hidden");document.getElementById(id).classList.add("flex")}
+function closeModal(id){document.getElementById(id).classList.add("hidden");document.getElementById(id).classList.remove("flex")}
+
+// Counter animation
+const counters = document.querySelectorAll('.counter');
+counters.forEach(counter=>{
+  counter.innerText='0';
+  const updateCounter=()=>{
+    const target = +counter.getAttribute('data-target');
+    const count = +counter.innerText;
+    const increment = target/100;
+    if(count<target){
+      counter.innerText=Math.ceil(count+increment);
+      setTimeout(updateCounter,20);
+    }else{counter.innerText=target;}
+  }
+  updateCounter();
 });
+</script>
+
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+AOS.init({duration:800,easing:'ease-out-cubic',once:false,mirror:true});
 </script>
 
 </body>
