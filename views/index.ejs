@@ -1,264 +1,234 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keylo</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keylo — Premium Roblox Community Management</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="icon" href="/assets/keylo-logo.png">
+<!-- Tailwind + Vengeance Core -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/@vengeanceui/core@latest/dist/vengeance.min.js"></script>
 
-    <style>
-        :root {
-            --brand-primary: #6366f1;
-            --brand-secondary: #06b6d4;
-            --bg-dark: #050505;
-        }
-        body {
-            background-color: var(--bg-dark);
-            color: #ffffff;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            overflow-x: hidden;
-        }
-        .glass-header {
-            background: rgba(5, 5, 5, 0.8);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .hero-gradient {
-            background: radial-gradient(circle at 50% -20%, rgba(99, 102, 241, 0.15) 0%, rgba(5, 5, 5, 0) 50%);
-        }
-        .v-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .v-card:hover {
-            border-color: var(--brand-primary);
-            background: rgba(255, 255, 255, 0.05);
-            transform: translateY(-4px);
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-        }
-    </style>
+<!-- AOS for scroll animations -->
+<link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="/assets/keylo-logo.png">
+
+<style>
+body {
+  background: #0d0d0d;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+}
+.glass-nav {
+  background: rgba(13, 13, 13, 0.6);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid #333;
+}
+.gradient-btn {
+  background: linear-gradient(90deg, #5c6ac4, #00c3ff);
+}
+.gradient-border {
+  border-image: linear-gradient(90deg, #5c6ac4, #00c3ff) 1;
+}
+</style>
 </head>
 
-<body class="hero-gradient">
+<body class="relative">
 
-<header class="fixed top-0 w-full z-50 glass-header">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <div class="flex items-center gap-10">
-            <a href="/" class="text-xl font-extrabold tracking-tight flex items-center gap-2">
-                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">K</div>
-                Keylo
-            </a>
-            <nav class="hidden lg:flex gap-8 text-sm font-medium text-gray-400">
-                <a href="#features" class="hover:text-white transition">Product</a>
-                <a href="#analytics" class="hover:text-white transition">Analytics</a>
-                <a href="#pricing" class="hover:text-white transition">Pricing</a>
-                <a href="https://docs.keylogroup.co.uk" class="hover:text-white transition">Documentation</a>
-            </nav>
-        </div>
-        <div class="flex items-center gap-4">
-            <a href="/login" class="text-sm font-semibold hover:text-indigo-400 transition">Log In</a>
-            <a href="/register" class="btn-primary px-5 py-2.5 rounded-full text-sm font-bold transition hover:scale-105">
-                Start for Free
-            </a>
-        </div>
+<!-- NAVBAR -->
+<header class="fixed top-0 w-full z-50 glass-nav shadow-lg">
+  <div class="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
+    <a href="/" class="text-2xl font-bold tracking-tight">Keylo</a>
+
+    <nav class="hidden lg:flex gap-8 text-gray-300 text-sm font-semibold uppercase">
+      <a href="#features" class="hover:text-white transition">Features</a>
+      <a href="#services" class="hover:text-white transition">Services</a>
+      <a href="#pricing" class="hover:text-white transition">Pricing</a>
+      <a href="#contact" class="hover:text-white transition">Contact</a>
+    </nav>
+
+    <div class="flex items-center gap-4">
+      <a href="/register" class="btn gradient-btn text-black font-semibold px-6 py-2 rounded-lg shadow-lg hover:scale-105 transition">Get Started</a>
+      <a href="/login" class="btn btn-outline text-white border-white px-6 py-2 rounded-lg hover:bg-gray-900 transition">Login</a>
     </div>
+  </div>
 </header>
 
-<section class="relative pt-40 pb-20 px-6">
-    <div class="max-w-5xl mx-auto text-center">
-        <div data-aos="fade-up" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold mb-6">
-            <span class="relative flex h-2 w-2">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-            </span>
-            NEW: V2 ENGINE NOW LIVE
-        </div>
-        <h1 data-aos="fade-up" data-aos-delay="100" class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6">
-            Scaling Roblox Communities <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">Without the Friction.</span>
-        </h1>
-        <p data-aos="fade-up" data-aos-delay="200" class="text-lg text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Keylo delivers enterprise-grade automation and high-fidelity analytics for serious group owners. Manage ranks, track performance, and automate workflows from one central dashboard.
-        </p>
-        <div data-aos="fade-up" data-aos-delay="300" class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/register" class="btn-primary px-8 py-4 rounded-xl font-bold text-lg hover:scale-105 transition">Deploy Keylo Now</a>
-            <a href="#features" class="bg-white/5 hover:bg-white/10 border border-white/10 px-8 py-4 rounded-xl font-bold text-lg transition">Explore Features</a>
-        </div>
+<!-- HERO -->
+<section class="pt-32 pb-24">
+  <div class="max-w-7xl mx-auto px-8 grid lg:grid-cols-2 gap-12 items-center">
+    <div data-aos="fade-right" data-aos-delay="200" class="space-y-6">
+      <h1 class="text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+        Command Your Roblox Community<br>
+        with Brighter Control & Insights
+      </h1>
+      <p class="text-xl text-gray-300 max-w-lg">
+        Smart automation, vivid analytics, and effortless management — powered by premium, intuitive UI.
+      </p>
+
+      <div class="flex gap-4 pt-4">
+        <a href="#pricing" class="btn gradient-btn text-black font-semibold px-8 py-3 rounded-lg shadow-lg hover:scale-105 transition">View Plans</a>
+        <button onclick="openModal('videoModal')" class="btn border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-500 hover:text-black px-8 py-3 rounded-lg transition">Watch Demo</button>
+      </div>
     </div>
 
-    <div data-aos="zoom-in-up" data-aos-delay="400" class="max-w-6xl mx-auto mt-20 relative">
-        <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-2xl blur opacity-20"></div>
-        <div class="relative bg-[#0d0d0d] rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
-            <img src="/icons/dashprev.png" alt="Keylo Dashboard Interface" class="w-full opacity-90">
+    <div data-aos="fade-left" data-aos-delay="400">
+      <div class="relative group">
+        <div class="rounded-3xl overflow-hidden ring-2 ring-cyan-400 group-hover:scale-105 transition duration-500 shadow-2xl">
+          <img src="/icons/dashprev.png" alt="Dashboard Preview" class="w-full">
         </div>
+      </div>
     </div>
+  </div>
 </section>
 
-<section class="py-10 border-y border-white/5 bg-white/[0.01]">
-    <div class="max-w-7xl mx-auto px-6 flex flex-wrap justify-center gap-12 opacity-40 grayscale">
-        <span class="font-bold text-xl uppercase tracking-widest italic">Nexus Global</span>
-        <span class="font-bold text-xl uppercase tracking-widest italic">Aegis Roleplay</span>
-        <span class="font-bold text-xl uppercase tracking-widest italic">Nova Hotels</span>
-        <span class="font-bold text-xl uppercase tracking-widest italic">State of Fire</span>
+<hr class="border-gray-700">
+
+<!-- SERVICES -->
+<section id="services" class="py-20 bg-[#111217]">
+  <div class="max-w-6xl mx-auto px-8 text-center space-y-8">
+    <h2 data-aos="fade-up" class="text-3xl font-bold text-white">What Keylo Helps You Do Best</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 text-gray-300 mt-10">
+      <div data-aos="fade-up" data-aos-delay="100" class="space-y-2">
+        <h3 class="text-white font-semibold">Leader Tools</h3>
+        <p class="text-sm">Manage roles, ranks, permissions effortlessly.</p>
+      </div>
+      <div data-aos="fade-up" data-aos-delay="200" class="space-y-2">
+        <h3 class="text-white font-semibold">Step Setup</h3>
+        <p class="text-sm">Quick guided onboarding for teams.</p>
+      </div>
+      <div data-aos="fade-up" data-aos-delay="300" class="space-y-2">
+        <h3 class="text-white font-semibold">Real Insights</h3>
+        <p class="text-sm">Analytics that inform decisions clearly.</p>
+      </div>
+      <div data-aos="fade-up" data-aos-delay="400" class="space-y-2">
+        <h3 class="text-white font-semibold">Anywhere Access</h3>
+        <p class="text-sm">Desktop, tablet, or mobile — always synced.</p>
+      </div>
+      <div data-aos="fade-up" data-aos-delay="500" class="space-y-2">
+        <h3 class="text-white font-semibold">Automate Workflows</h3>
+        <p class="text-sm">Let Keylo take repetitive tasks off your plate.</p>
+      </div>
     </div>
+  </div>
 </section>
 
-<section id="features" class="py-32 px-6">
-    <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-            <div class="max-w-xl">
-                <h2 class="text-indigo-500 font-bold uppercase tracking-widest text-sm mb-3">Enterprise Capabilities</h2>
-                <h3 class="text-4xl font-bold">Built for performance, <br>designed for simplicity.</h3>
-            </div>
-            <p class="text-gray-400 max-w-xs">Stop wasting hours on manual ranking. Keylo handles the logistics so you can focus on the community.</p>
-        </div>
+<hr class="border-gray-700">
 
-        <div class="grid md:grid-cols-3 gap-6">
-            <div data-aos="fade-up" class="v-card p-8 rounded-3xl">
-                <div class="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center text-indigo-400 mb-6">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                </div>
-                <h4 class="text-xl font-bold mb-3">Instant Auto-Ranking</h4>
-                <p class="text-gray-400 text-sm leading-relaxed">Connect your Roblox group and set up XP-based or role-based ranking in under 60 seconds.</p>
-            </div>
-            <div data-aos="fade-up" data-aos-delay="100" class="v-card p-8 rounded-3xl">
-                <div class="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center text-cyan-400 mb-6">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                </div>
-                <h4 class="text-xl font-bold mb-3">Granular Analytics</h4>
-                <p class="text-gray-400 text-sm leading-relaxed">Visualize growth patterns and staff activity with high-fidelity charts that update in real-time.</p>
-            </div>
-            <div data-aos="fade-up" data-aos-delay="200" class="v-card p-8 rounded-3xl">
-                <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center text-purple-400 mb-6">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                </div>
-                <h4 class="text-xl font-bold mb-3">Secure Infrastructure</h4>
-                <p class="text-gray-400 text-sm leading-relaxed">Your data is encrypted and hosted on high-availability servers, ensuring 99.9% uptime for your community.</p>
-            </div>
-        </div>
+<!-- FEATURES -->
+<section id="features" class="py-24">
+  <div class="max-w-6xl mx-auto px-8 space-y-10">
+    <h2 data-aos="fade-up" class="text-4xl font-bold text-center text-white">Everything You Need</h2>
+
+    <div class="grid md:grid-cols-2 gap-12">
+      <div data-aos="flip-left" class="p-8 bg-[#111217] rounded-3xl shadow-lg transition transform hover:-translate-y-2 hover:shadow-2xl">
+        <h3 class="text-xl font-semibold text-cyan-400">Instant Setup</h3>
+        <p class="text-gray-300 mt-2">Get started in seconds — no friction.</p>
+      </div>
+
+      <div data-aos="flip-right" class="p-8 bg-[#111217] rounded-3xl shadow-lg transition transform hover:-translate-y-2 hover:shadow-2xl">
+        <h3 class="text-xl font-semibold text-indigo-400">Secure & Reliable</h3>
+        <p class="text-gray-300 mt-2">Enterprise-grade security you can trust.</p>
+      </div>
+
+      <div data-aos="flip-left" class="p-8 bg-[#111217] rounded-3xl shadow-lg transition transform hover:-translate-y-2 hover:shadow-2xl">
+        <h3 class="text-xl font-semibold text-purple-400">Deep Analytics</h3>
+        <p class="text-gray-300 mt-2">Charts that tell real stories.</p>
+      </div>
+
+      <div data-aos="flip-right" class="p-8 bg-[#111217] rounded-3xl shadow-lg transition transform hover:-translate-y-2 hover:shadow-2xl">
+        <h3 class="text-xl font-semibold text-teal-400">Powerful Automation</h3>
+        <p class="text-gray-300 mt-2">Cut manual work across your groups.</p>
+      </div>
     </div>
+  </div>
 </section>
 
-<section id="pricing" class="py-32 bg-white/[0.02]">
-    <div class="max-w-5xl mx-auto px-6 text-center">
-        <h2 class="text-4xl font-extrabold mb-4">Invest in Your Growth</h2>
-        <p class="text-gray-400 mb-16">No hidden fees. Transparent pricing for every scale of operation.</p>
+<hr class="border-gray-700">
 
-        <div class="grid md:grid-cols-2 gap-8 items-center">
-            <div data-aos="fade-right" class="p-10 rounded-3xl border border-white/10 bg-[#0d0d0d] text-left">
-                <h4 class="text-lg font-bold mb-1 text-gray-400">Essential</h4>
-                <div class="flex items-baseline gap-1 mb-6">
-                    <span class="text-4xl font-extrabold">Free</span>
-                    <span class="text-gray-500 text-sm">/ forever</span>
-                </div>
-                <ul class="space-y-4 mb-10 text-sm text-gray-300">
-                    <li class="flex items-center gap-3">
-                        <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                        1 Workspace
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                        Standard API Access
-                    </li>
-                    <li class="flex items-center gap-3 text-gray-600 italic">
-                        Community Support
-                    </li>
-                </ul>
-                <button class="w-full py-3 rounded-xl border border-white/20 font-bold hover:bg-white/5 transition opacity-50 cursor-not-allowed">Coming Soon</button>
-            </div>
+<!-- PRICING -->
+<section id="pricing" class="py-24">
+  <div class="max-w-5xl mx-auto px-8 text-center space-y-10">
+    <h2 data-aos="fade-up" class="text-4xl font-bold text-white">Flexible & Clear Pricing</h2>
 
-            <div data-aos="fade-left" class="p-10 rounded-3xl border-2 border-indigo-500 bg-indigo-500/5 text-left relative overflow-hidden">
-                <div class="absolute top-0 right-0 bg-indigo-500 text-white text-[10px] font-black px-4 py-1 rounded-bl-lg uppercase tracking-widest">Recommended</div>
-                <h4 class="text-lg font-bold mb-1 text-indigo-400">Professional</h4>
-                <div class="flex items-baseline gap-1 mb-6">
-                    <span class="text-4xl font-extrabold">400</span>
-                    <span class="text-gray-400 text-sm">Robux / month</span>
-                </div>
-                <ul class="space-y-4 mb-10 text-sm text-gray-300">
-                    <li class="flex items-center gap-3">
-                        <svg class="w-5 h-5 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                        <strong>3 Workspaces</strong> (Multi-group support)
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <svg class="w-5 h-5 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                        Advanced Activity Heatmaps
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <svg class="w-5 h-5 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                        Unlimited Webhook Logs
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <svg class="w-5 h-5 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                        Priority 24/7 Support
-                    </li>
-                </ul>
-                <button class="btn-primary w-full py-4 rounded-xl font-bold transition hover:scale-[1.02]">Coming Soon</button>
-            </div>
-        </div>
+    <div class="grid md:grid-cols-2 gap-10">
+      <div data-aos="fade-right" class="p-10 bg-[#111217] rounded-3xl border border-cyan-400 shadow-lg transition-transform hover:scale-105">
+        <h3 class="text-2xl font-semibold mb-4 text-cyan-400">Starter</h3>
+        <p class="text-5xl font-bold">0 GBP</p>
+        <ul class="text-gray-300 text-sm space-y-2 mt-4 list-disc list-inside">
+          <li>1 Workspace</li>
+          <li>Basic API, Logs & Docs</li>
+          <li>Support Center Access</li>
+        </ul>
+        <button class="btn border-2 border-gray-500 text-gray-300 mt-6 w-full opacity-50 cursor-not-allowed rounded-lg">Unavailable</button>
+      </div>
+
+      <div data-aos="fade-left" class="p-12 bg-[#111217] rounded-3xl border-2 border-indigo-500 shadow-2xl transform hover:scale-105 transition">
+        <h3 class="text-2xl font-semibold mb-4 text-indigo-400">Pro</h3>
+        <p class="text-5xl font-bold">400 robux</p>
+        <ul class="text-gray-300 text-sm space-y-2 mt-4 list-disc list-inside">
+          <li>Everything in Starter</li>
+          <li>3 Workspaces</li>
+          <li>Advanced Graphs & API</li>
+          <li>Auto-Ranking Included</li>
+        </ul>
+        <button class="btn gradient-btn text-black font-semibold mt-6 w-full rounded-lg">Unavailable</button>
+      </div>
     </div>
+  </div>
 </section>
 
-<section class="py-40 relative px-6 overflow-hidden">
-    <div class="absolute inset-0 bg-indigo-600/5"></div>
-    <div class="max-w-4xl mx-auto text-center relative z-10">
-        <h2 class="text-4xl md:text-5xl font-extrabold mb-8">Ready to Professionalize <br>Your Community?</h2>
-        <a href="/register" class="btn-primary px-10 py-5 rounded-full font-bold text-xl inline-block hover:shadow-indigo-500/50 transition">Get Started Today</a>
-        <p class="mt-6 text-gray-500 font-medium">No credit card required for free-tier deployments.</p>
-    </div>
+<hr class="border-gray-700">
+
+<!-- CTA -->
+<section class="py-20 text-center">
+  <h2 data-aos="zoom-in" class="text-4xl font-bold mb-4 text-white">Time to Simplify Your Workflow?</h2>
+  <p data-aos="zoom-in" data-aos-delay="200" class="text-gray-300 mb-6">Upgrade your Roblox community management today.</p>
+  <a data-aos="zoom-in" data-aos-delay="400" href="/register" class="btn gradient-btn text-black font-semibold px-10 py-3 rounded-lg shadow-lg hover:scale-105 transition">Get Started</a>
 </section>
 
-<footer class="py-20 border-t border-white/5">
-    <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12">
-        <div class="col-span-2 md:col-span-1">
-            <a href="/" class="text-2xl font-bold mb-6 block">Keylo</a>
-            <p class="text-gray-500 text-sm leading-relaxed">
-                The next generation of group management. High performance. Deep insights. Better control.
-            </p>
-        </div>
-        <div>
-            <h5 class="font-bold mb-6 text-sm uppercase tracking-widest text-gray-400">Product</h5>
-            <ul class="space-y-4 text-sm text-gray-500">
-                <li><a href="#" class="hover:text-white transition">Features</a></li>
-                <li><a href="#" class="hover:text-white transition">Roadmap</a></li>
-                <li><a href="#" class="hover:text-white transition">Release Notes</a></li>
-            </ul>
-        </div>
-        <div>
-            <h5 class="font-bold mb-6 text-sm uppercase tracking-widest text-gray-400">Resources</h5>
-            <ul class="space-y-4 text-sm text-gray-500">
-                <li><a href="#" class="hover:text-white transition">Documentation</a></li>
-                <li><a href="#" class="hover:text-white transition">API Status</a></li>
-                <li><a href="#" class="hover:text-white transition">Support</a></li>
-            </ul>
-        </div>
-        <div>
-            <h5 class="font-bold mb-6 text-sm uppercase tracking-widest text-gray-400">Legal</h5>
-            <ul class="space-y-4 text-sm text-gray-500">
-                <li><a href="#" class="hover:text-white transition">Terms of Service</a></li>
-                <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
-            </ul>
-        </div>
+<hr class="border-gray-700">
+
+<!-- FOOTER -->
+<footer id="contact" class="py-12 text-gray-400 text-sm">
+  <div class="max-w-7xl mx-auto px-8 grid md:grid-cols-4 gap-10">
+    <div>
+      <h4 class="text-white font-semibold mb-3">Product</h4>
+      <p>Features • Services • Pricing</p>
     </div>
-    <div class="max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-600">
-        <p>© <%= new Date().getFullYear() %> Keylo Group. Not affiliated with Roblox Corporation.</p>
-        <div class="flex gap-6">
-            <span>Built by the Keylo Team</span>
-            <a href="#" class="hover:text-white transition">Twitter</a>
-            <a href="#" class="hover:text-white transition">Discord</a>
-        </div>
+    <div>
+      <h4 class="text-white font-semibold mb-3">Company</h4>
+      <p>About • FAQ • Careers</p>
     </div>
+    <div>
+      <h4 class="text-white font-semibold mb-3">Support</h4>
+      <p>team@keylogroup.co.uk</p>
+      <p>Discord Tickets</p>
+    </div>
+    <div>
+      <h4 class="text-white font-semibold mb-3">Legal</h4>
+      <p>Privacy • Terms</p>
+    </div>
+  </div>
+
+  <div class="mt-8 text-center text-gray-500">
+    © <%= new Date().getFullYear() %> Keylo. All rights reserved.
+  </div>
 </footer>
 
+<!-- Video Modal -->
+<script>
+function openModal(id){const el=document.getElementById(id);el.classList.remove("hidden");el.classList.add("flex")}
+function closeModal(id){const el=document.getElementById(id);el.classList.add("hidden");el.classList.remove("flex")}
+</script>
+
+<!-- AOS Init -->
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script>
-    AOS.init({ duration: 1000, once: true, easing: 'ease-out-quart' });
+AOS.init({duration:800, once:true});
 </script>
 
 </body>
