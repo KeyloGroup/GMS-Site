@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Keylo — Command Your Community</title>
+<title>Keylo — Master Your Community</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet">
@@ -14,113 +14,117 @@
 /* Global */
 body {
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(135deg, #0d0d0d, #111217);
-  color: #fff;
+  background: #0f0f14;
+  color: #f5f5f5;
   overflow-x: hidden;
 }
 
 /* Glass navbar */
 .glass-nav {
-  backdrop-filter: blur(25px);
-  background: rgba(13,13,13,0.55);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(15px);
+  background: rgba(20,20,30,0.7);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
-/* Gradient Buttons */
-.gradient-btn {
-  background: linear-gradient(90deg,#00f0ff,#5c6ac4,#8a3ffc);
-  color:black;
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(135deg,#4f5dba,#3a3f5c);
+  color: #fff;
   font-weight: 600;
   border-radius: 0.75rem;
   padding: 0.75rem 2rem;
   transition: all 0.3s ease;
 }
-.gradient-btn:hover{
-  transform: scale(1.05);
-  box-shadow: 0 20px 40px rgba(0,240,255,0.4);
+.btn-primary:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.btn-secondary {
+  border: 1px solid #555;
+  color: #f5f5f5;
+  padding: 0.7rem 1.8rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.05);
 }
 
 /* Glass cards */
 .glass-card {
-  background: rgba(20,20,30,0.6);
-  border: 1px solid rgba(255,255,255,0.1);
-  backdrop-filter: blur(15px);
+  background: rgba(25,25,35,0.7);
   border-radius: 1rem;
+  border: 1px solid rgba(255,255,255,0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.glass-card:hover{
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0,200,255,0.3);
+.glass-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
-/* Gradient animated headline */
+/* Gradient headline */
 .gradient-text {
-  background: linear-gradient(90deg,#00f0ff,#5c6ac4,#8a3ffc);
+  background: linear-gradient(90deg,#6c7aa4,#3f465b);
   -webkit-background-clip: text;
   color: transparent;
-  animation: gradientMove 3s ease infinite alternate;
-}
-@keyframes gradientMove {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
 }
 
-/* Floating shapes */
-.floating-shape{
+/* Floating shapes subtle */
+.floating-shape {
   position: absolute;
   border-radius: 50%;
-  opacity: 0.15;
-  animation: float 6s ease-in-out infinite alternate;
+  opacity: 0.08;
+  animation: float 8s ease-in-out infinite alternate;
 }
-@keyframes float{
-  0%{transform:translateY(0) rotate(0deg);}
-  100%{transform:translateY(-20px) rotate(20deg);}
+@keyframes float {
+  0%{transform:translateY(0);}
+  100%{transform:translateY(-15px);}
 }
 
-/* Metrics count up */
-.counter { font-weight: 700; font-size: 2.5rem; color:#00f0ff; }
+/* Counter numbers */
+.counter { font-weight: 700; font-size: 2rem; color:#7c88b0; }
 </style>
 </head>
 <body>
 
 <!-- NAVBAR -->
 <header class="fixed top-0 w-full z-50 glass-nav">
-  <div class="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
+  <div class="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
     <a href="/" class="text-2xl font-bold tracking-tight">Keylo</a>
-    <nav class="hidden lg:flex gap-8 text-gray-300 text-sm font-semibold uppercase">
+    <nav class="hidden lg:flex gap-8 text-gray-400 text-sm font-semibold uppercase">
       <a href="#features" class="hover:text-white transition">Features</a>
       <a href="#services" class="hover:text-white transition">Services</a>
       <a href="#pricing" class="hover:text-white transition">Pricing</a>
       <a href="#contact" class="hover:text-white transition">Contact</a>
     </nav>
     <div class="flex items-center gap-4">
-      <a href="/register" class="gradient-btn">Get Started</a>
-      <a href="/login" class="border-2 border-white px-6 py-2 rounded-lg hover:bg-gray-900 transition">Login</a>
+      <a href="/register" class="btn-primary">Get Started</a>
+      <a href="/login" class="btn-secondary">Login</a>
     </div>
   </div>
 </header>
 
 <!-- HERO -->
-<section class="relative pt-36 pb-32 overflow-hidden">
-  <!-- floating shapes -->
-  <div class="floating-shape w-64 h-64 bg-cyan-500 top-10 left-10"></div>
-  <div class="floating-shape w-48 h-48 bg-purple-500 top-40 right-32"></div>
-  <div class="floating-shape w-32 h-32 bg-indigo-500 top-60 left-1/2"></div>
+<section class="relative pt-36 pb-28 overflow-hidden">
+  <div class="floating-shape w-56 h-56 bg-indigo-500 top-10 left-10"></div>
+  <div class="floating-shape w-40 h-40 bg-gray-500 top-52 right-32"></div>
 
   <div class="max-w-7xl mx-auto px-8 grid lg:grid-cols-2 gap-12 items-center relative z-10">
     <div data-aos="fade-right">
-      <h1 class="text-5xl lg:text-6xl font-extrabold tracking-tight gradient-text">
+      <h1 class="text-5xl lg:text-6xl font-extrabold tracking-tight gradient-text leading-tight">
         Master Your Community
       </h1>
-      <p class="text-xl text-gray-300 max-w-lg mt-4">
-        Automate, analyze, and grow your Roblox community with a sleek, premium interface.
+      <p class="text-lg text-gray-300 max-w-lg mt-4">
+        Effortless Roblox community management, analytics, and automation in one sleek platform.
       </p>
       <div class="flex gap-4 pt-6">
-        <a href="#pricing" class="gradient-btn shadow-lg">View Plans</a>
-        <button onclick="openModal('videoModal')" class="border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-500 hover:text-black px-8 py-3 rounded-lg transition">Watch Demo</button>
+        <a href="#pricing" class="btn-primary">View Plans</a>
+        <button onclick="openModal('videoModal')" class="btn-secondary">Watch Demo</button>
       </div>
     </div>
-    <div data-aos="fade-left" class="relative z-10">
+    <div data-aos="fade-left">
       <img src="/icons/dashprev.png" alt="Dashboard Preview" class="rounded-3xl shadow-xl hover:scale-105 transition duration-500">
     </div>
   </div>
@@ -158,20 +162,20 @@ body {
     <h2 data-aos="fade-up" class="text-4xl font-bold text-center text-white">Everything You Need</h2>
     <div class="grid md:grid-cols-2 gap-12">
       <div data-aos="flip-left" class="glass-card p-8">
-        <h3 class="text-xl font-semibold text-cyan-400">Instant Setup</h3>
-        <p class="text-gray-300 mt-2">Get started in seconds — no friction.</p>
+        <h3 class="text-xl font-semibold text-gray-200">Instant Setup</h3>
+        <p class="text-gray-400 mt-2">Connect your group in seconds with zero hassle.</p>
       </div>
       <div data-aos="flip-right" class="glass-card p-8">
-        <h3 class="text-xl font-semibold text-indigo-400">Secure & Reliable</h3>
-        <p class="text-gray-300 mt-2">Enterprise-grade security you can trust.</p>
+        <h3 class="text-xl font-semibold text-gray-200">Secure & Reliable</h3>
+        <p class="text-gray-400 mt-2">Enterprise-grade security you can trust.</p>
       </div>
       <div data-aos="flip-left" class="glass-card p-8">
-        <h3 class="text-xl font-semibold text-purple-400">Deep Analytics</h3>
-        <p class="text-gray-300 mt-2">Charts that tell real stories.</p>
+        <h3 class="text-xl font-semibold text-gray-200">Deep Analytics</h3>
+        <p class="text-gray-400 mt-2">Track growth and trends with clarity.</p>
       </div>
       <div data-aos="flip-right" class="glass-card p-8">
-        <h3 class="text-xl font-semibold text-teal-400">Powerful Automation</h3>
-        <p class="text-gray-300 mt-2">Cut manual work across your groups.</p>
+        <h3 class="text-xl font-semibold text-gray-200">Powerful Automation</h3>
+        <p class="text-gray-400 mt-2">Reduce repetitive tasks across your community.</p>
       </div>
     </div>
   </div>
@@ -184,26 +188,26 @@ body {
   <div class="max-w-5xl mx-auto px-8 text-center space-y-10">
     <h2 data-aos="fade-up" class="text-4xl font-bold text-white">Flexible & Clear Pricing</h2>
     <div class="grid md:grid-cols-2 gap-10">
-      <div data-aos="fade-right" class="glass-card p-10 border-cyan-400">
-        <h3 class="text-2xl font-semibold mb-4 text-cyan-400">Starter</h3>
-        <p class="text-5xl font-bold">0 GBP</p>
-        <ul class="text-gray-300 text-sm space-y-2 mt-4 list-disc list-inside">
+      <div data-aos="fade-right" class="glass-card p-10">
+        <h3 class="text-2xl font-semibold mb-4 text-gray-200">Starter</h3>
+        <p class="text-4xl font-bold">0 GBP</p>
+        <ul class="text-gray-400 text-sm space-y-2 mt-4 list-disc list-inside">
           <li>1 Workspace</li>
           <li>Basic API, Logs & Docs</li>
           <li>Support Center Access</li>
         </ul>
-        <button class="btn border-2 border-gray-500 text-gray-300 mt-6 w-full opacity-50 cursor-not-allowed rounded-lg">Unavailable</button>
+        <button class="btn-secondary mt-6 w-full opacity-50 cursor-not-allowed rounded-lg">Unavailable</button>
       </div>
-      <div data-aos="fade-left" class="glass-card p-12 border-indigo-500 shadow-2xl">
-        <h3 class="text-2xl font-semibold mb-4 text-indigo-400">Pro</h3>
-        <p class="text-5xl font-bold">400 robux</p>
-        <ul class="text-gray-300 text-sm space-y-2 mt-4 list-disc list-inside">
+      <div data-aos="fade-left" class="glass-card p-12 shadow-lg">
+        <h3 class="text-2xl font-semibold mb-4 text-gray-200">Pro</h3>
+        <p class="text-4xl font-bold">400 robux</p>
+        <ul class="text-gray-400 text-sm space-y-2 mt-4 list-disc list-inside">
           <li>Everything in Starter</li>
           <li>3 Workspaces</li>
           <li>Advanced Graphs & API</li>
           <li>Auto-Ranking Included</li>
         </ul>
-        <button class="gradient-btn mt-6 w-full">Unavailable</button>
+        <button class="btn-primary mt-6 w-full">Unavailable</button>
       </div>
     </div>
   </div>
@@ -213,9 +217,9 @@ body {
 
 <!-- CTA -->
 <section class="py-20 text-center">
-  <h2 data-aos="zoom-in" class="text-4xl font-bold mb-4 text-white">Time to Simplify Your Workflow?</h2>
-  <p data-aos="zoom-in" data-aos-delay="200" class="text-gray-300 mb-6">Upgrade your Roblox community management today.</p>
-  <a data-aos="zoom-in" data-aos-delay="400" href="/register" class="gradient-btn shadow-lg">Get Started</a>
+  <h2 data-aos="zoom-in" class="text-4xl font-bold mb-4 text-white">Simplify Your Workflow Today</h2>
+  <p data-aos="zoom-in" data-aos-delay="200" class="text-gray-400 mb-6">Upgrade your Roblox community management.</p>
+  <a data-aos="zoom-in" data-aos-delay="400" href="/register" class="btn-primary">Get Started</a>
 </section>
 
 <hr class="border-gray-700">
@@ -280,7 +284,7 @@ counters.forEach(counter=>{
 
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script>
-AOS.init({duration:900,easing:'ease-out-cubic',once:false,mirror:true});
+AOS.init({duration:800,easing:'ease-out-cubic',once:false,mirror:true});
 </script>
 
 </body>
