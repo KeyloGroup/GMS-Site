@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Keylo</title>
+<title>Keylo — Command Your Community</title>
 
 <!-- Tailwind + AOS -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -15,44 +15,72 @@
 
 <style>
 body {
+  font-family: 'Inter', sans-serif;
   background: #0d0d0d;
   color: #fff;
-  font-family: 'Inter', sans-serif;
   overflow-x: hidden;
 }
 
 /* Glass nav */
 .glass-nav {
-  background: rgba(13, 13, 13, 0.6);
+  background: rgba(13, 13, 13, 0.5);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid #333;
 }
 
-/* Gradient buttons */
+/* Gradient Buttons */
 .gradient-btn {
-  background: linear-gradient(90deg, #5c6ac4, #00c3ff);
-  transition: transform 0.2s, box-shadow 0.2s;
+  background: linear-gradient(90deg, #00f0ff, #5c6ac4, #8a3ffc);
+  transition: all 0.3s ease;
 }
 .gradient-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 12px 30px rgba(0,195,255,0.5);
+  box-shadow: 0 15px 30px rgba(0, 240, 255, 0.4);
 }
 
-/* Cards hover effect */
-.card-hover {
-  transition: transform 0.3s, box-shadow 0.3s;
+/* Glass Cards */
+.glass-card {
+  background: rgba(20, 20, 30, 0.6);
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.card-hover:hover {
+.glass-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 15px 25px rgba(0,255,255,0.15);
+  box-shadow: 0 15px 25px rgba(0, 200, 255, 0.3);
+}
+
+/* Animated gradient text */
+.gradient-text {
+  background: linear-gradient(90deg, #00f0ff, #5c6ac4, #8a3ffc);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: gradientMove 3s ease infinite alternate;
+}
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+/* Floating shapes */
+.floating-shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.15;
+  animation: float 6s ease-in-out infinite alternate;
+}
+@keyframes float {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-20px) rotate(20deg); }
 }
 </style>
 </head>
-
 <body>
 
 <!-- NAVBAR -->
-<header class="fixed top-0 w-full z-50 glass-nav shadow-lg">
+<header class="fixed top-0 w-full z-50 glass-nav">
   <div class="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
     <a href="/" class="text-2xl font-bold tracking-tight">Keylo</a>
     <nav class="hidden lg:flex gap-8 text-gray-300 text-sm font-semibold uppercase">
@@ -69,17 +97,22 @@ body {
 </header>
 
 <!-- HERO -->
-<section class="pt-36 pb-28 relative overflow-hidden">
-  <div class="max-w-7xl mx-auto px-8 grid lg:grid-cols-2 gap-12 items-center">
+<section class="relative pt-36 pb-28 overflow-hidden">
+  <!-- Floating shapes -->
+  <div class="floating-shape w-64 h-64 bg-cyan-500 top-10 left-20"></div>
+  <div class="floating-shape w-48 h-48 bg-purple-500 top-40 right-32"></div>
+  <div class="floating-shape w-32 h-32 bg-indigo-500 top-60 left-1/2"></div>
+
+  <div class="max-w-7xl mx-auto px-8 grid lg:grid-cols-2 gap-12 items-center relative z-10">
     <div data-aos="fade-right">
-      <h1 class="text-5xl lg:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-500">
-        Command Your Community
+      <h1 class="text-5xl lg:text-6xl font-extrabold tracking-tight gradient-text">
+        Master Your Community
       </h1>
       <p class="text-xl text-gray-300 max-w-lg mt-4">
-        Automate, Analyze, Grow — in a sleek, premium UI.
+        Automate, analyze, and grow your Roblox community with a sleek, premium interface.
       </p>
       <div class="flex gap-4 pt-4">
-        <a href="#pricing" class="btn gradient-btn text-black font-semibold px-8 py-3 rounded-lg shadow-lg hover:scale-105 transition">View Plans</a>
+        <a href="#pricing" class="btn gradient-btn text-black font-semibold px-8 py-3 rounded-lg shadow-lg">View Plans</a>
         <button onclick="openModal('videoModal')" class="btn border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-500 hover:text-black px-8 py-3 rounded-lg transition">Watch Demo</button>
       </div>
     </div>
@@ -96,23 +129,23 @@ body {
   <div class="max-w-6xl mx-auto px-8 text-center space-y-8">
     <h2 data-aos="fade-up" class="text-3xl font-bold text-white">Keylo Empowers You</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 text-gray-300 mt-10">
-      <div data-aos="fade-up" data-aos-delay="100" class="space-y-2 card-hover">
+      <div data-aos="fade-up" data-aos-delay="100" class="space-y-2 glass-card p-6">
         <h3 class="text-white font-semibold">Leader Tools</h3>
         <p class="text-sm">Manage roles, ranks, and permissions effortlessly.</p>
       </div>
-      <div data-aos="fade-up" data-aos-delay="200" class="space-y-2 card-hover">
+      <div data-aos="fade-up" data-aos-delay="200" class="space-y-2 glass-card p-6">
         <h3 class="text-white font-semibold">Step Setup</h3>
         <p class="text-sm">Quick guided onboarding for teams.</p>
       </div>
-      <div data-aos="fade-up" data-aos-delay="300" class="space-y-2 card-hover">
+      <div data-aos="fade-up" data-aos-delay="300" class="space-y-2 glass-card p-6">
         <h3 class="text-white font-semibold">Real Insights</h3>
         <p class="text-sm">Analytics that inform decisions clearly.</p>
       </div>
-      <div data-aos="fade-up" data-aos-delay="400" class="space-y-2 card-hover">
+      <div data-aos="fade-up" data-aos-delay="400" class="space-y-2 glass-card p-6">
         <h3 class="text-white font-semibold">Anywhere Access</h3>
         <p class="text-sm">Desktop, tablet, or mobile — always synced.</p>
       </div>
-      <div data-aos="fade-up" data-aos-delay="500" class="space-y-2 card-hover">
+      <div data-aos="fade-up" data-aos-delay="500" class="space-y-2 glass-card p-6">
         <h3 class="text-white font-semibold">Automate Workflows</h3>
         <p class="text-sm">Let Keylo take repetitive tasks off your plate.</p>
       </div>
@@ -127,19 +160,19 @@ body {
   <div class="max-w-6xl mx-auto px-8 space-y-10">
     <h2 data-aos="fade-up" class="text-4xl font-bold text-center text-white">Everything You Need</h2>
     <div class="grid md:grid-cols-2 gap-12">
-      <div data-aos="flip-left" class="p-8 bg-[#111217] rounded-3xl shadow-lg card-hover">
+      <div data-aos="flip-left" class="glass-card p-8">
         <h3 class="text-xl font-semibold text-cyan-400">Instant Setup</h3>
         <p class="text-gray-300 mt-2">Get started in seconds — no friction.</p>
       </div>
-      <div data-aos="flip-right" class="p-8 bg-[#111217] rounded-3xl shadow-lg card-hover">
+      <div data-aos="flip-right" class="glass-card p-8">
         <h3 class="text-xl font-semibold text-indigo-400">Secure & Reliable</h3>
         <p class="text-gray-300 mt-2">Enterprise-grade security you can trust.</p>
       </div>
-      <div data-aos="flip-left" class="p-8 bg-[#111217] rounded-3xl shadow-lg card-hover">
+      <div data-aos="flip-left" class="glass-card p-8">
         <h3 class="text-xl font-semibold text-purple-400">Deep Analytics</h3>
         <p class="text-gray-300 mt-2">Charts that tell real stories.</p>
       </div>
-      <div data-aos="flip-right" class="p-8 bg-[#111217] rounded-3xl shadow-lg card-hover">
+      <div data-aos="flip-right" class="glass-card p-8">
         <h3 class="text-xl font-semibold text-teal-400">Powerful Automation</h3>
         <p class="text-gray-300 mt-2">Cut manual work across your groups.</p>
       </div>
@@ -154,7 +187,7 @@ body {
   <div class="max-w-5xl mx-auto px-8 text-center space-y-10">
     <h2 data-aos="fade-up" class="text-4xl font-bold text-white">Flexible & Clear Pricing</h2>
     <div class="grid md:grid-cols-2 gap-10">
-      <div data-aos="fade-right" class="p-10 bg-[#111217] rounded-3xl border border-cyan-400 shadow-lg card-hover">
+      <div data-aos="fade-right" class="glass-card p-10 border-cyan-400">
         <h3 class="text-2xl font-semibold mb-4 text-cyan-400">Starter</h3>
         <p class="text-5xl font-bold">0 GBP</p>
         <ul class="text-gray-300 text-sm space-y-2 mt-4 list-disc list-inside">
@@ -164,7 +197,7 @@ body {
         </ul>
         <button class="btn border-2 border-gray-500 text-gray-300 mt-6 w-full opacity-50 cursor-not-allowed rounded-lg">Unavailable</button>
       </div>
-      <div data-aos="fade-left" class="p-12 bg-[#111217] rounded-3xl border-2 border-indigo-500 shadow-2xl card-hover">
+      <div data-aos="fade-left" class="glass-card p-12 border-indigo-500 shadow-2xl">
         <h3 class="text-2xl font-semibold mb-4 text-indigo-400">Pro</h3>
         <p class="text-5xl font-bold">400 robux</p>
         <ul class="text-gray-300 text-sm space-y-2 mt-4 list-disc list-inside">
@@ -234,10 +267,8 @@ function closeModal(id){document.getElementById(id).classList.add("hidden");docu
 
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script>
-AOS.init({duration:700, easing:'ease-out-cubic', once:false, mirror:true});
+AOS.init({duration:800, easing:'ease-out-cubic', once:false, mirror:true});
 </script>
 
 </body>
 </html>
-
-
