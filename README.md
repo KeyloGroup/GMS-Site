@@ -8,7 +8,7 @@ Access is restricted to authorized developers only.
 
 ## ⚠️ Ownership & Confidentiality
 
-All code, assets, and documentation in this repository are the sole property of Kyelo Group.  
+All code, assets, and documentation in this repository are the sole property of Keylo Group.  
 
 🛡 **Stealing, redistributing, or leaking** any part of this repository is strictly prohibited.  
 
