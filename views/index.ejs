@@ -3,13 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Keylo — Premium Roblox Community Management</title>
+<title>Keylo</title>
 
-<!-- Tailwind + Vengeance Core -->
+<!-- Tailwind + AOS for animations -->
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://unpkg.com/@vengeanceui/core@latest/dist/vengeance.min.js"></script>
-
-<!-- AOS for scroll animations -->
 <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -20,17 +17,26 @@ body {
   background: #0d0d0d;
   color: #fff;
   font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
 }
+
 .glass-nav {
-  background: rgba(13, 13, 13, 0.6);
-  backdrop-filter: blur(16px);
+  background: rgba(13, 13, 13, 0.5);
+  backdrop-filter: blur(20px);
   border-bottom: 1px solid #333;
 }
+
 .gradient-btn {
   background: linear-gradient(90deg, #5c6ac4, #00c3ff);
 }
+
 .gradient-border {
   border-image: linear-gradient(90deg, #5c6ac4, #00c3ff) 1;
+}
+
+.card-hover:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,255,255,0.15);
 }
 </style>
 </head>
@@ -41,14 +47,12 @@ body {
 <header class="fixed top-0 w-full z-50 glass-nav shadow-lg">
   <div class="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
     <a href="/" class="text-2xl font-bold tracking-tight">Keylo</a>
-
     <nav class="hidden lg:flex gap-8 text-gray-300 text-sm font-semibold uppercase">
       <a href="#features" class="hover:text-white transition">Features</a>
       <a href="#services" class="hover:text-white transition">Services</a>
       <a href="#pricing" class="hover:text-white transition">Pricing</a>
       <a href="#contact" class="hover:text-white transition">Contact</a>
     </nav>
-
     <div class="flex items-center gap-4">
       <a href="/register" class="btn gradient-btn text-black font-semibold px-6 py-2 rounded-lg shadow-lg hover:scale-105 transition">Get Started</a>
       <a href="/login" class="btn btn-outline text-white border-white px-6 py-2 rounded-lg hover:bg-gray-900 transition">Login</a>
@@ -57,28 +61,29 @@ body {
 </header>
 
 <!-- HERO -->
-<section class="pt-32 pb-24">
+<section class="pt-36 pb-28 relative overflow-hidden">
   <div class="max-w-7xl mx-auto px-8 grid lg:grid-cols-2 gap-12 items-center">
-    <div data-aos="fade-right" data-aos-delay="200" class="space-y-6">
+    <div data-aos="fade-right" data-aos-delay="200" class="space-y-6 z-10 relative">
       <h1 class="text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
-        Command Your Roblox Community<br>
-        with Brighter Control & Insights
+        Master Your Roblox Community<br>
+        <span class="text-cyan-400">Smarter, Faster, Brighter</span>
       </h1>
       <p class="text-xl text-gray-300 max-w-lg">
-        Smart automation, vivid analytics, and effortless management — powered by premium, intuitive UI.
+        Automation, analytics, and effortless control — all in a sleek, premium UI.
       </p>
-
       <div class="flex gap-4 pt-4">
         <a href="#pricing" class="btn gradient-btn text-black font-semibold px-8 py-3 rounded-lg shadow-lg hover:scale-105 transition">View Plans</a>
         <button onclick="openModal('videoModal')" class="btn border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-500 hover:text-black px-8 py-3 rounded-lg transition">Watch Demo</button>
       </div>
     </div>
-
-    <div data-aos="fade-left" data-aos-delay="400">
+    <div data-aos="fade-left" data-aos-delay="400" class="relative z-10">
       <div class="relative group">
         <div class="rounded-3xl overflow-hidden ring-2 ring-cyan-400 group-hover:scale-105 transition duration-500 shadow-2xl">
           <img src="/icons/dashprev.png" alt="Dashboard Preview" class="w-full">
         </div>
+        <!-- floating neon shapes -->
+        <div class="absolute -top-10 -left-10 w-20 h-20 bg-cyan-500 rounded-full mix-blend-screen animate-pulse opacity-40"></div>
+        <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-indigo-500 rounded-full mix-blend-screen animate-pulse opacity-30"></div>
       </div>
     </div>
   </div>
@@ -89,26 +94,25 @@ body {
 <!-- SERVICES -->
 <section id="services" class="py-20 bg-[#111217]">
   <div class="max-w-6xl mx-auto px-8 text-center space-y-8">
-    <h2 data-aos="fade-up" class="text-3xl font-bold text-white">What Keylo Helps You Do Best</h2>
-
+    <h2 data-aos="fade-up" class="text-3xl font-bold text-white">Keylo Empowers You</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 text-gray-300 mt-10">
-      <div data-aos="fade-up" data-aos-delay="100" class="space-y-2">
+      <div data-aos="fade-up" data-aos-delay="100" class="space-y-2 card-hover transition">
         <h3 class="text-white font-semibold">Leader Tools</h3>
-        <p class="text-sm">Manage roles, ranks, permissions effortlessly.</p>
+        <p class="text-sm">Manage roles, ranks, and permissions effortlessly.</p>
       </div>
-      <div data-aos="fade-up" data-aos-delay="200" class="space-y-2">
+      <div data-aos="fade-up" data-aos-delay="200" class="space-y-2 card-hover transition">
         <h3 class="text-white font-semibold">Step Setup</h3>
         <p class="text-sm">Quick guided onboarding for teams.</p>
       </div>
-      <div data-aos="fade-up" data-aos-delay="300" class="space-y-2">
+      <div data-aos="fade-up" data-aos-delay="300" class="space-y-2 card-hover transition">
         <h3 class="text-white font-semibold">Real Insights</h3>
         <p class="text-sm">Analytics that inform decisions clearly.</p>
       </div>
-      <div data-aos="fade-up" data-aos-delay="400" class="space-y-2">
+      <div data-aos="fade-up" data-aos-delay="400" class="space-y-2 card-hover transition">
         <h3 class="text-white font-semibold">Anywhere Access</h3>
         <p class="text-sm">Desktop, tablet, or mobile — always synced.</p>
       </div>
-      <div data-aos="fade-up" data-aos-delay="500" class="space-y-2">
+      <div data-aos="fade-up" data-aos-delay="500" class="space-y-2 card-hover transition">
         <h3 class="text-white font-semibold">Automate Workflows</h3>
         <p class="text-sm">Let Keylo take repetitive tasks off your plate.</p>
       </div>
@@ -122,24 +126,20 @@ body {
 <section id="features" class="py-24">
   <div class="max-w-6xl mx-auto px-8 space-y-10">
     <h2 data-aos="fade-up" class="text-4xl font-bold text-center text-white">Everything You Need</h2>
-
     <div class="grid md:grid-cols-2 gap-12">
-      <div data-aos="flip-left" class="p-8 bg-[#111217] rounded-3xl shadow-lg transition transform hover:-translate-y-2 hover:shadow-2xl">
+      <div data-aos="flip-left" class="p-8 bg-[#111217] rounded-3xl shadow-lg card-hover transition transform hover:-translate-y-2 hover:shadow-2xl">
         <h3 class="text-xl font-semibold text-cyan-400">Instant Setup</h3>
         <p class="text-gray-300 mt-2">Get started in seconds — no friction.</p>
       </div>
-
-      <div data-aos="flip-right" class="p-8 bg-[#111217] rounded-3xl shadow-lg transition transform hover:-translate-y-2 hover:shadow-2xl">
+      <div data-aos="flip-right" class="p-8 bg-[#111217] rounded-3xl shadow-lg card-hover transition transform hover:-translate-y-2 hover:shadow-2xl">
         <h3 class="text-xl font-semibold text-indigo-400">Secure & Reliable</h3>
         <p class="text-gray-300 mt-2">Enterprise-grade security you can trust.</p>
       </div>
-
-      <div data-aos="flip-left" class="p-8 bg-[#111217] rounded-3xl shadow-lg transition transform hover:-translate-y-2 hover:shadow-2xl">
+      <div data-aos="flip-left" class="p-8 bg-[#111217] rounded-3xl shadow-lg card-hover transition transform hover:-translate-y-2 hover:shadow-2xl">
         <h3 class="text-xl font-semibold text-purple-400">Deep Analytics</h3>
         <p class="text-gray-300 mt-2">Charts that tell real stories.</p>
       </div>
-
-      <div data-aos="flip-right" class="p-8 bg-[#111217] rounded-3xl shadow-lg transition transform hover:-translate-y-2 hover:shadow-2xl">
+      <div data-aos="flip-right" class="p-8 bg-[#111217] rounded-3xl shadow-lg card-hover transition transform hover:-translate-y-2 hover:shadow-2xl">
         <h3 class="text-xl font-semibold text-teal-400">Powerful Automation</h3>
         <p class="text-gray-300 mt-2">Cut manual work across your groups.</p>
       </div>
@@ -153,7 +153,6 @@ body {
 <section id="pricing" class="py-24">
   <div class="max-w-5xl mx-auto px-8 text-center space-y-10">
     <h2 data-aos="fade-up" class="text-4xl font-bold text-white">Flexible & Clear Pricing</h2>
-
     <div class="grid md:grid-cols-2 gap-10">
       <div data-aos="fade-right" class="p-10 bg-[#111217] rounded-3xl border border-cyan-400 shadow-lg transition-transform hover:scale-105">
         <h3 class="text-2xl font-semibold mb-4 text-cyan-400">Starter</h3>
@@ -187,7 +186,7 @@ body {
 <section class="py-20 text-center">
   <h2 data-aos="zoom-in" class="text-4xl font-bold mb-4 text-white">Time to Simplify Your Workflow?</h2>
   <p data-aos="zoom-in" data-aos-delay="200" class="text-gray-300 mb-6">Upgrade your Roblox community management today.</p>
-  <a data-aos="zoom-in" data-aos-delay="400" href="/register" class="btn gradient-btn text-black font-semibold px-10 py-3 rounded-lg shadow-lg hover:scale-105 transition">Get Started</a>
+  <a data-aos="zoom-in" data-aos-delay="400" href="/register" class="btn gradient-btn text-black font-semibold px-10 py-3 rounded-lg shadow-lg hover:scale-105 transition animate-pulse">Get Started</a>
 </section>
 
 <hr class="border-gray-700">
@@ -213,19 +212,27 @@ body {
       <p>Privacy • Terms</p>
     </div>
   </div>
-
-  <div class="mt-8 text-center text-gray-500">
-    © <%= new Date().getFullYear() %> Keylo. All rights reserved.
-  </div>
+  <div class="mt-8 text-center text-gray-500">© <%= new Date().getFullYear() %> Keylo. All rights reserved.</div>
 </footer>
 
 <!-- Video Modal -->
+<div id="videoModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center p-4 z-50">
+  <div class="bg-[#111] max-w-3xl w-full relative rounded-xl border border-[#1c1c1c]">
+    <button onclick="closeModal('videoModal')" class="absolute top-3 right-3 text-gray-400 hover:text-white text-2xl leading-none">X</button>
+    <div class="p-6">
+      <h3 class="text-2xl font-bold mb-4 text-center">Watch Our Demo</h3>
+      <div class="aspect-video">
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" class="w-full h-full rounded-xl" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 function openModal(id){const el=document.getElementById(id);el.classList.remove("hidden");el.classList.add("flex")}
 function closeModal(id){const el=document.getElementById(id);el.classList.add("hidden");el.classList.remove("flex")}
 </script>
 
-<!-- AOS Init -->
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script>
 AOS.init({duration:800, once:true});
