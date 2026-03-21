@@ -34,7 +34,9 @@ const PORT = 3000;
 
 // PostgreSQL pool
 const userdataPool = new Pool({ connectionString: process.env.PG_URL_USERDATA });
-async function dbQuery(text, params) { return userdataPool.query(text, params); }
+async function dbQuery(text, params) {
+  return userdataPool.query(text, params);
+}
 
 // Redis client
 const redisClient = createClient({ url: process.env.REDIS_URL });
@@ -46,7 +48,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Session middleware (fixed domain + sameSite)
+// Session middleware
 app.use(
   session({
     store: new RedisStore({ client: redisClient }),
@@ -56,9 +58,9 @@ app.use(
     saveUninitialized: false,
     proxy: true,
     cookie: {
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: "none",
       domain: ".keylogroup.co.uk",
       maxAge: 30 * 24 * 60 * 60 * 1000
     }
@@ -68,9 +70,9 @@ app.use(
 // CSRF protection
 const csrfProtection = csurf({
   cookie: {
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "none",
     domain: ".keylogroup.co.uk",
     path: "/"
   }
@@ -84,8 +86,8 @@ app.use(express.static(path.join(__dirname, "public")));
 // Cookie helpers
 function setLoginCookies(res, { id, username, avatar }) {
   const opts = {
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: true,
+    sameSite: "none",
     httpOnly: false,
     domain: ".keylogroup.co.uk",
     path: "/",
@@ -98,8 +100,8 @@ function setLoginCookies(res, { id, username, avatar }) {
 
 function clearLoginCookies(res) {
   const opts = {
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: true,
+    sameSite: "none",
     httpOnly: false,
     domain: ".keylogroup.co.uk",
     path: "/"
@@ -107,8 +109,12 @@ function clearLoginCookies(res) {
   ["id", "username", "avatar", "theme"].forEach((c) => res.clearCookie(c, opts));
 }
 
-// Routes
-app.get("/", (req, res) => res.render("index", { title: "Keylo" }));
+// ---------------- ROUTES ----------------
+
+// Root
+app.get("/", (req, res) => {
+  res.render("index", { title: "Keylo" });
+});
 
 // OAuth start
 app.get("/auth/roblox", (req, res) => {
@@ -156,6 +162,19 @@ app.get("/auth/roblox/callback", async (req, res) => {
     const robloxUsername = userRes.data.name;
     const avatarUrl = userRes.data.picture;
 
+    const banned = await dbQuery(
+      'SELECT * FROM "AccountsBan" WHERE username=$1 LIMIT 1',
+      [robloxUsername]
+    );
+
+    if (banned.rows.length > 0) {
+      return res.redirect(
+        `https://app.keylogroup.co.uk/account/restricted?reason=${encodeURIComponent(
+          banned.rows[0].reason || "Restricted"
+        )}`
+      );
+    }
+
     const existing = await dbQuery(
       'SELECT * FROM "Accounts" WHERE "roblox username"=$1 LIMIT 1',
       [robloxUsername]
@@ -178,7 +197,7 @@ app.get("/auth/roblox/callback", async (req, res) => {
   }
 });
 
-// Registration
+// Registration page
 app.get("/register", csrfProtection, (req, res) => {
   const pending = req.session.pendingRoblox;
   if (req.query.oauth === "success" && pending) {
@@ -192,6 +211,7 @@ app.get("/register", csrfProtection, (req, res) => {
   res.render("register", { title: "Register", csrfToken: req.csrfToken() });
 });
 
+// Registration API
 app.post("/api/register", csrfProtection, async (req, res) => {
   try {
     const pending = req.session.pendingRoblox;
@@ -213,10 +233,54 @@ app.post("/api/register", csrfProtection, async (req, res) => {
   }
 });
 
-// Login / Logout
+// Login page
+app.get("/login", csrfProtection, (req, res) => {
+  res.render("login", {
+    csrfToken: req.csrfToken(),
+    oauthSuccess: req.query.oauth === "success",
+    robloxUsername: req.query.username || "",
+    robloxId: req.query.id || ""
+  });
+});
+
+// Login API
+app.post("/login", csrfProtection, async (req, res) => {
+  try {
+    const { robloxUsername, password } = req.body;
+    if (!robloxUsername || !password) return res.status(400).send("Missing credentials");
+
+    const users = await dbQuery(
+      'SELECT * FROM "Accounts" WHERE "roblox username"=$1 LIMIT 1',
+      [robloxUsername]
+    );
+
+    if (!users.rows.length) return res.status(401).send("User not found");
+
+    const match = await bcrypt.compare(password, users.rows[0]["hashed password"]);
+    if (!match) return res.status(401).send("Invalid password");
+
+    req.session.loggedIn = true;
+    req.session.save(() => res.redirect("https://app.keylogroup.co.uk/"));
+  } catch (err) {
+    res.status(500).send("Login failed");
+  }
+});
+
+// Logout
 app.get("/logout", (req, res) => {
   clearLoginCookies(res);
   req.session.destroy(() => res.redirect("/"));
 });
 
-app.listen(PORT, () => console.log("OAuth Server running on port", PORT));
+// 404
+app.use((req, res) => {
+  res.status(404).render("404");
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error("UNCAUGHT_ERROR", { message: err.message, stack: err.stack, url: req.originalUrl });
+  res.status(500).send("Internal server error");
+});
+
+app.listen(PORT, () => console.log("Keylo OAuth Server running on port", PORT));
