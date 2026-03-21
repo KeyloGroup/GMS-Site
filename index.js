@@ -17,6 +17,7 @@ const app = express();
 app.set("trust proxy", 1);
 const PORT = 3000;
 
+// Ensure required env variables exist
 [
   "PG_URL_USERDATA",
   "ROBLOX_OAUTH_CLIENT_ID",
@@ -31,6 +32,7 @@ const PORT = 3000;
   }
 });
 
+// PostgreSQL pool
 const userdataPool = new Pool({
   connectionString: process.env.PG_URL_USERDATA
 });
@@ -42,6 +44,7 @@ async function dbQuery(text, params) {
   return res;
 }
 
+// Redis client
 const redisClient = createClient({ url: process.env.REDIS_URL });
 redisClient.on("error", (err) =>
   console.error("REDIS_ERROR", { message: err.message })
@@ -50,17 +53,19 @@ redisClient.connect().then(() => {
   console.log("REDIS_CONNECTED", { url: process.env.REDIS_URL });
 });
 
+// Express middleware
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Request logging (IP removed)
 app.use((req, res, next) => {
   console.log("REQ_IN", {
     method: req.method,
     url: req.originalUrl,
-    cookies: req.cookies,
-    ip: req.ip
+    cookies: req.cookies
   });
+
   const originalRedirect = res.redirect.bind(res);
   res.redirect = (url) => {
     console.log("RES_REDIRECT", {
@@ -70,6 +75,7 @@ app.use((req, res, next) => {
     });
     return originalRedirect(url);
   };
+
   const originalRender = res.render.bind(res);
   res.render = (view, data) => {
     console.log("RES_RENDER", {
@@ -78,9 +84,11 @@ app.use((req, res, next) => {
     });
     return originalRender(view, data);
   };
+
   next();
 });
 
+// Session middleware with fixed cookie settings
 app.use(
   session({
     store: new RedisStore({ client: redisClient }),
@@ -90,15 +98,15 @@ app.use(
     saveUninitialized: false,
     proxy: true,
     cookie: {
-      secure: true,
+      secure: process.env.NODE_ENV === "production", // true only on HTTPS
       httpOnly: true,
-      sameSite: "none",
-      domain: ".keyloroblox.co.uk",
-      maxAge: 30 * 24 * 60 * 60 * 1000
+      sameSite: "lax", // works for OAuth redirects
+      maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
     }
   })
 );
 
+// Session state logging (IP removed)
 app.use((req, res, next) => {
   console.log("SESSION_STATE", {
     sessionID: req.sessionID,
@@ -111,26 +119,27 @@ app.use((req, res, next) => {
   next();
 });
 
+// CSRF protection
 const csrfProtection = csurf({
   cookie: {
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
     httpOnly: true,
-    sameSite: "none",
-    domain: ".keylogroup.co.uk",
+    sameSite: "lax",
     path: "/"
   }
 });
 
+// Views
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
+// Cookie helpers
 function setLoginCookies(res, { id, username, avatar }) {
   const opts = {
-    secure: true,
-    sameSite: "none",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
     httpOnly: false,
-    domain: ".keylogroup.co.uk",
     path: "/",
     maxAge: 30 * 24 * 60 * 60 * 1000
   };
@@ -142,23 +151,22 @@ function setLoginCookies(res, { id, username, avatar }) {
 
 function clearLoginCookies(res) {
   const opts = {
-    secure: true,
-    sameSite: "none",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
     httpOnly: false,
-    domain: ".keylogroup.co.uk",
     path: "/"
   };
   console.log("COOKIES_CLEAR", { cookies: ["id", "username", "avatar", "theme"] });
-  ["id", "username", "avatar", "theme"].forEach((c) =>
-    res.clearCookie(c, opts)
-  );
+  ["id", "username", "avatar", "theme"].forEach((c) => res.clearCookie(c, opts));
 }
 
+// Routes
 app.get("/", (req, res) => {
   console.log("ROUTE_ROOT");
   res.render("index", { title: "Keylo" });
 });
 
+// Roblox OAuth start
 app.get("/auth/roblox", (req, res) => {
   const state = crypto.randomBytes(16).toString("hex");
   req.session.oauthState = state;
@@ -183,22 +191,18 @@ app.get("/auth/roblox", (req, res) => {
   });
 });
 
+// Roblox OAuth callback
 app.get("/auth/roblox/callback", async (req, res) => {
   console.log("OAUTH_CALLBACK_HIT", {
     query: req.query,
     sessionID: req.sessionID,
     sessionOauthState: req.session.oauthState
   });
+
   try {
     const { code, state, error, error_description } = req.query;
 
-    if (error) {
-      console.log("OAUTH_CALLBACK_ERROR_QUERY", {
-        error,
-        error_description
-      });
-      return res.status(400).send(error_description || error);
-    }
+    if (error) return res.status(400).send(error_description || error);
 
     if (!code || !state || state !== req.session.oauthState) {
       console.log("OAUTH_STATE_MISMATCH", {
@@ -208,11 +212,6 @@ app.get("/auth/roblox/callback", async (req, res) => {
       });
       return res.status(400).send("Invalid OAuth session");
     }
-
-    console.log("OAUTH_TOKEN_REQUEST", {
-      clientId: process.env.ROBLOX_OAUTH_CLIENT_ID,
-      redirectUri: process.env.ROBLOX_OAUTH_REDIRECT_URI
-    });
 
     const tokenRes = await axios.post(
       "https://apis.roblox.com/oauth/v1/token",
@@ -226,21 +225,10 @@ app.get("/auth/roblox/callback", async (req, res) => {
       { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
     );
 
-    console.log("OAUTH_TOKEN_RESPONSE", {
-      status: tokenRes.status,
-      hasAccessToken: !!tokenRes.data.access_token
-    });
-
     const userRes = await axios.get(
       "https://apis.roblox.com/oauth/v1/userinfo",
       { headers: { Authorization: `Bearer ${tokenRes.data.access_token}` } }
     );
-
-    console.log("OAUTH_USERINFO_RESPONSE", {
-      status: userRes.status,
-      sub: userRes.data.sub,
-      name: userRes.data.name
-    });
 
     const robloxId = userRes.data.sub;
     const robloxUsername = userRes.data.name;
@@ -252,10 +240,7 @@ app.get("/auth/roblox/callback", async (req, res) => {
     );
 
     if (banned.rows.length > 0) {
-      console.log("USER_BANNED", {
-        username: robloxUsername,
-        reason: banned.rows[0].reason
-      });
+      console.log("USER_BANNED", { username: robloxUsername });
       return res.redirect(
         `https://app.keylogroup.co.uk/account/restricted?reason=${encodeURIComponent(
           banned.rows[0].reason || "Restricted"
@@ -278,45 +263,27 @@ app.get("/auth/roblox/callback", async (req, res) => {
     req.session.oauthState = null;
 
     if (existing.rows.length > 0) {
-      console.log("LOGIN_EXISTING_USER", {
-        robloxId,
-        robloxUsername
-      });
+      console.log("LOGIN_EXISTING_USER", { robloxId, robloxUsername });
       req.session.loggedIn = true;
       return req.session.save(() =>
         res.redirect("https://app.keylogroup.co.uk/")
       );
     }
 
-    console.log("LOGIN_NEW_USER_PENDING", {
-      robloxId,
-      robloxUsername
-    });
-
-    req.session.pendingRoblox = {
-      robloxId,
-      robloxUsername,
-      avatarUrl
-    };
-
+    console.log("LOGIN_NEW_USER_PENDING", { robloxId, robloxUsername });
+    req.session.pendingRoblox = { robloxId, robloxUsername, avatarUrl };
     return res.redirect("/register?oauth=success");
   } catch (err) {
-    console.error("OAUTH_CALLBACK_EXCEPTION", {
-      message: err.message,
-      stack: err.stack
-    });
+    console.error("OAUTH_CALLBACK_EXCEPTION", { message: err.message });
     clearLoginCookies(res);
     res.status(500).send("OAuth failed");
   }
 });
 
+// Registration routes
 app.get("/register", csrfProtection, (req, res) => {
   const pending = req.session.pendingRoblox;
-  console.log("ROUTE_REGISTER", {
-    query: req.query,
-    hasPending: !!pending
-  });
-
+  console.log("ROUTE_REGISTER", { query: req.query, hasPending: !!pending });
   if (req.query.oauth === "success" && pending) {
     return res.render("passwordregister", {
       title: "Complete Registration",
@@ -325,36 +292,20 @@ app.get("/register", csrfProtection, (req, res) => {
       avatarUrl: pending.avatarUrl
     });
   }
-
-  res.render("register", {
-    title: "Register",
-    csrfToken: req.csrfToken()
-  });
+  res.render("register", { title: "Register", csrfToken: req.csrfToken() });
 });
 
 app.post("/api/register", csrfProtection, async (req, res) => {
-  console.log("API_REGISTER_HIT", {
-    bodyKeys: Object.keys(req.body || {}),
-    hasPending: !!req.session.pendingRoblox
-  });
+  console.log("API_REGISTER_HIT", { bodyKeys: Object.keys(req.body || {}) });
   try {
     const pending = req.session.pendingRoblox;
-    if (!pending) {
-      console.log("API_REGISTER_NO_PENDING");
-      return res.status(400).send("Missing OAuth session");
-    }
+    if (!pending) return res.status(400).send("Missing OAuth session");
 
     const { password } = req.body;
-    if (!password || password.length < 6) {
-      console.log("API_REGISTER_BAD_PASSWORD", {
-        length: password ? password.length : 0
-      });
+    if (!password || password.length < 6)
       return res.status(400).send("Password too short");
-    }
 
     const hashed = await bcrypt.hash(password, 12);
-    console.log("API_REGISTER_HASHED_PASSWORD");
-
     await dbQuery(
       'INSERT INTO "Accounts" ("roblox username","hashed password") VALUES ($1,$2)',
       [pending.robloxUsername, hashed]
@@ -362,25 +313,17 @@ app.post("/api/register", csrfProtection, async (req, res) => {
 
     req.session.pendingRoblox = null;
     req.session.loggedIn = true;
-
-    console.log("API_REGISTER_SUCCESS", {
-      robloxUsername: pending.robloxUsername
-    });
-
+    console.log("API_REGISTER_SUCCESS", { robloxUsername: pending.robloxUsername });
     res.redirect("https://app.keylogroup.co.uk/");
   } catch (err) {
-    console.error("API_REGISTER_EXCEPTION", {
-      message: err.message,
-      stack: err.stack
-    });
+    console.error("API_REGISTER_EXCEPTION", { message: err.message });
     res.status(500).send("Registration failed");
   }
 });
 
+// Login routes
 app.get("/login", csrfProtection, (req, res) => {
-  console.log("ROUTE_LOGIN_GET", {
-    query: req.query
-  });
+  console.log("ROUTE_LOGIN_GET", { query: req.query });
   res.render("login", {
     csrfToken: req.csrfToken(),
     oauthSuccess: req.query.oauth === "success",
@@ -390,53 +333,31 @@ app.get("/login", csrfProtection, (req, res) => {
 });
 
 app.post("/login", csrfProtection, async (req, res) => {
-  console.log("ROUTE_LOGIN_POST", {
-    bodyKeys: Object.keys(req.body || {})
-  });
+  console.log("ROUTE_LOGIN_POST", { bodyKeys: Object.keys(req.body || {}) });
   try {
     const { robloxUsername, password } = req.body;
-
-    if (!robloxUsername || !password) {
-      console.log("LOGIN_MISSING_CREDENTIALS");
-      return res.status(400).send("Missing credentials");
-    }
+    if (!robloxUsername || !password) return res.status(400).send("Missing credentials");
 
     const users = await dbQuery(
       'SELECT * FROM "Accounts" WHERE "roblox username"=$1 LIMIT 1',
       [robloxUsername]
     );
 
-    if (!users.rows.length) {
-      console.log("LOGIN_USER_NOT_FOUND", { robloxUsername });
-      return res.status(401).send("User not found");
-    }
+    if (!users.rows.length) return res.status(401).send("User not found");
 
-    const match = await bcrypt.compare(
-      password,
-      users.rows[0]["hashed password"]
-    );
-
-    if (!match) {
-      console.log("LOGIN_INVALID_PASSWORD", { robloxUsername });
-      return res.status(401).send("Invalid password");
-    }
+    const match = await bcrypt.compare(password, users.rows[0]["hashed password"]);
+    if (!match) return res.status(401).send("Invalid password");
 
     req.session.loggedIn = true;
-
     console.log("LOGIN_SUCCESS", { robloxUsername });
-
-    req.session.save(() =>
-      res.redirect("https://app.keylogroup.co.uk/")
-    );
+    req.session.save(() => res.redirect("https://app.keylogroup.co.uk/"));
   } catch (err) {
-    console.error("LOGIN_EXCEPTION", {
-      message: err.message,
-      stack: err.stack
-    });
+    console.error("LOGIN_EXCEPTION", { message: err.message });
     res.status(500).send("Login failed");
   }
 });
 
+// Logout
 app.get("/logout", (req, res) => {
   console.log("ROUTE_LOGOUT", { sessionID: req.sessionID });
   clearLoginCookies(res);
@@ -446,20 +367,17 @@ app.get("/logout", (req, res) => {
   });
 });
 
+// 404
 app.use((req, res) => {
   console.log("ROUTE_404", { url: req.originalUrl });
   res.status(404).render("404");
 });
 
+// Uncaught errors
 app.use((err, req, res, next) => {
-  console.error("UNCAUGHT_ERROR", {
-    message: err.message,
-    stack: err.stack,
-    url: req.originalUrl
-  });
+  console.error("UNCAUGHT_ERROR", { message: err.message, url: req.originalUrl });
   res.status(500).send("Internal server error");
 });
 
-app.listen(PORT, () =>
-  console.log("SERVER_START", { host: "keylogroup.co.uk", port: PORT })
-);
+// Start server
+app.listen(PORT, () => console.log("SERVER_START", { host: "keylogroup.co.uk", port: PORT }));
