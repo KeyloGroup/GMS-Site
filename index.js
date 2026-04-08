@@ -201,6 +201,18 @@ app.get("/logout", (req, res) => {
   });
 });
 
+app.get("/account/restricted", (req, res) => {
+  const { reason, username } = req.query;
+
+  console.log("ROUTE_ACCOUNT_RESTRICTED", { username, reason });
+
+  res.render("banned", {
+    username: username || "User",
+    reason: reason || "Restricted",
+    redirectUrl: "/"
+  });
+});
+
 app.use((req, res) => {
   console.log("ROUTE_404", { url: req.originalUrl });
   res.status(404).render("404");
