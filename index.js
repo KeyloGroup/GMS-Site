@@ -40,7 +40,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use((req, res, next) => {
-  console.log("REQ_IN", { method: req.method, url: req.originalUrl, cookies: req.cookies, ip: req.ip });
+  console.log("REQ_IN", { method: req.method, url: req.originalUrl, cookies: req.cookies});
   const originalRedirect = res.redirect.bind(res);
   res.redirect = (url) => {
     console.log("RES_REDIRECT", { from: req.originalUrl, to: url, statusCode: res.statusCode });
@@ -117,7 +117,7 @@ app.get("/auth/roblox/callback", async (req, res) => {
     const robloxUsername = userRes.data.name;
     const avatarUrl = userRes.data.picture;
     const banned = await dbQuery('SELECT * FROM "AccountsBan" WHERE username=$1 LIMIT 1', [robloxUsername]);
-    if (banned.rows.length > 0) return res.redirect(`https://app.keylogroup.co.uk/account/restricted?reason=${encodeURIComponent(banned.rows[0].reason || "Restricted")}`);
+    if (banned.rows.length > 0) return res.redirect(`https://keylogroup.co.uk/account/restricted?reason=${encodeURIComponent(banned.rows[0].reason || "Restricted")}`);
     const existing = await dbQuery('SELECT * FROM "Accounts" WHERE "roblox username"=$1 LIMIT 1', [robloxUsername]);
     clearLoginCookies(res);
     setLoginCookies(res, { id: robloxId, username: robloxUsername, avatar: avatarUrl });
