@@ -10,23 +10,23 @@ const bcrypt = require("bcrypt");
 const querystring = require("querystring");
 const { Pool } = require("pg");
 const csurf = require("csurf");
-
 require("dotenv").config({ path: "/root/KeyloENV/.env" });
 
 const app = express();
 app.set("trust proxy", 1);
 const PORT = 3000;
 
-[
+const requiredEnv = [
   "PG_URL_USERDATA",
   "ROBLOX_OAUTH_CLIENT_ID",
   "ROBLOX_OAUTH_CLIENT_SECRET",
   "ROBLOX_OAUTH_REDIRECT_URI",
   "SESSION_SECRET",
   "REDIS_URL"
-].forEach((v) => {
-  if (!process.env[v]) process.exit(1);
-});
+];
+for (const key of requiredEnv) {
+  if (!process.env[key]) process.exit(1);
+}
 
 const userdataPool = new Pool({ connectionString: process.env.PG_URL_USERDATA });
 async function dbQuery(text, params) {
@@ -34,7 +34,10 @@ async function dbQuery(text, params) {
 }
 
 const redisClient = createClient({ url: process.env.REDIS_URL });
-redisClient.connect();
+
+(async () => {
+  await redisClient.connect();
+})();
 
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
@@ -147,7 +150,7 @@ app.get("/auth/roblox/callback", async (req, res) => {
 
     req.session.pendingRoblox = { robloxId, robloxUsername, avatarUrl };
     res.redirect("/register?oauth=success");
-  } catch (err) {
+  } catch {
     clearLoginCookies(res);
     res.status(500).send("OAuth failed");
   }
@@ -167,12 +170,14 @@ app.post("/api/register", csrfProtection, async (req, res) => {
     if (!pending) return res.status(400).send("Missing OAuth session");
     const { password } = req.body;
     if (!password || password.length < 6) return res.status(400).send("Password too short");
+
     const hashed = await bcrypt.hash(password, 12);
     await dbQuery('INSERT INTO "Accounts" ("roblox username","hashed password") VALUES ($1,$2)', [pending.robloxUsername, hashed]);
+
     req.session.pendingRoblox = null;
     req.session.loggedIn = true;
     req.session.save(() => res.redirect("https://app.keylogroup.co.uk/"));
-  } catch (err) {
+  } catch {
     res.status(500).send("Registration failed");
   }
 });
@@ -185,13 +190,16 @@ app.post("/login", csrfProtection, async (req, res) => {
   try {
     const { robloxUsername, password } = req.body;
     if (!robloxUsername || !password) return res.status(400).send("Missing credentials");
+
     const users = await dbQuery('SELECT * FROM "Accounts" WHERE "roblox username"=$1 LIMIT 1', [robloxUsername]);
     if (!users.rows.length) return res.status(401).send("User not found");
+
     const match = await bcrypt.compare(password, users.rows[0]["hashed password"]);
     if (!match) return res.status(401).send("Invalid password");
+
     req.session.loggedIn = true;
     req.session.save(() => res.redirect("https://app.keylogroup.co.uk/"));
-  } catch (err) {
+  } catch {
     res.status(500).send("Login failed");
   }
 });
