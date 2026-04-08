@@ -116,7 +116,7 @@ app.get("/auth/roblox/callback", async (req, res) => {
     const robloxId = userRes.data.sub;
     const robloxUsername = userRes.data.name;
     const avatarUrl = userRes.data.picture;
-    const banned = await dbQuery('SELECT * FROM "AccountsBan" WHERE username=$1 LIMIT 1', [robloxUsername]);
+    const banned = await dbQuery('SELECT * FROM "AccountsBan" WHERE rblxuserid=$1 LIMIT 1', [robloxId]);
     if (banned.rows.length > 0) return res.redirect(`https://keylogroup.co.uk/account/restricted?reason=${encodeURIComponent(banned.rows[0].reason || "Restricted")}`);
     const existing = await dbQuery('SELECT * FROM "Accounts" WHERE "roblox username"=$1 LIMIT 1', [robloxUsername]);
     clearLoginCookies(res);
@@ -127,7 +127,15 @@ app.get("/auth/roblox/callback", async (req, res) => {
       return req.session.save(() => res.redirect("https://app.keylogroup.co.uk/"));
     }
     req.session.pendingRoblox = { robloxId, robloxUsername, avatarUrl };
-    res.redirect("/register?oauth=success");
+    req.session.oauthState = null;
+    
+    req.session.save((err) => {
+      if (err) {
+        console.error("SESSION_SAVE_FAILED", err);
+        return res.status(500).send("Session error");
+      }
+      res.redirect("/register?oauth=success");
+    })
   } catch (err) {
     console.error("OAUTH_CALLBACK_EXCEPTION", { message: err.message, stack: err.stack });
     clearLoginCookies(res);
