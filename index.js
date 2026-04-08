@@ -17,7 +17,6 @@ const app = express();
 app.set("trust proxy", 1);
 const PORT = 3000;
 
-// Validate env
 [
   "PG_URL_USERDATA",
   "ROBLOX_OAUTH_CLIENT_ID",
@@ -26,30 +25,21 @@ const PORT = 3000;
   "SESSION_SECRET",
   "REDIS_URL"
 ].forEach((v) => {
-  if (!process.env[v]) {
-    console.error("ENV_MISSING", { key: v });
-    process.exit(1);
-  }
+  if (!process.env[v]) process.exit(1);
 });
 
-// PostgreSQL
 const userdataPool = new Pool({ connectionString: process.env.PG_URL_USERDATA });
 async function dbQuery(text, params) {
-  const res = await userdataPool.query(text, params);
-  return res;
+  return await userdataPool.query(text, params);
 }
 
-// Redis
 const redisClient = createClient({ url: process.env.REDIS_URL });
-redisClient.on("error", (err) => console.error("REDIS_ERROR", { message: err.message }));
 redisClient.connect();
 
-// Middleware
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Sessions
 app.use(
   session({
     store: new RedisStore({ client: redisClient }),
@@ -68,7 +58,6 @@ app.use(
   })
 );
 
-// CSRF
 const csrfProtection = csurf({
   cookie: {
     secure: true,
@@ -79,12 +68,10 @@ const csrfProtection = csurf({
   }
 });
 
-// Views
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
-// Cookie helpers
 function setLoginCookies(res, { id, username, avatar }) {
   const opts = { secure: true, sameSite: "none", httpOnly: false, domain: ".keylogroup.co.uk", path: "/", maxAge: 30 * 24 * 60 * 60 * 1000 };
   res.cookie("id", String(id), opts);
@@ -97,14 +84,10 @@ function clearLoginCookies(res) {
   ["id", "username", "avatar", "theme"].forEach((c) => res.clearCookie(c, opts));
 }
 
-// ---------------- ROUTES ----------------
-
-// Root
 app.get("/", (req, res) => {
   res.render("index", { title: "Keylo" });
 });
 
-// OAuth start
 app.get("/auth/roblox", (req, res) => {
   const state = crypto.randomBytes(16).toString("hex");
   req.session.oauthState = state;
@@ -120,7 +103,6 @@ app.get("/auth/roblox", (req, res) => {
   });
 });
 
-// OAuth callback
 app.get("/auth/roblox/callback", async (req, res) => {
   try {
     const { code, state, error, error_description } = req.query;
@@ -147,13 +129,11 @@ app.get("/auth/roblox/callback", async (req, res) => {
     const robloxUsername = userRes.data.name;
     const avatarUrl = userRes.data.picture;
 
-    // BAN CHECK FIRST
     const banned = await dbQuery('SELECT * FROM "AccountsBan" WHERE username=$1 LIMIT 1', [robloxUsername]);
     if (banned.rows.length > 0) {
       return res.redirect(`https://app.keylogroup.co.uk/account/restricted?reason=${encodeURIComponent(banned.rows[0].reason || "Restricted")}`);
     }
 
-    // EXISTING ACCOUNT CHECK
     const existing = await dbQuery('SELECT * FROM "Accounts" WHERE "roblox username"=$1 LIMIT 1', [robloxUsername]);
 
     clearLoginCookies(res);
@@ -173,7 +153,6 @@ app.get("/auth/roblox/callback", async (req, res) => {
   }
 });
 
-// Register page
 app.get("/register", csrfProtection, (req, res) => {
   const pending = req.session.pendingRoblox;
   if (req.query.oauth === "success" && pending) {
@@ -182,7 +161,6 @@ app.get("/register", csrfProtection, (req, res) => {
   res.render("register", { csrfToken: req.csrfToken() });
 });
 
-// Register API
 app.post("/api/register", csrfProtection, async (req, res) => {
   try {
     const pending = req.session.pendingRoblox;
@@ -199,12 +177,10 @@ app.post("/api/register", csrfProtection, async (req, res) => {
   }
 });
 
-// Login page
 app.get("/login", csrfProtection, (req, res) => {
   res.render("login", { csrfToken: req.csrfToken() });
 });
 
-// Login API
 app.post("/login", csrfProtection, async (req, res) => {
   try {
     const { robloxUsername, password } = req.body;
@@ -220,21 +196,17 @@ app.post("/login", csrfProtection, async (req, res) => {
   }
 });
 
-// Logout
 app.get("/logout", (req, res) => {
   clearLoginCookies(res);
   req.session.destroy(() => res.redirect("/"));
 });
 
-// Restricted page
 app.get("/account/restricted", (req, res) => {
   res.send(`Account restricted: ${req.query.reason || "No reason provided"}`);
 });
 
-// 404
 app.use((req, res) => res.status(404).render("404"));
 
-// Error handler
 app.use((err, req, res, next) => res.status(500).send("Internal server error"));
 
-app.listen(PORT, () => console.log("SERVER_START", { host: "keylogroup.co.uk", port: PORT }));
+app.listen(PORT);
