@@ -1,172 +1,225 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth antialiased dark">
+<html lang="en" class="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title><%= workspace?.name || 'Workspace' %> Settings</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= workspace.name %> — Settings</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter','sans-serif'] },
-          colors: {
-            background: '#000',
-            surface: '#0a0a0a',
-            borderline: '#1f1f1f'
-          }
-        }
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      fontFamily: { sans: ['Inter'] },
+      colors: {
+        background: '#000',
+        surface: '#0a0a0a',
+        borderline: '#1f1f1f'
       }
     }
-  </script>
+  }
+}
+</script>
 
-  <style>
-    body {
-      background: #000;
-      color: #ededed;
-      font-family: Inter, sans-serif;
-      overflow-x: hidden;
-    }
+<style>
+body { background:#000; color:#ededed; overflow-x:hidden; }
 
-    .bg-noise {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.04;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    }
+/* floating nav */
+.floating-nav {
+  background: rgba(10,10,10,0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
 
-    .glass {
-      background: rgba(10,10,10,0.7);
-      border: 1px solid #1f1f1f;
-      backdrop-filter: blur(20px);
-    }
+/* cards */
+.card {
+  background:#0a0a0a;
+  border:1px solid #1f1f1f;
+  transition:.3s;
+}
+.card:hover {
+  border-color:#333;
+  box-shadow:0 0 20px rgba(255,255,255,0.03);
+}
 
-    .card {
-      background: #0a0a0a;
-      border: 1px solid #1f1f1f;
-      transition: 0.2s;
-    }
-    .card:hover {
-      border-color: #333;
-    }
+/* sidebar */
+.sidebar-link {
+  display:flex;
+  align-items:center;
+  gap:.75rem;
+  padding:.6rem .9rem;
+  border-radius:.7rem;
+  color:#888;
+  transition:.2s;
+}
+.sidebar-link:hover { background:#111; color:#fff; }
+.sidebar-active { background:#111; color:#fff; }
 
-    .sidebar-link {
-      display:flex;
-      gap:10px;
-      padding:10px 12px;
-      border-radius:10px;
-      color:#888;
-      transition:0.2s;
-    }
-    .sidebar-link:hover {
-      background:#111;
-      color:#fff;
-    }
-    .active {
-      background:#111;
-      color:#fff;
-      border:1px solid #222;
-    }
-  </style>
+/* toggle */
+.toggle {
+  width:46px;
+  height:24px;
+  background:#222;
+  border-radius:999px;
+  position:relative;
+  cursor:pointer;
+  transition:.25s;
+}
+.toggle::after {
+  content:"";
+  position:absolute;
+  top:3px;
+  left:3px;
+  width:18px;
+  height:18px;
+  background:#fff;
+  border-radius:50%;
+  transition:.25s;
+}
+.toggle.active {
+  background:#fff;
+}
+.toggle.active::after {
+  left:25px;
+  background:#000;
+}
+</style>
 </head>
 
 <body class="flex min-h-screen">
 
-<div class="bg-noise"></div>
-
-<!-- SIDEBAR (workspacehome style) -->
-<aside class="w-64 p-4 border-r border-borderline glass">
-  <div class="flex flex-col items-center mb-6">
-    <img src="<%= workspace?.image %>" class="w-14 h-14 rounded-full mb-2">
-    <p class="text-sm font-semibold"><%= workspace?.name %></p>
+<!-- SIDEBAR (UNCHANGED STRUCTURE) -->
+<aside class="w-20 md:w-64 p-4 border-r border-borderline flex flex-col">
+  
+  <div class="flex flex-col items-center mb-8">
+    <img src="<%= workspace.image %>" class="w-14 h-14 rounded-full mb-2">
+    <p class="text-sm text-center"><%= workspace.name %></p>
   </div>
 
-  <div class="border-t border-borderline mb-4"></div>
-
-  <nav class="flex flex-col gap-2">
-    <a href="/workspace/<%= workspace?.id %>/" class="sidebar-link">Home</a>
-    <a href="#" class="sidebar-link">Announcements</a>
-    <a href="#" class="sidebar-link">Sessions</a>
-    <a href="#" class="sidebar-link">Staff</a>
-    <a href="#" class="sidebar-link active">Settings</a>
+  <nav class="flex flex-col gap-2 flex-1">
+    <a href="/workspace/<%= workspace.id %>" class="sidebar-link">Home</a>
+    <a href="#" class="sidebar-link">Tasks</a>
+    <a href="/workspace/<%= workspace.id %>/sessions" class="sidebar-link">Sessions</a>
+    <a href="/workspace/<%= workspace.id %>/staff" class="sidebar-link">Staff</a>
+    <a href="/workspace/<%= workspace.id %>/activity" class="sidebar-link">Activity</a>
+    <a href="/workspace/<%= workspace.id %>/documents" class="sidebar-link">Documents</a>
+    <a href="/workspace/<%= workspace.id %>/settings" class="sidebar-link sidebar-active">Settings</a>
   </nav>
+
+  <div class="mt-6 flex items-center gap-3">
+    <img src="<%= userProfileURL %>" class="w-10 h-10 rounded-full">
+    <div class="hidden md:block">
+      <p class="text-sm"><%= user %></p>
+      <p class="text-xs text-[#666]">Online</p>
+    </div>
+  </div>
+
 </aside>
 
 <!-- MAIN -->
-<main class="flex-1 p-10">
+<main class="flex-1 p-8 relative">
 
-  <!-- HEADER -->
-  <div class="mb-10">
-    <h1 class="text-4xl font-bold tracking-tight">
-      Workspace Settings
-    </h1>
-    <p class="text-[#888] mt-2">
-      Manage <%= workspace?.name %>
-    </p>
+<!-- FLOATING SETTINGS NAV -->
+<div class="fixed top-6 left-1/2 -translate-x-1/2 z-50 
+w-[90%] max-w-2xl floating-nav rounded-full px-4 py-2 flex justify-center gap-6 text-sm">
+
+  <button data-tab="general" class="tab-btn text-white">General</button>
+  <button data-tab="features" class="tab-btn text-[#888]">Features</button>
+  <button data-tab="permissions" class="tab-btn text-[#888]">Permissions</button>
+  <button data-tab="api" class="tab-btn text-[#888]">API</button>
+
+</div>
+
+<div class="mt-24 space-y-10">
+
+<!-- GENERAL -->
+<section id="general" class="tab">
+  <div class="card p-6 rounded-2xl max-w-xl">
+    <h2 class="text-xl font-semibold mb-4">General</h2>
+
+    <div class="space-y-4">
+      <input value="<%= workspace.name %>" class="w-full bg-black border border-borderline px-4 py-2 rounded-xl">
+      <input value="<%= workspace.image %>" class="w-full bg-black border border-borderline px-4 py-2 rounded-xl">
+
+      <button class="bg-white text-black px-5 py-2 rounded-full text-sm">
+        Save Changes
+      </button>
+    </div>
   </div>
+</section>
 
-  <!-- GRID -->
-  <div class="grid md:grid-cols-2 gap-6">
+<!-- FEATURES -->
+<section id="features" class="tab hidden">
+  <div class="space-y-4 max-w-xl">
 
-    <!-- GENERAL -->
-    <div class="card rounded-2xl p-6">
-      <h2 class="text-xl font-semibold mb-4">General</h2>
+    <% const features = [
+      {key:'sessions', label:'Sessions'},
+      {key:'logbook', label:'Logbook'},
+      {key:'activity', label:'Activity Tracking'},
+      {key:'documents', label:'Documents'}
+    ]; %>
 
-      <form method="POST" action="/workspace/<%= workspace?.id %>/settings/general" class="space-y-4">
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <% features.forEach(f => { %>
+    <div class="card p-5 rounded-2xl flex justify-between items-center">
+      <div>
+        <p class="font-medium"><%= f.label %></p>
+        <p class="text-xs text-[#666]">Toggle <%= f.label %></p>
+      </div>
 
-        <input
-          name="workspace_name"
-          value="<%= workspace?.name %>"
-          class="w-full px-4 py-2 bg-black border border-borderline rounded-xl"
-          placeholder="Workspace Name"
-        />
-
-        <input
-          name="workspace_image"
-          value="<%= workspace?.image %>"
-          class="w-full px-4 py-2 bg-black border border-borderline rounded-xl"
-          placeholder="Image URL"
-        />
-
-        <button class="px-5 py-2 bg-white text-black rounded-xl font-medium">
-          Save
-        </button>
-      </form>
+      <div class="toggle <%= workspace.features?.[f.key] ? 'active' : '' %>" onclick="toggle(this)"></div>
     </div>
-
-    <!-- FEATURES -->
-    <div class="card rounded-2xl p-6">
-      <h2 class="text-xl font-semibold mb-4">Features</h2>
-
-      <form method="POST" action="/workspace/<%= workspace?.id %>/settings/features" class="space-y-3">
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-        <label class="flex justify-between">
-          Sessions
-          <input type="checkbox" name="sessions" <%= workspace?.features?.sessions ? 'checked' : '' %>>
-        </label>
-
-        <label class="flex justify-between">
-          Logbook
-          <input type="checkbox" name="logbook" <%= workspace?.features?.logbook ? 'checked' : '' %>>
-        </label>
-
-        <button class="px-5 py-2 bg-white text-black rounded-xl font-medium mt-4">
-          Save
-        </button>
-      </form>
-    </div>
+    <% }) %>
 
   </div>
+</section>
 
+<!-- PERMISSIONS -->
+<section id="permissions" class="tab hidden">
+  <div class="card p-6 rounded-2xl max-w-xl">
+    <h2 class="text-xl font-semibold mb-4">Permissions</h2>
+    <p class="text-[#666]">Hook your role system here.</p>
+  </div>
+</section>
+
+<!-- API -->
+<section id="api" class="tab hidden">
+  <div class="card p-6 rounded-2xl max-w-xl flex gap-4">
+    <input type="password" value="<%= apiKeyDecrypted %>" 
+      class="flex-1 bg-black border border-borderline px-4 py-2 rounded-xl">
+
+    <button class="bg-red-600 px-4 py-2 rounded-xl text-sm">
+      Regenerate
+    </button>
+  </div>
+</section>
+
+</div>
 </main>
+
+<script>
+/* tabs */
+const tabs = document.querySelectorAll('.tab');
+const buttons = document.querySelectorAll('.tab-btn');
+
+buttons.forEach(btn => {
+  btn.onclick = () => {
+    tabs.forEach(t => t.classList.add('hidden'));
+    document.getElementById(btn.dataset.tab).classList.remove('hidden');
+
+    buttons.forEach(b => b.classList.remove('text-white'));
+    buttons.forEach(b => b.classList.add('text-[#888]'));
+    btn.classList.add('text-white');
+  };
+});
+
+/* toggle */
+function toggle(el){
+  el.classList.toggle('active');
+}
+</script>
 
 </body>
 </html>
