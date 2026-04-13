@@ -192,9 +192,12 @@ app.post("/login", csrfProtection, async (req, res) => {
   }
 });
 
-app.get("/settings", (req, res) => {
-  res.render("workspacesettings", { csrfToken: req.csrfToken() });
+app.get("/settings", csrfProtection, (req, res) => {
+  res.render("workspacesettings", {
+    csrfToken: req.csrfToken()
+  });
 });
+
 
 app.get("/logout", (req, res) => {
   console.log("ROUTE_LOGOUT", { sessionID: req.sessionID });
