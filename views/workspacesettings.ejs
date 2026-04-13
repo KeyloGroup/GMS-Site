@@ -1,690 +1,136 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title><%= workspace?.name || 'Workspace' %> â€” Settings</title>
+<title><%= workspace?.name || 'Workspace' %> Settings</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-<style>
-body {
-  background-color: #0d0d0d;
-  color: #fff;
-  font-family: 'Inter', sans-serif;
-  margin: 0;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-h1,h2,h3,h4 { font-family: 'Outfit', sans-serif; }
-.dotted-bg {
-  position: fixed;
-  inset: 0;
-  background-image: radial-gradient(#1a1a1a 1px, transparent 1px);
-  background-size: 24px 24px;
-  z-index: 0;
-}
-aside {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-.glass {
-  background: rgba(15,15,15,0.75);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.04);
-  box-shadow: inset 0 0 8px rgba(255,255,255,0.02), 0 6px 20px rgba(0,0,0,0.4);
-  transition: all 0.3s ease;
-}
-.settings-sidebar-glass {
-  background: rgba(15,15,15,0.75);
-  backdrop-filter: blur(20px);
-  border-left: 1px solid rgba(255,255,255,0.05);
-  box-shadow: inset 0 0 12px rgba(255,255,255,0.02);
-}
-.sidebar-link {
-  display: flex;
-  align-items: center;
-  gap: .75rem;
-  padding: .75rem .9rem;
-  border-radius: .75rem;
-  color: #a1a1aa;
-  font-weight: 500;
-  text-decoration: none;
-  transition: all .25s ease;
-}
-.sidebar-link:hover {
-  background-color: rgba(59,130,246,0.12);
-  color: #60a5fa;
-  transform: translateX(3px);
-}
-.sidebar-active {
-  background-color: rgba(59,130,246,0.18);
-  color: #3b82f6;
-  font-weight: 600;
-  box-shadow: 0 0 10px rgba(59,130,246,0.15);
-}
-.sidebar-link img { filter: brightness(0) invert(1); opacity: 0.9; }
-.sidebar-link:hover img { opacity: 1; }
-.mini-link {
-  display: flex;
-  align-items: center;
-  gap: .75rem;
-  padding: .75rem;
-  border-radius: .75rem;
-  color: #a1a1aa;
-  cursor: pointer;
-  transition: background-color .2s ease, color .2s ease;
-}
-.mini-link:hover { background: rgba(59,130,246,0.12); color: #60a5fa; }
-.mini-active {
-  background: rgba(59,130,246,0.18);
-  color: #3b82f6;
-  font-weight: 600;
-  box-shadow: 0 0 10px rgba(59,130,246,0.15);
-}
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'sans-serif'] },
+        colors: {
+          background: '#000',
+          surface: '#0a0a0a',
+          border: '#1f1f1f'
+        }
+      }
+    }
+  }
+</script>
 
-.toggle {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  width: 52px;
-  height: 28px;
-  flex-shrink: 0;
-}
-.toggle input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-  position: absolute;
-  pointer-events: none;
-}
+<style>
+body { background:#000; color:#e5e5e5; font-family:Inter; }
+.glass { background:#0a0a0a; border:1px solid #1f1f1f; }
+.sidebar-item { transition:all .2s ease; }
+.sidebar-item:hover { background:#111; }
+.sidebar-active { background:#111; color:white; }
+.toggle { position:relative;width:44px;height:24px; }
+.toggle input { display:none; }
 .slider {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(71,85,105,0.8);
-  border-radius: 999px;
-  transition: background-color 200ms ease;
-  border: 1px solid rgba(255,255,255,0.05);
-  box-sizing: border-box;
+  position:absolute;inset:0;border-radius:999px;background:#222;
 }
 .slider:before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 3px;
-  transform: translateY(-50%);
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  transition: left 180ms cubic-bezier(.2,.9,.3,1);
+  content:"";position:absolute;width:18px;height:18px;background:white;border-radius:50%;top:3px;left:3px;transition:.2s;
 }
-.toggle input:checked + .slider {
-  background-color: #3b82f6;
-}
-.toggle input:checked + .slider:before {
-  left: calc(100% - 3px - 22px);
-}
-.toggle input:focus + .slider {
-  box-shadow: 0 0 0 4px rgba(59,130,246,0.12);
-}
-
-/* permission rows */
-.perm-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.75rem 1rem;
-  border-radius: 0.75rem;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.04);
-  margin-bottom: 0.5rem;
-}
-.perm-row label {
-  flex: 1;
-  line-height: 1.3;
-  font-size: 0.9rem;
-  color: #e2e8f0;
-  margin-right: 1rem;
-  word-break: break-word;
-}
-
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-@media (max-width: 900px) {
-  .settings-sidebar-glass { display: none; }
-}
-::-webkit-scrollbar { width: 8px; background: #111; }
-::-webkit-scrollbar-thumb { background: #222; border-radius: 8px; }
-
-        .sidebar-link img {
-            filter: brightness(0) invert(1);
-            transition: filter 0.2s ease;
-        }
+.toggle input:checked + .slider { background:#2563eb; }
+.toggle input:checked + .slider:before { transform:translateX(20px); }
 </style>
 </head>
 
-<body class="text-white flex min-h-screen relative">
-  <div class="dotted-bg"></div>
+<body class="flex min-h-screen">
 
-  <div class="flex flex-1 items-stretch z-10 w-full">
-    <!-- Left main sidebar -->
-    <aside class="w-20 md:w-64 p-4 glass border-r border-gray-800">
-      <div class="flex flex-col items-center mb-6">
-        <img src="<%= workspace?.image || '/icons/default-workspace.png' %>" alt="Workspace Icon" class="w-14 h-14 rounded-full mb-2 shadow-md object-cover">
-        <p class="text-gray-300 text-sm font-semibold text-center break-words"><%= workspace?.name || 'Workspace' %></p>
-      </div>
-
-      <div class="border-t border-gray-700 mb-4"></div>
-
-      <nav class="flex flex-col gap-2 flex-1">
-        <a href="/workspace/<%= workspace?.id %>/" class="sidebar-link"><img src="/icons/icons8-home-48.png" class="w-5 h-5"> <span>Home</span></a>
-        <a href="#" class="sidebar-link"><img src="/icons/icons8-checked-box-50.png" class="w-5 h-5"> <span>Tasks</span></a>
-        <a href="#" class="sidebar-link"><img src="/icons/icons8-open-book-50.png" class="w-5 h-5"> <span>Logbook</span></a>
-        <a href="/workspace/<%= workspace?.id %>/sessions" class="sidebar-link"><img src="/icons/icons8-calendar-50.png" class="w-5 h-5"> <span>Sessions</span></a>
-        <a href="/workspace/<%= workspace?.id %>/staff" class="sidebar-link"><img src="/icons/icons8-avatar-24.png" class="w-5 h-5"> <span>Staff</span></a>
-        <a href="/workspace/<%= workspace?.id %>/activity" class="sidebar-link"><img src="/icons/icons8-clock-24.png" class="w-5 h-5"> <span>Activity</span></a>
-        <a href="#" class="sidebar-link"><img src="/icons/icons8-airplane-take-off-50.png" class="w-5 h-5"> <span>Leave</span></a>
-        <a href="#" class="sidebar-link"><img src="/icons/icons8-folder-50.png" class="w-5 h-5"> <span>Documents</span></a>
-      </nav>
-
-      <div class="border-t border-gray-800 mt-4"></div>
-
-      <a href="/workspace/<%= workspace?.id %>/settings" class="sidebar-link sidebar-active mt-4">
-        <img src="/icons/icons8-settings-50.png" class="w-5 h-5"> <span>Settings</span>
-      </a>
-
-      <div class="mt-6 flex items-center gap-3 p-2 bg-black/30 rounded-xl hover:bg-black/50 transition-all">
-        <img src="<%= userProfileURL || '/icons/default-avatar.png' %>" alt="Profile" class="w-10 h-10 rounded-full shadow object-cover">
-        <div class="hidden md:block">
-          <p class="text-sm font-semibold text-white"><%= user || 'You' %></p>
-          <p class="text-xs text-gray-400">Online</p>
-        </div>
-      </div>
-    </aside>
-
-    <aside class="w-64 p-4 settings-sidebar-glass border-l border-gray-800">
-      <h2 class="font-bold text-xl mb-4 text-blue-400">Workspace Settings</h2>
-      <ul class="space-y-1 flex-1">
-        <li><button data-tab="general" class="mini-link mini-active"><i class="fa-solid fa-gear"></i> General</button></li>
-        <li><button data-tab="features" class="mini-link"><i class="fa-solid fa-toggle-on"></i> Features</button></li>
-        <li><button data-tab="api" class="mini-link"><i class="fa-solid fa-key"></i> API</button></li>
-        <li><button data-tab="permissions" class="mini-link"><i class="fa-solid fa-users-gear"></i> Permissions</button></li>
-        <li><button data-tab="sessionsbot" class="mini-link"><i class="fa-solid fa-users-gear"></i> Sessions Bot</button></li>
-      </ul>
-    </aside>
-
-    <main class="flex-1 p-8 overflow-y-auto space-y-10 relative z-10">
-      <section id="general" class="tab-content active glass p-6">
-        <h3 class="text-2xl font-semibold mb-6 text-blue-400">General Settings</h3>
-        <form method="POST" action="/workspace/<%= workspace?.id %>/settings/general" class="space-y-6">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <div>
-            <label class="block mb-2 font-medium text-gray-300">Workspace Name</label>
-            <input type="text" name="workspace_name" value="<%= workspace?.name %>" 
-                class="glass px-4 py-2 rounded-xl text-white w-full border-none focus:ring-2 focus:ring-blue-400"/>
-          </div>
-
-          <div>
-            <label class="block mb-2 font-medium text-gray-300">Workspace Image URL</label>
-            <input type="text" name="workspace_image" value="<%= workspace?.image %>" 
-                class="glass px-4 py-2 rounded-xl text-white w-full border-none focus:ring-2 focus:ring-blue-400"/>
-          </div>
-
-                    <div class="glass p-5 rounded-2xl border border-white/10">
-            <h4 class="text-lg font-semibold text-blue-400 mb-4 flex items-center gap-2">
-              <i class="fa-solid fa-eye"></i> Workspace Visibility
-            </h4>
-            <p class="text-sm text-gray-400 mb-4">Control who has the ability to view and see this workspace.</p>
-
-            <div class="flex flex-col md:flex-row gap-4 mb-4">
-              <label class="flex-1 glass p-4 rounded-xl border border-white/10 cursor-pointer hover:bg-white/5 transition">
-                <input type="radio" name="workspace_visibility" value="everyone" <%= workspace?.visibility === 'everyone' ? 'checked' : '' %> class="mr-2 accent-blue-500">
-                <span class="font-semibold text-white">Community Access</span>
-                <p class="text-sm text-gray-400 mt-1">Anyone linked to your community can access this workspace via the minimum role ID set.</p>
-              </label>
-
-              <label class="flex-1 glass p-4 rounded-xl border border-white/10 cursor-pointer hover:bg-white/5 transition">
-                <input type="radio" name="workspace_visibility" value="invite" <%= workspace?.visibility === 'invite' ? 'checked' : '' %> class="mr-2 accent-blue-500">
-                <span class="font-semibold text-white">Invitational Access</span>
-                <p class="text-sm text-gray-400 mt-1">Only invited users or staff may access this workspace via an invitiation link.</p>
-              </label>
-            </div>
-
-            <div>
-              <label class="block mb-2 font-medium text-gray-300">Minimum Roblox Role Required</label>
-              <select id="roleDropdown" name="minimum_role" class="glass w-full px-4 py-2 rounded-xl text-white border-none focus:ring-2 focus:ring-blue-400">
-                <option>Loading roles...</option>
-              </select>
-              <p class="text-sm text-gray-500 mt-2">Select the minimum group role required to view and use this workspace.</p>
-            </div>
-          </div>
-
-          <div class="flex flex-wrap gap-3">
-            <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition">Save Changes</button>
-            <a href="/workspace/<%= workspace?.id %>/" class="bg-gray-700 text-white px-4 py-2 rounded-xl hover:bg-gray-600 transition">Back to Workspace</a>
-          </div>
-        </form>
-      </section>
-
-      <section id="features" class="tab-content glass p-6">
-        <h3 class="text-2xl font-semibold mb-6 text-blue-400">Feature Toggles</h3>
-        <form method="POST" action="/workspace/<%= workspace?.id %>/settings/features" class="space-y-6">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <div class="space-y-4">
-            <label class="flex items-center justify-between p-3 glass rounded-xl border border-white/10">
-              <span>Sessions <p class="text-sm text-gray-400">Enable time-tracked work periods.</p></span>
-              <label class="toggle">
-                <input type="checkbox" name="feature_sessions" <%= workspace?.features?.sessions ? 'checked' : '' %> >
-                <span class="slider"></span>
-              </label>
-            </label>
-
-            <label class="flex items-center justify-between p-3 glass rounded-xl border border-white/10">
-              <span>Logbook <p class="text-sm text-gray-400">Allow staff to record manual log entries.</p></span>
-              <label class="toggle">
-                <input type="checkbox" name="feature_logbook" <%= workspace?.features?.logbook ? 'checked' : '' %> >
-                <span class="slider"></span>
-              </label>
-            </label>
-
-            <label class="flex items-center justify-between p-3 glass rounded-xl border border-white/10">
-              <span>Audit Logs <p class="text-sm text-gray-400">Track all administrative and system actions.</p></span>
-              <label class="toggle">
-                <input type="checkbox" name="feature_audit" <%= workspace?.features?.audit ? 'checked' : '' %> >
-                <span class="slider"></span>
-              </label>
-            </label>
-
-            <label class="flex items-center justify-between p-3 glass rounded-xl border border-white/10">
-              <span>Activity Tracking <p class="text-sm text-gray-400">Monitor staff presence and performance metrics.</p></span>
-              <label class="toggle">
-                <input type="checkbox" name="feature_activity" <%= workspace?.features?.activity ? 'checked' : '' %> >
-                <span class="slider"></span>
-              </label>
-            </label>
-
-            <label class="flex items-center justify-between p-3 glass rounded-xl border border-white/10">
-              <span>Documents <p class="text-sm text-gray-400">Manage shared files and reference materials.</p></span>
-              <label class="toggle">
-                <input type="checkbox" name="feature_documents" <%= workspace?.features?.documents ? 'checked' : '' %> >
-                <span class="slider"></span>
-              </label>
-            </label>
-          </div>
-
-          <button type="submit" class="mt-4 btn-primary bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition">Update Features</button>
-        </form>
-      </section>
-
-      <section id="api" class="tab-content glass p-6">
-        <h3 class="text-2xl font-semibold mb-6 text-blue-400">API Key Management</h3>
-
-        <label class="block mb-2 font-medium text-gray-300">Current API Key</label>
-        <div class="flex items-center gap-3">
-          <input type="password" id="apiKey" value="<%= apiKeyDecrypted || '' %>" readonly
-            class="glass px-4 py-2 rounded-xl flex-1 text-white border-none"/>
-          <button type="button" id="toggleApiKey" class="btn-secondary glass px-4 py-2 rounded-xl text-xl hover:bg-white/15 transition" aria-label="Toggle API key visibility">
-            <i class="fa-solid fa-eye text-gray-400"></i>
-          </button>
-          <form method="POST" action="/workspace/<%= workspace?.id %>/regenerate-api-key" class="m-0">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-xl hover:bg-red-700 transition">Re-generate</button>
-          </form>
-        </div>
-
-        <p class="text-sm text-gray-400 mt-3">Keep your API key secret. Regenerating will invalidate the current key.</p>
-      </section>
-
-      <section id="permissions" class="tab-content glass p-6">
-        <div class="flex justify-between items-center mb-6">
-          <h3 class="text-2xl font-semibold text-blue-400">Role Permissions</h3>
-          <button id="openCreateRole" class="bg-green-600 text-white px-5 py-2 rounded-xl hover:bg-green-700 transition font-semibold flex items-center gap-2">
-            <i class="fa-solid fa-plus"></i> Create Role
-          </button>
-        </div>
-
-        <div id="rolesList" class="space-y-4">
-          <% 
-            const roles = typeof workspace?.roles !== 'undefined' ? workspace.roles : [
-              {
-                name: 'Admin', id: 'admin', permissions: {
-                  postWall: true, deleteWallPosts: true, pinWall: true,
-                  logbookAccess: true, manageLogbook: true,
-                  sessionsAccess: true, manageSessions: true, overrideSessions: true,
-                  manageStaff: true, overrideActivity: true,
-                  manageLOA: true, addDocuments: true, removeDocuments: true,
-                  settingsAccess: true, manageSettings: true
-                }
-              },
-              {
-                name: 'Staff', id: 'staff', permissions: {
-                  postWall: true, deleteWallPosts: false, pinWall: false,
-                  logbookAccess: true, manageLogbook: false,
-                  sessionsAccess: true, manageSessions: false, overrideSessions: false,
-                  manageStaff: false, overrideActivity: false,
-                  manageLOA: false, addDocuments: false, removeDocuments: false,
-                  settingsAccess: false, manageSettings: false
-                }
-              }
-            ];
-
-            const permLabels = {
-              postWall: 'Post on workspace wall',
-              deleteWallPosts: 'Delete posts on workspace wall',
-              pinWall: 'Pin messages on workspace wall',
-              logbookAccess: 'Logbook access',
-              manageLogbook: 'Manage logbook entries',
-              sessionsAccess: 'Sessions Access',
-              manageSessions: 'Create & Delete Sessions',
-              overrideSessions: 'Override Sessions',
-              manageStaff: 'Manage Staff',
-              overrideActivity: 'Override Activity',
-              manageLOA: 'Manage LOA',
-              addDocuments: 'Add to documents',
-              removeDocuments: 'Remove documents',
-              settingsAccess: 'Settings access',
-              manageSettings: 'Manage settings'
-            };
-          %>
-
-          <% roles.forEach(role => { %>
-            <div class="glass rounded-2xl border border-white/10 overflow-hidden">
-              <div class="flex items-center justify-between p-4 cursor-pointer" onclick="toggleRole('<%= role.id %>')">
-                <div class="flex items-center gap-3">
-                  <i class="fa-solid fa-user-shield text-blue-400"></i>
-                  <div>
-                    <h4 class="text-lg font-semibold text-white"><%= role.name %></h4>
-                    <p class="text-xs text-gray-400">ID: <%= role.id %></p>
-                  </div>
-                </div>
-
-                <div class="flex items-center gap-4">
-                  <button onclick="event.stopPropagation(); deleteRole('<%= role.id %>')" class="text-gray-400 hover:text-red-500 transition" title="Delete Role">
-                    <i class="fa-solid fa-trash"></i>
-                  </button>
-                  <i class="fa-solid fa-chevron-down text-gray-400 transition-transform" id="chevron-<%= role.id %>"></i>
-                </div>
-              </div>
-
-              <div id="role-perms-<%= role.id %>" class="hidden border-t border-white/10 p-4 bg-white/5">
-                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  <% Object.entries(permLabels).forEach(([key, label]) => { %>
-                    <div class="flex items-center justify-between p-3 glass rounded-xl border border-white/10">
-                      <label for="<%= role.id + '-' + key %>" class="text-sm"><%= label %></label>
-                      <div class="toggle">
-                        <input type="checkbox" id="<%= role.id + '-' + key %>" <%= role.permissions && role.permissions[key] ? 'checked' : '' %> >
-                        <span class="slider"></span>
-                      </div>
-                    </div>
-                  <% }) %>
-                </div>
-
-                <div class="mt-4 flex gap-2">
-                  <button class="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition">Save Changes</button>
-                  <button onclick="event.stopPropagation(); deleteRole('<%= role.id %>')" class="bg-red-600 text-white px-4 py-2 rounded-xl hover:bg-red-700 transition">Delete Role</button>
-                </div>
-              </div>
-            </div>
-          <% }) %>
-        </div>
-        <div id="createRoleModal" class="fixed inset-0 bg-black/70 backdrop-blur-md hidden items-center justify-center z-50">
-          <div class="glass p-6 rounded-2xl w-full max-w-lg border border-white/10 relative">
-            <button id="closeCreateRole" class="absolute top-3 right-3 text-gray-400 hover:text-red-400 transition" aria-label="Close create role">
-              <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
-
-            <h4 class="text-xl font-semibold mb-4 text-blue-400 flex items-center gap-2"><i class="fa-solid fa-user-shield"></i> Create New Role</h4>
-
-            <form id="createRoleForm" class="space-y-4" autocomplete="off">
-              <input type="text" name="role_name" placeholder="Role Name (e.g. Supervisor)" class="glass w-full px-4 py-2 rounded-xl text-white border-none focus:ring-2 focus:ring-blue-400" required>
-              <input type="text" name="role_id" placeholder="Role ID (e.g. supervisor_role)" class="glass w-full px-4 py-2 rounded-xl text-white border-none focus:ring-2 focus:ring-blue-400" required>
-              <button type="submit" class="w-full bg-green-600 text-white px-5 py-2 rounded-xl hover:bg-green-700 transition font-semibold flex items-center justify-center gap-2">
-                <i class="fa-solid fa-plus"></i> Add Role
-              </button>
-            </form>
-          </div>
-        </div>
-      </section>
-      <section id="sessionsbot" class="tab-content glass p-6">
-        <h3 class="text-2xl font-semibold mb-6 text-blue-400">Sessions Bot</h3>
-        <form id="sessionsBotForm" method="POST" action="/workspace/<%= workspace?.id %>/settings/sessions-bot" class="space-y-6">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <div>
-                <label class="block mb-2 font-medium text-gray-300">Discord Server ID</label>
-                <input type="text" name="server_id" placeholder="123456789012345678" class="glass px-4 py-2 rounded-xl text-white w-full border-none focus:ring-2 focus:ring-blue-400" required>
-            </div>
-            
-            <div>
-                <label class="block mb-2 font-medium text-gray-300">Channel ID</label>
-                <input type="text" name="channel_id" placeholder="123456789012345678" class="glass px-4 py-2 rounded-xl text-white w-full border-none focus:ring-2 focus:ring-blue-400" required>
-            </div>
-            
-            <div>
-                <label class="block mb-2 font-medium text-gray-300">Ping Role ID (optional)</label>
-                <input type="text" name="ping_role" placeholder="Role ID (no <@ > needed)" class="glass px-4 py-2 rounded-xl text-white w-full border-none focus:ring-2 focus:ring-blue-400">
-                <p class="text-sm text-gray-500 mt-1">If provided, the bot will ping <code>&lt;@roleID&gt;</code></p>
-            </div>
-            
-            <div>
-                <label class="block mb-2 font-medium text-gray-300">Announcement Title</label>
-                <input type="text" name="title" placeholder="Session Starting Soon" class="glass px-4 py-2 rounded-xl text-white w-full border-none focus:ring-2 focus:ring-blue-400" required>
-            </div>
-            
-            <div>
-                <label class="block mb-2 font-medium text-gray-300">Message (Embed Body)</label>
-                <textarea name="message" rows="6" placeholder="Supports Discord markdown (**, __, etc)" class="glass px-4 py-2 rounded-xl text-white w-full border-none focus:ring-2 focus:ring-blue-400" required></textarea>
-            </div>
-            <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition">Send Test Announcement</button>
-            <button type="button" id="saveSessionsBot" class="bg-green-600 text-white px-5 py-2 rounded-xl hover:bg-green-700 transition">Save Settings</button>
-        </form>
-    </section>
-    </main>
+<!-- Sidebar -->
+<aside class="w-64 glass p-4 flex flex-col">
+  <div class="mb-6">
+    <p class="text-lg font-semibold"><%= workspace?.name || 'Workspace' %></p>
   </div>
-  <script>
-    // Tabs
-    (function () {
-      const links = document.querySelectorAll('.mini-link');
-      const sections = document.querySelectorAll('.tab-content');
 
-      function clearActive() {
-        links.forEach(l => l.classList.remove('mini-active'));
-        sections.forEach(s => s.classList.remove('active'));
-      }
+  <nav class="space-y-1 text-sm">
+    <button data-tab="general" class="sidebar-item sidebar-active w-full text-left px-3 py-2 rounded-lg">General</button>
+    <button data-tab="activity" class="sidebar-item w-full text-left px-3 py-2 rounded-lg">Activity Tracking</button>
+    <button data-tab="roles" class="sidebar-item w-full text-left px-3 py-2 rounded-lg">Roles</button>
+    <button data-tab="sessions" class="sidebar-item w-full text-left px-3 py-2 rounded-lg">Sessions</button>
+  </nav>
+</aside>
 
-      links.forEach(link => {
-        link.addEventListener('click', () => {
-          clearActive();
-          link.classList.add('mini-active');
-          const tab = link.dataset.tab;
-          const el = document.getElementById(tab);
-          if (el) el.classList.add('active');
-        });
-      });
+<!-- Main -->
+<main class="flex-1 p-8 space-y-8">
 
-      document.addEventListener('DOMContentLoaded', () => {
-        const initialLink = document.querySelector('.mini-link[data-tab="general"]');
-        const initialSection = document.getElementById('general');
-        if (initialLink) initialLink.classList.add('mini-active');
-        if (initialSection) initialSection.classList.add('active');
-      });
-    })();
+<!-- GENERAL -->
+<section id="general" class="tab">
+  <h1 class="text-2xl font-semibold mb-6">General</h1>
 
-    // Toggle API key (fixed to accept event)
-    document.getElementById('toggleApiKey')?.addEventListener('click', function (ev) {
-      const field = document.getElementById("apiKey");
-      const icon = this.querySelector('.fa-eye, .fa-eye-slash');
-      if (!field) return;
-      if (field.type === "password") {
-        field.type = "text";
-        if (icon) { icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash'); }
-      } else {
-        field.type = "password";
-        if (icon) { icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); }
-      }
-    });
-    function toggleRole(id) {
-      const panel = document.getElementById('role-perms-' + id);
-      const icon = document.getElementById('chevron-' + id);
-      if (!panel) return;
-      panel.classList.toggle('hidden');
-      icon?.classList.toggle('rotate-180');
-    }
-    window.toggleRole = toggleRole;
+  <div class="glass p-6 rounded-xl space-y-4 max-w-xl">
+    <input type="text" value="<%= workspace?.name %>" class="w-full bg-black border border-border px-4 py-2 rounded-lg">
+    <input type="text" value="<%= workspace?.image %>" class="w-full bg-black border border-border px-4 py-2 rounded-lg">
+    <button class="bg-white text-black px-4 py-2 rounded-lg">Save</button>
+  </div>
+</section>
 
-    function deleteRole(id) {
-      const el = document.querySelector(`[onclick="toggleRole('${id}')"]`);
-      const card = el ? el.closest('.glass') : null;
-      if (!card) return;
-      if (!confirm('Are you sure you want to delete this role?')) return;
-      card.classList.add('opacity-0', 'scale-95', 'transition', 'duration-200');
-      setTimeout(() => card.remove(), 200);
-    }
-    window.deleteRole = deleteRole;
+<!-- ACTIVITY -->
+<section id="activity" class="tab hidden">
+  <h1 class="text-2xl font-semibold mb-6">Activity Tracking</h1>
 
-    // Create role modal logic
-    (function () {
-      const modal = document.getElementById('createRoleModal');
-      const openBtn = document.getElementById('openCreateRole');
-      const closeBtn = document.getElementById('closeCreateRole');
-      const form = document.getElementById('createRoleForm');
-      const rolesList = document.getElementById('rolesList');
+  <button class="mb-6 bg-white text-black px-4 py-2 rounded-lg">
+    <i class="fa fa-download mr-2"></i>Download Loader
+  </button>
 
-      if (openBtn) openBtn.addEventListener('click', () => {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-      });
+  <div class="glass rounded-xl divide-y divide-border max-w-xl">
+    <% const roles = ['Member','Hotel Visitor','Partnership Rep','Trainee','Junior','Restaurant','Senior Leader','Team Leader','Supervisor','Manager']; %>
 
-      if (closeBtn) closeBtn.addEventListener('click', () => {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-      });
-
-      modal?.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          modal.classList.add('hidden');
-          modal.classList.remove('flex');
-        }
-      });
-
-      if (!form) return;
-
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = form.role_name.value.trim();
-        const id = form.role_id.value.trim();
-        if (!name || !id) return alert('Please fill out all fields.');
-
-        const permissions = [
-          'Post on workspace wall', 'Delete posts on workspace wall', 'Pin messages on workspace wall',
-          'Logbook access', 'Manage logbook entries', 'Sessions Access', 'Create & Delete Sessions',
-          'Override Sessions', 'Manage Staff', 'Override Activity', 'Manage LOA',
-          'Add to documents', 'Remove documents', 'Settings access', 'Manage settings'
-        ];
-
-        const newRoleHTML = `
-      <div class="glass rounded-2xl border border-white/10 overflow-hidden">
-        <div class="flex items-center justify-between p-4 cursor-pointer" onclick="toggleRole('${escapeHtml(id)}')">
-          <div class="flex items-center gap-3">
-            <i class="fa-solid fa-user-shield text-blue-400"></i>
-            <div>
-              <h4 class="text-lg font-semibold text-white">${escapeHtml(name)}</h4>
-              <p class="text-xs text-gray-400">ID: ${escapeHtml(id)}</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-4">
-            <button onclick="event.stopPropagation(); deleteRole('${escapeHtml(id)}')" class="text-gray-400 hover:text-red-500 transition" title="Delete Role">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-            <i class="fa-solid fa-chevron-down text-gray-400 transition-transform" id="chevron-${escapeHtml(id)}"></i>
-          </div>
-        </div>
-        <div id="role-perms-${escapeHtml(id)}" class="hidden border-t border-white/10 p-4 bg-white/5">
-          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            ${permissions.map((p, i) => `
-              <div class="flex items-center justify-between p-3 glass rounded-xl border border-white/10">
-                <label for="${escapeHtml(id)}-perm${i}" class="text-sm">${escapeHtml(p)}</label>
-                <div class="toggle">
-                  <input type="checkbox" id="${escapeHtml(id)}-perm${i}">
-                  <span class="slider"></span>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-          <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition">
-            Save Changes
-          </button>
-        </div>
+    <% roles.forEach((r,i)=>{ %>
+      <div class="flex items-center justify-between px-4 py-3">
+        <span><%= r %></span>
+        <label class="toggle">
+          <input type="checkbox" <%= i>5 ? 'checked':'' %> >
+          <span class="slider"></span>
+        </label>
       </div>
-        `;
+    <% }) %>
+  </div>
+</section>
 
-        rolesList.insertAdjacentHTML('beforeend', newRoleHTML);
-        form.reset();
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-      });
+<!-- ROLES -->
+<section id="roles" class="tab hidden">
+  <h1 class="text-2xl font-semibold mb-6">Roles</h1>
 
-      function escapeHtml(str) {
-        return String(str).replace(/[&<>"']/g, function (m) {
-          return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
-        });
-      }
-    })();
-  </script>
+  <div class="glass p-6 rounded-xl">
+    <p class="text-sm text-gray-400">Role management coming here.</p>
+  </div>
+</section>
 
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-  <script>
-  const saveBtn = document.getElementById("saveSessionsBot");
-  if (saveBtn) {
-    saveBtn.addEventListener("click", async () => {
-        const data = Object.fromEntries(new FormData(sessionsBotForm).entries());
-        
-        try {
-            const res = await fetch("/workspace/<%= workspace?.id %>/settings/sessions-bot/save", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
-            });
-            alert(res.ok ? "Settings saved!" : "Failed to save settings.");
-        } catch (err) {
-            alert("Error saving settings.");
-        }
-    });
-}
-const sessionsBotForm = document.getElementById("sessionsBotForm");
-if (sessionsBotForm) {
-    sessionsBotForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
+<!-- SESSIONS -->
+<section id="sessions" class="tab hidden">
+  <h1 class="text-2xl font-semibold mb-6">Sessions</h1>
 
-const data = Object.fromEntries(new FormData(sessionsBotForm).entries());
-const payload = {
-    serverId: data.server_id,
-    channelId: data.channel_id,
-    pingRole: data.ping_role || null,
-    title: data.title,
-    message: data.message
-};
+  <div class="glass p-6 rounded-xl">
+    <p class="text-sm text-gray-400">Session settings coming here.</p>
+  </div>
+</section>
 
-try {
-    const res = await fetch("https://sessionsbot.keyloroblox.xyz/announce", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-    });
-    
-    alert(res.ok ? "Announcement sent successfully!" : "Failed to send announcement.");
-} catch (err) {
-    alert("Error sending announcement.");
-}
+</main>
+
+<script>
+const tabs = document.querySelectorAll('[data-tab]');
+const sections = document.querySelectorAll('.tab');
+
+tabs.forEach(btn=>{
+  btn.onclick = ()=>{
+    tabs.forEach(b=>b.classList.remove('sidebar-active'));
+    sections.forEach(s=>s.classList.add('hidden'));
+
+    btn.classList.add('sidebar-active');
+    document.getElementById(btn.dataset.tab).classList.remove('hidden');
+  }
 });
-}
 </script>
+
 </body>
 </html>
