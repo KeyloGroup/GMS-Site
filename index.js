@@ -194,7 +194,8 @@ app.post("/login", csrfProtection, async (req, res) => {
 
 app.get("/settings", csrfProtection, (req, res) => {
   res.render("workspacesettings", {
-    csrfToken: req.csrfToken()
+    csrfToken: req.csrfToken(),
+    workspace: workspace
   });
 });
 
