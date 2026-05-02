@@ -109,6 +109,40 @@ const redisClient = createClient({ url: process.env.REDIS_URL });
 redisClient.on("error", (err) => console.error("REDIS_ERROR", { message: err.message }));
 redisClient.connect().then(() => console.log("REDIS_CONNECTED"));
 
+// ─── BIO CODE HELPERS ─────────────────────────────────────────────────────────
+//
+// Storing the code in req.session is unreliable for unauthenticated visitors
+// because saveUninitialized:false means Express won't always persist a fresh
+// session between the /api/roblox/code GET and the /api/roblox/check-bio GET.
+// We key off req.sessionID (stable once the cookie is set) and write straight
+// to Redis with a hard TTL, completely bypassing the session store.
+//
+const BIO_CODE_TTL_SECS    = 10 * 60; // 10 minutes
+const VERIFIED_ID_TTL_SECS = 15 * 60; // 15 minutes — survives to POST /api/register
+
+function bioCodeKey(sid)    { return `biocode:${sid}`;    }
+function verifiedIdKey(sid) { return `verifiedid:${sid}`; }
+
+async function storeBioCode(sid, code) {
+  await redisClient.set(bioCodeKey(sid), code, { EX: BIO_CODE_TTL_SECS });
+}
+async function getBioCode(sid) {
+  return redisClient.get(bioCodeKey(sid));
+}
+async function deleteBioCode(sid) {
+  await redisClient.del(bioCodeKey(sid));
+}
+
+async function storeVerifiedId(sid, robloxId) {
+  await redisClient.set(verifiedIdKey(sid), robloxId, { EX: VERIFIED_ID_TTL_SECS });
+}
+async function getVerifiedId(sid) {
+  return redisClient.get(verifiedIdKey(sid));
+}
+async function deleteVerifiedId(sid) {
+  await redisClient.del(verifiedIdKey(sid));
+}
+
 function requestFingerprint(req) {
   const raw = [
     req.headers["user-agent"] || "",
@@ -257,7 +291,11 @@ app.use(
     name: "keylo.sid",
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false,
+    // IMPORTANT: must be true so unauthenticated visitors receive a stable,
+    // persisted session ID before /api/roblox/code is called. With false, a
+    // new session is never written to Redis unless something is assigned to it,
+    // which means req.sessionID is ephemeral and won't match on the next request.
+    saveUninitialized: true,
     proxy: true,
     cookie: {
       secure: true,
@@ -313,9 +351,6 @@ function clearLoginCookies(res) {
   ["id", "username", "avatar", "theme"].forEach((c) => res.clearCookie(c, opts));
 }
 
-// BIO CODE STATE
-// Codes are issued into the session and expire after 10 minutes.
-const CODE_TTL_MS = 10 * 60 * 1000;
 app.get("/", (req, res) => {
   res.render("index", { title: "Keylo" });
 });
@@ -409,7 +444,6 @@ app.get("/auth/roblox/callback", async (req, res) => {
 });
 
 app.get("/register", csrfProtection, (req, res) => {
-  // OAuth path — pendingRoblox set by /auth/roblox/callback
   if (req.query.oauth === "success" && req.session.pendingRoblox) {
     const { robloxUsername, avatarUrl } = req.session.pendingRoblox;
     return res.render("register", {
@@ -433,12 +467,13 @@ app.get("/register", csrfProtection, (req, res) => {
 app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
   console.log("API_REGISTER_HIT", {
     hasOAuthPending: !!req.session.pendingRoblox,
-    hasVerifiedId:   !!req.session.verifiedRobloxId,
+    sessionID: req.sessionID,
   });
 
   try {
     const { password, _hp } = req.body;
 
+    // Honeypot
     if (_hp && _hp.length > 0) {
       console.log("HONEYPOT_TRIGGERED_REGISTER");
       await new Promise((r) => setTimeout(r, 2000));
@@ -448,9 +483,11 @@ app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
     let robloxId;
     if (req.session.pendingRoblox) {
       robloxId = req.session.pendingRoblox.robloxId;
-    } else if (req.session.verifiedRobloxId) {
-      robloxId = req.session.verifiedRobloxId;
     } else {
+      robloxId = await getVerifiedId(req.sessionID);
+    }
+
+    if (!robloxId) {
       console.warn("API_REGISTER_NO_IDENTITY", { sessionID: req.sessionID });
       return res.status(400).send("Missing verified identity. Please restart registration.");
     }
@@ -470,9 +507,9 @@ app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
     );
     if (existing.rows.length > 0) {
       console.log("API_REGISTER_ALREADY_EXISTS_AUTO_LOGIN", { robloxIdHmac });
-      req.session.pendingRoblox    = null;
-      req.session.verifiedRobloxId = null;
-      req.session.loggedIn         = true;
+      req.session.pendingRoblox = null;
+      req.session.loggedIn      = true;
+      await deleteVerifiedId(req.sessionID);
       return req.session.save(() => res.redirect("https://app.keylogroup.co.uk/"));
     }
 
@@ -488,6 +525,7 @@ app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
       );
     }
 
+    // Persist
     const encryptedId       = encrypt(robloxId);
     const encryptedPassword = encrypt(password);
 
@@ -496,11 +534,11 @@ app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
       [encryptedId, robloxIdHmac, encryptedPassword]
     );
 
-    // Clean up session
-    req.session.pendingRoblox    = null;
-    req.session.verifiedRobloxId = null;
-    req.session.pendingBioCode   = null;
-    req.session.loggedIn         = true;
+    // Clean up
+    req.session.pendingRoblox = null;
+    req.session.loggedIn      = true;
+    await deleteVerifiedId(req.sessionID);
+    await deleteBioCode(req.sessionID);
 
     console.log("API_REGISTER_SUCCESS", { robloxIdHmac });
     req.session.save(() => res.redirect("https://app.keylogroup.co.uk/"));
@@ -510,7 +548,6 @@ app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
   }
 });
 
-// Look up a Roblox user by numeric ID — returns { id, name, avatar }
 app.get("/api/roblox/user/:id", authRateLimiter, async (req, res) => {
   const { id } = req.params;
 
@@ -552,28 +589,23 @@ app.get("/api/roblox/user/:id", authRateLimiter, async (req, res) => {
   }
 });
 
-// ── GET /api/roblox/code ──────────────────────────────────────────────────────
-// Issues a short-lived verification code stored server-side in the session.
-// Returns { code }
-app.get("/api/roblox/code", authRateLimiter, (req, res) => {
-  const raw  = crypto.randomBytes(4).toString("hex").toUpperCase();
-  const code = `KL-${raw}`;
+app.get("/api/roblox/code", authRateLimiter, async (req, res) => {
+  try {
+    const raw  = crypto.randomBytes(4).toString("hex").toUpperCase();
+    const code = `KL-${raw}`;
 
-  req.session.pendingBioCode = { code, issuedAt: Date.now() };
-  req.session.save((err) => {
-    if (err) {
-      console.error("CODE_SESSION_SAVE_FAILED", { message: err.message });
-      return res.status(500).json({ error: "Session error" });
-    }
-    console.log("BIO_CODE_ISSUED", { sessionID: req.sessionID });
+    await storeBioCode(req.sessionID, code);
+
+    console.log("BIO_CODE_ISSUED", { sessionID: req.sessionID, code });
     res.json({ code });
-  });
+  } catch (err) {
+    console.error("BIO_CODE_ISSUE_ERROR", { message: err.message });
+    res.status(500).json({ error: "Failed to generate code. Please try again." });
+  }
 });
 
 // ── GET /api/roblox/check-bio/:userId/:code ───────────────────────────────────
-// Fetches the user's Roblox bio and checks it contains the expected code.
-// On success sets req.session.verifiedRobloxId.
-// Returns { success: true } or { success: false, error: string }
+// Reads the stored code straight from Redis — no session lookup needed.
 app.get("/api/roblox/check-bio/:userId/:code", authRateLimiter, async (req, res) => {
   const { userId, code } = req.params;
 
@@ -581,38 +613,52 @@ app.get("/api/roblox/check-bio/:userId/:code", authRateLimiter, async (req, res)
     return res.status(400).json({ success: false, error: "Invalid user ID." });
   }
 
-  const pending = req.session.pendingBioCode;
-  if (!pending || pending.code !== code) {
-    console.warn("BIO_CODE_MISMATCH", { sessionID: req.sessionID });
-    return res.status(400).json({ success: false, error: "Code mismatch or session expired. Please start over." });
-  }
-
-  if (Date.now() - pending.issuedAt > CODE_TTL_MS) {
-    req.session.pendingBioCode = null;
-    return res.status(400).json({ success: false, error: "Verification code expired. Please generate a new one." });
+  if (!/^KL-[0-9A-F]{8}$/.test(code)) {
+    return res.status(400).json({ success: false, error: "Malformed code." });
   }
 
   try {
+    const storedCode = await getBioCode(req.sessionID);
+
+    console.log("BIO_CODE_CHECK", {
+      sessionID: req.sessionID,
+      storedCode,
+      receivedCode: code,
+    });
+
+    if (!storedCode) {
+      return res.status(400).json({
+        success: false,
+        error: "No pending code found. Please go back and generate a new code.",
+      });
+    }
+
+    if (storedCode !== code) {
+      return res.status(400).json({
+        success: false,
+        error: "Code mismatch. Please go back and copy the code exactly as shown.",
+      });
+    }
+
     const profileRes = await axios.get(
       `https://users.roblox.com/v1/users/${userId}`,
       { timeout: 5000 }
     );
 
     const bio = profileRes.data?.description || "";
+    console.log("BIO_CONTENT", { userId, bio: bio.slice(0, 100) });
+
     if (!bio.includes(code)) {
-      console.log("BIO_CODE_NOT_FOUND", { userId });
-      return res.json({ success: false, error: "Code not found in bio. Save your profile and try again." });
+      return res.json({
+        success: false,
+        error: "Code not found in bio. Make sure you saved your Roblox profile and try again.",
+      });
     }
 
-    // Code confirmed — clear so it can't be reused
-    req.session.pendingBioCode   = null;
-    req.session.verifiedRobloxId = userId;
+    await deleteBioCode(req.sessionID);
+    await storeVerifiedId(req.sessionID, userId);
 
-    req.session.save((err) => {
-      if (err) console.error("BIO_VERIFY_SESSION_SAVE_FAILED", { message: err.message });
-    });
-
-    console.log("BIO_CODE_VERIFIED", { userId });
+    console.log("BIO_CODE_VERIFIED", { userId, sessionID: req.sessionID });
     return res.json({ success: true });
   } catch (err) {
     console.error("BIO_CHECK_ERROR", { message: err.message, userId });
@@ -621,8 +667,7 @@ app.get("/api/roblox/check-bio/:userId/:code", authRateLimiter, async (req, res)
 });
 
 // ── GET /api/roblox/username/:id ──────────────────────────────────────────────
-// Returns the Roblox username for a verified ID only.
-// Returns { success: true, username: string }
+// Returns username only for the session-verified Roblox ID.
 app.get("/api/roblox/username/:id", authRateLimiter, async (req, res) => {
   const { id } = req.params;
 
@@ -630,12 +675,12 @@ app.get("/api/roblox/username/:id", authRateLimiter, async (req, res) => {
     return res.status(400).json({ success: false, error: "Invalid user ID." });
   }
 
-  // Must be the session-verified user — prevents enumeration
-  if (req.session.verifiedRobloxId !== id) {
-    return res.status(403).json({ success: false, error: "Not authorized." });
-  }
-
   try {
+    const verifiedId = await getVerifiedId(req.sessionID);
+    if (!verifiedId || verifiedId !== id) {
+      return res.status(403).json({ success: false, error: "Not authorized." });
+    }
+
     const r = await axios.get(`https://users.roblox.com/v1/users/${id}`, { timeout: 5000 });
     return res.json({ success: true, username: r.data.name });
   } catch (err) {
