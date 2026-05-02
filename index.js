@@ -291,17 +291,24 @@ app.use(
     name: "keylo.sid",
     secret: process.env.SESSION_SECRET,
     resave: false,
-    // IMPORTANT: must be true so unauthenticated visitors receive a stable,
-    // persisted session ID before /api/roblox/code is called. With false, a
-    // new session is never written to Redis unless something is assigned to it,
-    // which means req.sessionID is ephemeral and won't match on the next request.
+    // Must be true: unauthenticated visitors need a stable persisted session ID
+    // before /api/roblox/code fires, otherwise Redis has nothing to look up on
+    // the subsequent /api/roblox/check-bio call.
     saveUninitialized: true,
     proxy: true,
     cookie: {
       secure: true,
       httpOnly: true,
-      sameSite: "none",
-      domain: ".keylogroup.co.uk",
+      // "lax" is correct here — all auth requests (register, login, OAuth
+      // callback) are same-site navigations to keylogroup.co.uk.
+      // "none" was causing the browser to reject the cookie because it requires
+      // a Partitioned attribute in modern Chrome, and also caused the session ID
+      // to change on every request (confirmed in logs).
+      sameSite: "lax",
+      // No domain override — let the browser scope the cookie to the exact host
+      // (keylogroup.co.uk). Setting domain: ".keylogroup.co.uk" means the cookie
+      // is sent to ALL subdomains including app.keylogroup.co.uk which runs a
+      // separate app and could shadow or clobber the session.
       maxAge: 30 * 24 * 60 * 60 * 1000,
     },
   })
@@ -322,8 +329,7 @@ const csrfProtection = csurf({
   cookie: {
     secure: true,
     httpOnly: true,
-    sameSite: "none",
-    domain: ".keylogroup.co.uk",
+    sameSite: "lax",
     path: "/",
   },
 });
@@ -351,10 +357,15 @@ function clearLoginCookies(res) {
   ["id", "username", "avatar", "theme"].forEach((c) => res.clearCookie(c, opts));
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// ROUTES
+// ─────────────────────────────────────────────────────────────────────────────
+
 app.get("/", (req, res) => {
   res.render("index", { title: "Keylo" });
 });
 
+// ── Roblox OAuth start ────────────────────────────────────────────────────────
 app.get("/auth/roblox", (req, res) => {
   const state = crypto.randomBytes(16).toString("hex");
   req.session.oauthState = state;
@@ -373,6 +384,7 @@ app.get("/auth/roblox", (req, res) => {
   });
 });
 
+// ── Roblox OAuth callback ─────────────────────────────────────────────────────
 app.get("/auth/roblox/callback", async (req, res) => {
   console.log("OAUTH_CALLBACK_HIT", { sessionID: req.sessionID });
   try {
@@ -443,6 +455,7 @@ app.get("/auth/roblox/callback", async (req, res) => {
   }
 });
 
+// ── GET /register ─────────────────────────────────────────────────────────────
 app.get("/register", csrfProtection, (req, res) => {
   if (req.query.oauth === "success" && req.session.pendingRoblox) {
     const { robloxUsername, avatarUrl } = req.session.pendingRoblox;
@@ -464,6 +477,7 @@ app.get("/register", csrfProtection, (req, res) => {
   });
 });
 
+// ── POST /api/register ────────────────────────────────────────────────────────
 app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
   console.log("API_REGISTER_HIT", {
     hasOAuthPending: !!req.session.pendingRoblox,
@@ -480,6 +494,7 @@ app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
       return res.redirect("https://app.keylogroup.co.uk/");
     }
 
+    // Resolve identity — OAuth session takes priority, then Redis-verified ID
     let robloxId;
     if (req.session.pendingRoblox) {
       robloxId = req.session.pendingRoblox.robloxId;
@@ -492,6 +507,7 @@ app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
       return res.status(400).send("Missing verified identity. Please restart registration.");
     }
 
+    // Password validation
     if (!password || typeof password !== "string" || password.length < 8) {
       return res.status(400).send("Password must be at least 8 characters.");
     }
@@ -501,6 +517,7 @@ app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
 
     const robloxIdHmac = hmacLookup(robloxId);
 
+    // Duplicate check — auto-login if account already exists
     const existing = await dbQuery(
       'SELECT id FROM "Accounts" WHERE roblox_id_hmac=$1 LIMIT 1',
       [robloxIdHmac]
@@ -513,6 +530,7 @@ app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
       return req.session.save(() => res.redirect("https://app.keylogroup.co.uk/"));
     }
 
+    // Ban check
     const banned = await dbQuery(
       'SELECT reason FROM "AccountsBan" WHERE roblox_id_hmac=$1 LIMIT 1',
       [robloxIdHmac]
@@ -548,6 +566,11 @@ app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
   }
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// ROBLOX API ROUTES
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── GET /api/roblox/user/:id ──────────────────────────────────────────────────
 app.get("/api/roblox/user/:id", authRateLimiter, async (req, res) => {
   const { id } = req.params;
 
@@ -589,6 +612,8 @@ app.get("/api/roblox/user/:id", authRateLimiter, async (req, res) => {
   }
 });
 
+// ── GET /api/roblox/code ──────────────────────────────────────────────────────
+// Writes the code straight to Redis under req.sessionID — no session save needed.
 app.get("/api/roblox/code", authRateLimiter, async (req, res) => {
   try {
     const raw  = crypto.randomBytes(4).toString("hex").toUpperCase();
@@ -613,6 +638,7 @@ app.get("/api/roblox/check-bio/:userId/:code", authRateLimiter, async (req, res)
     return res.status(400).json({ success: false, error: "Invalid user ID." });
   }
 
+  // Only allow the exact format we generate: KL- followed by 8 uppercase hex chars
   if (!/^KL-[0-9A-F]{8}$/.test(code)) {
     return res.status(400).json({ success: false, error: "Malformed code." });
   }
@@ -640,6 +666,7 @@ app.get("/api/roblox/check-bio/:userId/:code", authRateLimiter, async (req, res)
       });
     }
 
+    // Fetch the user's Roblox bio
     const profileRes = await axios.get(
       `https://users.roblox.com/v1/users/${userId}`,
       { timeout: 5000 }
@@ -655,6 +682,7 @@ app.get("/api/roblox/check-bio/:userId/:code", authRateLimiter, async (req, res)
       });
     }
 
+    // Confirmed — delete used code, store verified ID, both in Redis
     await deleteBioCode(req.sessionID);
     await storeVerifiedId(req.sessionID, userId);
 
@@ -688,6 +716,10 @@ app.get("/api/roblox/username/:id", authRateLimiter, async (req, res) => {
     return res.status(500).json({ success: false, error: "Failed to fetch username." });
   }
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// REMAINING ROUTES
+// ─────────────────────────────────────────────────────────────────────────────
 
 app.get("/login", csrfProtection, (req, res) => {
   res.render("login", {
