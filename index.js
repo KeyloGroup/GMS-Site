@@ -16,7 +16,10 @@ app.set("trust proxy", 1);
 const PORT = 3000;
 
 [
-  "PG_URL_USERDATA",
+  "DB_HOST_ACCOUNTS",
+  "DB_USER_ACCOUNTS",
+  "DB_PASS_ACCOUNTS",
+  "DB_NAME_ACCOUNTS",
   "ROBLOX_OAUTH_CLIENT_ID",
   "ROBLOX_OAUTH_CLIENT_SECRET",
   "ROBLOX_OAUTH_REDIRECT_URI",
@@ -89,7 +92,16 @@ function decrypt(base64Blob) {
   throw new Error("DECRYPT_ALL_KEYS_FAILED");
 }
 
-const userdataPool = new Pool({ connectionString: process.env.PG_URL_USERDATA });
+// PG_URL_USERDATA is truncated in .env (shell redirect character broke the value).
+// Use the individual DB_* vars instead — all confirmed present and correct.
+const userdataPool = new Pool({
+  host:     process.env.DB_HOST_ACCOUNTS,
+  user:     process.env.DB_USER_ACCOUNTS,
+  password: process.env.DB_PASS_ACCOUNTS,
+  database: process.env.DB_NAME_ACCOUNTS,
+  port:     5432,
+  ssl:      false,
+});
 
 async function dbQuery(text, params) {
   console.log("DB_QUERY", { text, params });
