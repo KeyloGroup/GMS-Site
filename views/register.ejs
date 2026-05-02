@@ -1,212 +1,676 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth antialiased dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Keylo Group - Register</title>
+  <title>Keylo — Register</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --bg: #000;
+      --surface: #0a0a0a;
+      --border: #1f1f1f;
+      --border-hover: #2e2e2e;
+      --text: #ededed;
+      --muted: #555;
+      --subtle: #333;
+    }
+
     body {
-      background-color: #0d0d0d;
-      color: #fff;
+      background: var(--bg);
+      color: var(--text);
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
-      min-width: 100vw;
       margin: 0;
-      padding: 0;
       overflow-x: hidden;
-      position: relative;
     }
-    .dotted-bg {
+
+    /* Dot grid background */
+    .dot-grid {
       position: fixed;
       inset: 0;
-      background-image: radial-gradient(#222 1px, transparent 1px);
-      background-size: 24px 24px;
+      background-image: radial-gradient(#1a1a1a 1px, transparent 1px);
+      background-size: 28px 28px;
       z-index: 0;
-    }
-    .dotted-bg::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(#1a1a1a 1px, transparent 1px);
-      background-size: 24px 24px;
-      opacity: 0.5;
       pointer-events: none;
     }
-    .glass {
-      background: rgba(24, 24, 24, 0.7);
-      backdrop-filter: blur(14px);
-      border-radius: 22px;
-      border: 1px solid #222;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.28);
+
+    /* Noise overlay */
+    .noise {
+      position: fixed;
+      inset: 0;
       z-index: 1;
+      pointer-events: none;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
-    .btn-primary {
-      background: linear-gradient(to right, #4f46e5, #6366f1);
-      color: white;
-      transition: background 0.18s, transform .14s;
-      border-radius: 0.75rem;
-      font-weight: 600;
-      box-shadow: 0 2px 12px 0 #15151560;
-      outline: none;
-      border: none;
+
+    /* Radial glow */
+    .glow {
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 500px;
+      background: radial-gradient(ellipse at center, rgba(255,255,255,0.03) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
     }
-    .btn-primary:hover, .btn-primary:focus {
-      background: linear-gradient(to right, #3730a3, #6366f1);
-      transform: translateY(-1px) scale(1.02);
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      position: relative;
+      z-index: 2;
     }
-    .btn-secondary {
-      background: rgba(255,255,255,0.05);
-      color: white;
-      border-radius: 0.75rem;
-      transition: background 0.18s, transform .14s;
-      border: 1px solid rgba(255,255,255,0.10);
-      font-weight: 500;
-      outline: none;
+
+    /* Progress bar */
+    .progress-track {
+      background: #111;
+      border-radius: 999px;
+      height: 2px;
+      overflow: hidden;
+      position: relative;
     }
-    .btn-secondary:hover, .btn-secondary:focus {
-      background: rgba(255,255,255,0.12);
-      transform: translateY(-1px) scale(1.02);
+    .progress-fill {
+      height: 100%;
+      background: #fff;
+      border-radius: 999px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .glow-text {
-      text-shadow: 0 0 7px rgba(128, 90, 255, 0.44);
+
+    /* Step dots */
+    .step-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--subtle);
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      flex-shrink: 0;
     }
-    input, select {
-      background: rgba(24,24,24,0.7);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 12px;
-      padding: 0.75rem;
+    .step-dot.active {
+      background: #fff;
+      box-shadow: 0 0 8px rgba(255,255,255,0.4);
+      width: 20px;
+      border-radius: 999px;
+    }
+    .step-dot.done {
+      background: #3a3a3a;
+    }
+
+    /* Input */
+    .input-field {
+      background: #080808;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      padding: 0.7rem 0.9rem;
+      font-size: 0.875rem;
       width: 100%;
       outline: none;
-      transition: border 0.2s, box-shadow 0.2s, background 0.2s;
-      margin-bottom: 0.5rem;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
-    input:focus {
-      border-color: #6366f1;
-      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
-      background: rgba(40,40,60,0.88);
+    .input-field:focus {
+      border-color: #3a3a3a;
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.03);
     }
-    a { transition: color 0.18s; }
-    @media (max-width: 600px) {
-      .glass {
-        padding: 1.2rem 0.6rem !important;
-      }
+    .input-field::placeholder { color: #3a3a3a; }
+
+    /* Buttons */
+    .btn-primary {
+      background: #fff;
+      color: #000;
+      font-weight: 600;
+      font-size: 0.85rem;
+      border-radius: 10px;
+      padding: 0.7rem 1.4rem;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s ease, transform 0.15s ease;
+      font-family: 'Inter', sans-serif;
     }
+    .btn-primary:hover { background: #e8e8e8; transform: scale(0.99); }
+    .btn-primary:disabled { background: #1a1a1a; color: #3a3a3a; cursor: not-allowed; transform: none; }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: #888;
+      font-weight: 500;
+      font-size: 0.85rem;
+      border-radius: 10px;
+      padding: 0.7rem 1.4rem;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s ease;
+      font-family: 'Inter', sans-serif;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+    }
+    .btn-outline:hover { border-color: #333; color: #ccc; background: #0a0a0a; }
+
+    /* Method cards */
+    .method-card {
+      background: #080808;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.1rem 1.2rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      color: inherit;
+    }
+    .method-card:hover {
+      border-color: var(--border-hover);
+      background: #0d0d0d;
+      transform: translateY(-1px);
+    }
+    .method-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background: #111;
+      border: 1px solid #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Avatar */
+    .avatar-ring {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      padding: 3px;
+      background: #080808;
+    }
+    .avatar-ring img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* Verification code */
+    .code-display {
+      background: #080808;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.4rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 1.2rem;
+      letter-spacing: 0.1em;
+      color: #fff;
+      text-align: center;
+      user-select: all;
+      cursor: copy;
+      transition: border-color 0.2s ease;
+    }
+    .code-display:hover { border-color: #333; }
+
+    /* Message states */
+    .msg-error { color: #f87171; font-size: 0.78rem; }
+    .msg-success { color: #86efac; font-size: 0.78rem; }
+    .msg-info { color: #888; font-size: 0.78rem; }
+
+    /* Step transitions */
+    .step { display: none; animation: stepIn 0.3s ease; }
+    .step.active { display: block; }
+    @keyframes stepIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Password strength */
+    .strength-bar {
+      height: 2px;
+      border-radius: 999px;
+      background: #111;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+    .strength-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.3s ease, background 0.3s ease;
+      width: 0%;
+    }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid #333;
+      border-top-color: #888;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .text-contrast {
+      background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.55) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 4px; }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center px-4 relative">
-<div class="dotted-bg"></div>
-<div class="glass max-w-md w-full p-8 mx-auto z-10">
-  <h2 class="text-4xl font-extrabold text-center mb-8 glow-text">Register</h2>
-  <div id="step0" class="text-center">
-    <p class="mb-6 text-gray-300">Choose how you'd like to verify your Roblox account:</p>
-    <div class="flex flex-col gap-4">
-      <button onclick="startCodeVerification()" class="btn-primary py-3 rounded-lg font-semibold">Verify with Bio Code</button>
-      <a href="/auth/roblox" class="btn-secondary py-3 rounded-lg font-semibold border border-white/20">Verify with Roblox OAuth</a>
+<body class="min-h-screen flex flex-col items-center justify-center px-4 py-12">
+  <div class="dot-grid"></div>
+  <div class="noise"></div>
+  <div class="glow"></div>
+
+  <!-- Nav logo -->
+  <a href="/" class="relative z-10 flex items-center gap-2 text-sm font-semibold text-white mb-10 opacity-60 hover:opacity-100 transition-opacity">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 22 22 22"></polygon></svg>
+    Keylo
+  </a>
+
+  <div class="card w-full max-w-md p-8">
+
+    <!-- Header -->
+    <div class="mb-7">
+      <p class="text-[10px] font-semibold tracking-[0.15em] uppercase text-[#3a3a3a] mb-1.5">Get started</p>
+      <h1 class="text-xl font-bold tracking-tight text-contrast" id="stepTitle">Create your account</h1>
+      <p class="text-xs text-[#555] mt-1" id="stepSubtitle">Verify your Roblox identity to continue.</p>
     </div>
-  </div>
-  <div id="step1" class="hidden mt-4">
-    <label for="robloxIdInput" class="block text-sm font-medium text-gray-300 mb-2">Roblox User ID</label>
-    <input id="robloxIdInput" type="text" placeholder="Enter your Roblox User ID" autocomplete="off">
-    <button onclick="lookupRobloxUser()" class="btn-primary w-full py-3 mt-2 rounded-lg font-semibold">Continue</button>
-  </div>
-  <div id="step2" class="hidden text-center mt-4">
-    <img id="robloxAvatar" class="mx-auto rounded-full w-24 h-24 mb-4 shadow-md" src="" alt="Avatar">
-    <p id="robloxName" class="text-xl font-semibold text-indigo-400 mb-1"></p>
-    <p id="robloxIdText" class="text-gray-400 text-sm mb-4"></p>
-    <div class="flex gap-4 justify-center">
-      <button onclick="confirmProfile(true)" class="btn-primary px-6 py-2 rounded-lg font-medium">Yes</button>
-      <button onclick="confirmProfile(false)" class="btn-secondary px-6 py-2 rounded-lg font-medium">No</button>
+
+    <!-- Progress -->
+    <div class="mb-7">
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-[10px] font-medium text-[#3a3a3a] uppercase tracking-widest" id="stepLabel">Step 1 of 4</span>
+        <span class="text-[10px] text-[#3a3a3a]" id="stepPercent">25%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width: 25%"></div>
+      </div>
+      <div class="flex items-center gap-1.5 mt-2.5">
+        <div class="step-dot active" id="dot0"></div>
+        <div class="step-dot" id="dot1"></div>
+        <div class="step-dot" id="dot2"></div>
+        <div class="step-dot" id="dot3"></div>
+      </div>
     </div>
+
+    <!-- ── STEP 0: Choose method ── -->
+    <div class="step active" id="step0">
+      <div class="flex flex-col gap-3">
+        <button onclick="startCodeVerification()" class="method-card">
+          <div class="method-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="text-left">
+            <p class="text-sm font-semibold text-white">Bio Code Verification</p>
+            <p class="text-xs text-[#555] mt-0.5">Place a code in your Roblox bio to confirm ownership.</p>
+          </div>
+          <svg class="ml-auto flex-shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+
+        <a href="/auth/roblox" class="method-card">
+          <div class="method-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5"><path d="M21 2H3v16h5v4l4-4h9L21 2z"/></svg>
+          </div>
+          <div class="text-left">
+            <p class="text-sm font-semibold text-white">Roblox OAuth</p>
+            <p class="text-xs text-[#555] mt-0.5">Authenticate directly via Roblox's official OAuth flow.</p>
+          </div>
+          <svg class="ml-auto flex-shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+
+      <p class="text-center text-xs text-[#3a3a3a] mt-6">
+        Already have an account? <a href="/login" class="text-[#666] hover:text-white transition-colors">Sign in</a>
+      </p>
+    </div>
+
+    <!-- ── STEP 1: Enter Roblox ID ── -->
+    <div class="step" id="step1">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-[#777] mb-1.5">Roblox User ID</label>
+          <input
+            id="robloxIdInput"
+            type="text"
+            inputmode="numeric"
+            class="input-field"
+            placeholder="e.g. 1234567890"
+            autocomplete="off"
+            onkeydown="if(event.key==='Enter') lookupRobloxUser()"
+          >
+          <p class="text-[11px] text-[#3a3a3a] mt-1.5">Find your ID at roblox.com/users — it's the number in the URL.</p>
+        </div>
+        <div id="lookupMsg" class="hidden"></div>
+        <button onclick="lookupRobloxUser()" class="btn-primary" id="lookupBtn">
+          Look up profile
+        </button>
+        <button onclick="goBack()" class="btn-outline mt-2">← Back</button>
+      </div>
+    </div>
+
+    <!-- ── STEP 2: Confirm profile ── -->
+    <div class="step" id="step2">
+      <div class="text-center space-y-4">
+        <div class="flex justify-center">
+          <div class="avatar-ring">
+            <img id="robloxAvatar" src="" alt="Avatar">
+          </div>
+        </div>
+        <div>
+          <p class="text-base font-semibold text-white" id="robloxName"></p>
+          <p class="text-xs text-[#555] font-mono mt-1" id="robloxIdText"></p>
+        </div>
+        <p class="text-sm text-[#777]">Is this your Roblox account?</p>
+        <div class="flex gap-3">
+          <button onclick="confirmProfile(true)" class="btn-primary">Yes, continue</button>
+          <button onclick="confirmProfile(false)" class="btn-outline">Not me</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STEP 3: Bio verification ── -->
+    <div class="step" id="step3">
+      <div class="space-y-4">
+        <p class="text-xs text-[#777] leading-relaxed">
+          Go to your Roblox profile, edit your bio, and paste the code below. Then click <strong class="text-white">Check Code</strong>.
+        </p>
+
+        <div>
+          <label class="block text-xs font-medium text-[#777] mb-1.5">Your verification code</label>
+          <div class="code-display" id="verificationCode" onclick="copyCode(this)" title="Click to copy">
+            —
+          </div>
+          <p class="text-[11px] text-[#3a3a3a] mt-1.5 text-center" id="copyHint">Click the code to copy it</p>
+        </div>
+
+        <div id="bioMsg" class="hidden"></div>
+
+        <button onclick="checkBio()" class="btn-primary" id="checkBioBtn">
+          Check Code
+        </button>
+        <button onclick="goToStep(1)" class="btn-outline">← Back</button>
+      </div>
+    </div>
+
+    <!-- ── STEP 4: Set password ── -->
+    <div class="step" id="step4">
+      <form method="POST" action="/api/register" class="space-y-4" onsubmit="return validatePassword()">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input type="hidden" id="finalRobloxId" name="robloxId">
+        <!-- Honeypot -->
+        <input type="text" name="_hp" style="position:absolute;left:-9999px;opacity:0;pointer-events:none" tabindex="-1" autocomplete="off">
+
+        <% if (typeof robloxUsername !== 'undefined' && robloxUsername) { %>
+        <div class="flex items-center gap-3 bg-[#080808] border border-[#1a1a1a] rounded-xl p-3 mb-2">
+          <img src="<%= avatarUrl || '' %>" class="w-9 h-9 rounded-full border border-[#1a1a1a] object-cover flex-shrink-0">
+          <div>
+            <p class="text-sm font-semibold text-white"><%= robloxUsername %></p>
+            <p class="text-[11px] text-[#555]">Verified via Roblox OAuth</p>
+          </div>
+          <svg class="ml-auto" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3a3a3a" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <% } %>
+
+        <div>
+          <label class="block text-xs font-medium text-[#777] mb-1.5">Create a password</label>
+          <div class="relative">
+            <input
+              id="passwordInput"
+              name="password"
+              type="password"
+              class="input-field pr-10"
+              placeholder="Minimum 8 characters"
+              required
+              autocomplete="new-password"
+              oninput="updateStrength(this.value)"
+            >
+            <button type="button" onclick="togglePw()" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#3a3a3a] hover:text-[#888] transition-colors">
+              <svg id="eyeIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="strength-bar">
+            <div class="strength-fill" id="strengthFill"></div>
+          </div>
+          <p class="text-[10px] text-[#3a3a3a] mt-1" id="strengthLabel"></p>
+        </div>
+
+        <div id="pwMsg" class="hidden"></div>
+
+        <button type="submit" class="btn-primary" id="submitBtn">Create account</button>
+      </form>
+    </div>
+
   </div>
-  <div id="step3" class="hidden text-center mt-4">
-    <p class="mb-4 text-gray-300">Add this code to your Roblox bio:</p>
-    <div id="verificationCode" class="text-2xl font-bold text-indigo-400 mb-4"></div>
-    <button onclick="checkBio()" class="btn-primary w-full py-3 rounded-lg">Check Code</button>
-    <p id="bioCheckMsg" class="mt-3 text-sm text-gray-400"></p>
-  </div>
-  <div id="step4" class="hidden mt-4">
-    <form method="POST" action="/api/register">
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <input type="hidden" id="finalRobloxId" name="robloxUsername">
-      <label for="password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
-      <input name="password" type="password" placeholder="Enter your password" required autocomplete="new-password">
-      <button type="submit" class="btn-primary w-full py-3 mt-4 rounded-lg font-semibold">Finish Registration</button>
-    </form>
-  </div>
-</div>
+
+  <!-- Footer -->
+  <p class="relative z-10 text-[11px] text-[#2a2a2a] mt-8">
+    By registering you agree to Keylo's
+    <a href="#" class="hover:text-[#555] transition-colors">Terms</a> &
+    <a href="#" class="hover:text-[#555] transition-colors">Privacy Policy</a>
+  </p>
+
 <script>
-let robloxId = null;
-let verificationCode = null;
-const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get("oauth") === "success") {
-  const username = urlParams.get("username");
-  const id = urlParams.get("id");
-  if (username && id) {
-    document.getElementById('step0').classList.add('hidden');
-    document.getElementById('step4').classList.remove('hidden');
-    document.getElementById('finalRobloxId').value = username;
+  // ── STATE ──────────────────────────────────────────────────────────────────
+  let robloxId = null;
+  let verificationCode = null;
+  let currentStep = 0;
+
+  const STEPS = [
+    { title: 'Create your account',   subtitle: 'Verify your Roblox identity to continue.',    label: 'Step 1 of 4', pct: 25 },
+    { title: 'Find your account',     subtitle: 'Enter your Roblox User ID to look up your profile.', label: 'Step 2 of 4', pct: 50 },
+    { title: 'Confirm your identity', subtitle: 'Make sure this is the right account.',         label: 'Step 3 of 4', pct: 75 },
+    { title: 'Verify ownership',      subtitle: 'Paste the code into your Roblox bio.',         label: 'Step 4 of 4', pct: 90 },
+    { title: 'Almost done',           subtitle: 'Set a password to secure your account.',       label: 'Complete',    pct: 100 },
+  ];
+
+  // ── NAV ────────────────────────────────────────────────────────────────────
+  function goToStep(n) {
+    document.getElementById('step' + currentStep).classList.remove('active');
+    currentStep = n;
+    document.getElementById('step' + currentStep).classList.add('active');
+    updateProgress(n);
   }
-}
-function startCodeVerification() {
-  document.getElementById('step0').classList.add('hidden');
-  document.getElementById('step1').classList.remove('hidden');
-  document.getElementById('robloxIdInput').focus();
-}
-function lookupRobloxUser() {
-  const id = document.getElementById('robloxIdInput').value.trim();
-  if (!id) { alert('Enter a Roblox User ID.'); return; }
-  fetch(`/api/roblox/user/${encodeURIComponent(id)}`)
-    .then(res => res.json())
-    .then(data => {
-      if (!data || data.error) { alert('User not found.'); return; }
+
+  function updateProgress(n) {
+    const s = STEPS[n];
+    document.getElementById('stepTitle').textContent    = s.title;
+    document.getElementById('stepSubtitle').textContent = s.subtitle;
+    document.getElementById('stepLabel').textContent    = s.label;
+    document.getElementById('stepPercent').textContent  = s.pct + '%';
+    document.getElementById('progressFill').style.width = s.pct + '%';
+
+    for (let i = 0; i <= 3; i++) {
+      const dot = document.getElementById('dot' + i);
+      const stepIndex = i; // dots 0-3 map to steps 1-4
+      dot.classList.remove('active', 'done');
+      if (i < n) dot.classList.add('done');
+      else if (i === n) dot.classList.add('active');
+    }
+  }
+
+  function goBack() { goToStep(currentStep - 1); }
+
+  // ── OAUTH REDIRECT ─────────────────────────────────────────────────────────
+  (function () {
+    const p = new URLSearchParams(window.location.search);
+    if (p.get('oauth') === 'success') {
+      goToStep(4);
+      // Server-rendered avatar is shown via EJS; no JS needed
+    }
+  })();
+
+  // ── STEP 0 → 1 ────────────────────────────────────────────────────────────
+  function startCodeVerification() {
+    goToStep(1);
+    setTimeout(() => document.getElementById('robloxIdInput').focus(), 100);
+  }
+
+  // ── STEP 1: Look up user ───────────────────────────────────────────────────
+  async function lookupRobloxUser() {
+    const id = document.getElementById('robloxIdInput').value.trim();
+    const msgEl = document.getElementById('lookupMsg');
+    const btn   = document.getElementById('lookupBtn');
+
+    msgEl.className = 'hidden';
+    if (!id || !/^\d+$/.test(id)) {
+      showMsg(msgEl, 'error', 'Please enter a valid numeric Roblox User ID.');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Looking up…';
+
+    try {
+      const res  = await fetch(`/api/roblox/user/${encodeURIComponent(id)}`);
+      const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error || 'User not found.');
+
       robloxId = data.id;
-      document.getElementById('robloxAvatar').src = data.avatar;
-      document.getElementById('robloxName').innerText = data.name;
-      document.getElementById('robloxIdText').innerText = `User ID: ${data.id}`;
-      document.getElementById('step1').classList.add('hidden');
-      document.getElementById('step2').classList.remove('hidden');
-    });
-}
-function confirmProfile(yes) {
-  if (!yes) {
-    document.getElementById('step2').classList.add('hidden');
-    document.getElementById('step1').classList.remove('hidden');
-    document.getElementById('robloxIdInput').focus();
-    return;
+      document.getElementById('robloxAvatar').src  = data.avatar;
+      document.getElementById('robloxName').textContent  = data.name;
+      document.getElementById('robloxIdText').textContent = `ID: ${data.id}`;
+      goToStep(2);
+    } catch (e) {
+      showMsg(msgEl, 'error', e.message || 'Could not find that user. Check the ID and try again.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Look up profile';
+    }
   }
-  fetch(`/api/roblox/code`)
-    .then(res => res.json())
-    .then(data => {
+
+  // ── STEP 2: Confirm ────────────────────────────────────────────────────────
+  async function confirmProfile(yes) {
+    if (!yes) {
+      goToStep(1);
+      return;
+    }
+
+    try {
+      const res  = await fetch('/api/roblox/code');
+      const data = await res.json();
       verificationCode = data.code;
-      document.getElementById('verificationCode').innerText = data.code;
-      document.getElementById('step2').classList.add('hidden');
-      document.getElementById('step3').classList.remove('hidden');
-    });
-}
-function checkBio() {
-  fetch(`/api/roblox/check-bio/${robloxId}/${encodeURIComponent(verificationCode)}`)
-    .then(res => res.json())
-    .then(data => {
+      document.getElementById('verificationCode').textContent = data.code;
+      goToStep(3);
+    } catch {
+      alert('Failed to generate code. Please try again.');
+    }
+  }
+
+  // ── STEP 3: Bio check ─────────────────────────────────────────────────────
+  async function checkBio() {
+    const msgEl = document.getElementById('bioMsg');
+    const btn   = document.getElementById('checkBioBtn');
+    msgEl.className = 'hidden';
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Checking bio…';
+
+    try {
+      const res  = await fetch(`/api/roblox/check-bio/${robloxId}/${encodeURIComponent(verificationCode)}`);
+      const data = await res.json();
+
       if (data.success) {
-        fetch(`/api/register/get/robloxusername/${robloxId}`)
-          .then(res => res.json())
-          .then(userData => {
-            if (userData.success) {
-              document.getElementById('finalRobloxId').value = userData.username;
-              document.getElementById('step3').classList.add('hidden');
-              document.getElementById('step4').classList.remove('hidden');
-            } else {
-              document.getElementById('bioCheckMsg').innerText = 'Could not fetch username.';
-            }
-          });
+        // Fetch username then move to step 4
+        const uRes  = await fetch(`/api/roblox/username/${robloxId}`);
+        const uData = await uRes.json();
+        if (uData.success) {
+          document.getElementById('finalRobloxId').value = robloxId;
+          goToStep(4);
+        } else {
+          showMsg(msgEl, 'error', 'Verified but could not fetch username. Please try again.');
+        }
       } else {
-        document.getElementById('bioCheckMsg').innerText = data.error || 'Code not found in bio. Please try again.';
+        showMsg(msgEl, 'error', data.error || 'Code not found in bio. Save your bio first, then try again.');
       }
+    } catch {
+      showMsg(msgEl, 'error', 'Something went wrong. Please try again.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Check Code';
+    }
+  }
+
+  // ── HELPERS ────────────────────────────────────────────────────────────────
+  function showMsg(el, type, text) {
+    el.className = type === 'error' ? 'msg-error' : type === 'success' ? 'msg-success' : 'msg-info';
+    el.textContent = text;
+  }
+
+  function copyCode(el) {
+    navigator.clipboard.writeText(el.textContent.trim()).then(() => {
+      const hint = document.getElementById('copyHint');
+      hint.textContent = 'Copied!';
+      hint.style.color = '#86efac';
+      setTimeout(() => {
+        hint.textContent = 'Click the code to copy it';
+        hint.style.color = '';
+      }, 2000);
     });
-}
+  }
+
+  function togglePw() {
+    const inp = document.getElementById('passwordInput');
+    const ico = document.getElementById('eyeIcon');
+    if (inp.type === 'password') {
+      inp.type = 'text';
+      ico.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+    } else {
+      inp.type = 'password';
+      ico.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    }
+  }
+
+  function updateStrength(val) {
+    const fill  = document.getElementById('strengthFill');
+    const label = document.getElementById('strengthLabel');
+    let score = 0;
+    if (val.length >= 8)  score++;
+    if (val.length >= 12) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+
+    const levels = [
+      { pct: '0%',   color: '#1a1a1a', text: '' },
+      { pct: '25%',  color: '#f87171', text: 'Weak' },
+      { pct: '50%',  color: '#fb923c', text: 'Fair' },
+      { pct: '75%',  color: '#facc15', text: 'Good' },
+      { pct: '100%', color: '#86efac', text: 'Strong' },
+    ];
+
+    const l = levels[Math.min(score, 4)];
+    fill.style.width      = l.pct;
+    fill.style.background = l.color;
+    label.textContent     = l.text;
+    label.style.color     = l.color;
+  }
+
+  function validatePassword() {
+    const pw  = document.getElementById('passwordInput').value;
+    const msg = document.getElementById('pwMsg');
+    if (pw.length < 8) {
+      showMsg(msg, 'error', 'Password must be at least 8 characters.');
+      return false;
+    }
+    return true;
+  }
 </script>
 </body>
 </html>

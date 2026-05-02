@@ -31,14 +31,6 @@ const PORT = 3000;
 });
 
 // ─── AES-256-GCM WITH DAILY KEY ROTATION ─────────────────────────────────────
-//
-// Every field written to the DB is encrypted with AES-256-GCM.
-// Key rotates daily via HKDF(ENCRYPTION_MASTER_SECRET, date).
-// Decrypt tries the blob's own date key + KEY_LOOKBACK_DAYS fallback.
-//
-// Blob format (base64 of): "<YYYY-MM-DD>.<iv_hex>.<authTag_hex>.<ciphertext_hex>"
-
-
 const KEY_LOOKBACK_DAYS = 7;
 const KEY_LENGTH = 32;
 
@@ -90,6 +82,7 @@ function decrypt(base64Blob) {
       decipher.setAuthTag(tag);
       return Buffer.concat([decipher.update(ct), decipher.final()]).toString("utf8");
     } catch {
+      // try next candidate
     }
   }
 
@@ -179,9 +172,9 @@ async function recordFailedAttempt(accountHmac) {
   data.attempts = (data.attempts || 0) + 1;
 
   let lockMs = 0;
-  if (data.attempts >= 20)      lockMs = 24 * 60 * 60 * 1000; // 24 hours
-  else if (data.attempts >= 10) lockMs = 15 * 60 * 1000;      // 15 minutes
-  else if (data.attempts >= 5)  lockMs = 60 * 1000;           // 1 minute
+  if (data.attempts >= 20)      lockMs = 24 * 60 * 60 * 1000;
+  else if (data.attempts >= 10) lockMs = 15 * 60 * 1000;
+  else if (data.attempts >= 5)  lockMs = 60 * 1000;
 
   if (lockMs > 0) data.lockedUntil = Date.now() + lockMs;
 
@@ -194,7 +187,7 @@ async function clearFailedAttempts(accountHmac) {
   await redisClient.del(`lockout:${accountHmac}`);
 }
 
-// ── A: Global DDoS rate limiter — all routes ──────────────────────────────────
+// ── A: Global DDoS rate limiter ───────────────────────────────────────────────
 async function globalRateLimiter(req, res, next) {
   try {
     const key = req.session?.id
@@ -214,11 +207,11 @@ async function globalRateLimiter(req, res, next) {
     next();
   } catch (err) {
     console.error("RATELIMIT_ERROR", { message: err.message });
-    next(); // fail open — don't break app on Redis hiccup
+    next();
   }
 }
 
-// ── B: Auth-route rate limiter — /login + /api/register ──────────────────────
+// ── B: Auth-route rate limiter ────────────────────────────────────────────────
 async function authRateLimiter(req, res, next) {
   try {
     const key = `authfp:${requestFingerprint(req)}`;
@@ -276,7 +269,6 @@ app.use(
   })
 );
 
-// Global DDoS limiter applied after session so we can prefer session ID as key
 app.use(globalRateLimiter);
 
 app.use((req, res, next) => {
@@ -321,7 +313,9 @@ function clearLoginCookies(res) {
   ["id", "username", "avatar", "theme"].forEach((c) => res.clearCookie(c, opts));
 }
 
-
+// BIO CODE STATE
+// Codes are issued into the session and expire after 10 minutes.
+const CODE_TTL_MS = 10 * 60 * 1000;
 app.get("/", (req, res) => {
   res.render("index", { title: "Keylo" });
 });
@@ -368,11 +362,10 @@ app.get("/auth/roblox/callback", async (req, res) => {
       headers: { Authorization: `Bearer ${tokenRes.data.access_token}` },
     });
 
-    const robloxId = userRes.data.sub;
+    const robloxId       = userRes.data.sub;
     const robloxUsername = userRes.data.name;
-    const avatarUrl = userRes.data.picture;
-
-    const robloxIdHmac = hmacLookup(robloxId);
+    const avatarUrl      = userRes.data.picture;
+    const robloxIdHmac   = hmacLookup(robloxId);
 
     const banned = await dbQuery(
       'SELECT * FROM "AccountsBan" WHERE roblox_id_hmac=$1 LIMIT 1',
@@ -416,51 +409,238 @@ app.get("/auth/roblox/callback", async (req, res) => {
 });
 
 app.get("/register", csrfProtection, (req, res) => {
-  const pending = req.session.pendingRoblox;
-  if (req.query.oauth === "success" && pending) {
-    return res.render("passwordregister", {
+  // OAuth path — pendingRoblox set by /auth/roblox/callback
+  if (req.query.oauth === "success" && req.session.pendingRoblox) {
+    const { robloxUsername, avatarUrl } = req.session.pendingRoblox;
+    return res.render("register", {
       title: "Complete Registration",
       csrfToken: req.csrfToken(),
-      robloxUsername: pending.robloxUsername,
-      avatarUrl: pending.avatarUrl,
+      oauthFlow: true,
+      robloxUsername,
+      avatarUrl,
     });
   }
-  res.render("register", { title: "Register", csrfToken: req.csrfToken() });
+
+  res.render("register", {
+    title: "Create Account",
+    csrfToken: req.csrfToken(),
+    oauthFlow: false,
+    robloxUsername: null,
+    avatarUrl: null,
+  });
 });
 
 app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
-  console.log("API_REGISTER_HIT", { hasPending: !!req.session.pendingRoblox });
-  try {
-    const pending = req.session.pendingRoblox;
-    if (!pending) return res.status(400).send("Missing OAuth session");
+  console.log("API_REGISTER_HIT", {
+    hasOAuthPending: !!req.session.pendingRoblox,
+    hasVerifiedId:   !!req.session.verifiedRobloxId,
+  });
 
+  try {
     const { password, _hp } = req.body;
 
     if (_hp && _hp.length > 0) {
       console.log("HONEYPOT_TRIGGERED_REGISTER");
-      await new Promise((r) => setTimeout(r, 2000)); // waste bot time
-      return res.redirect("https://app.keylogroup.co.uk/"); // fake success
+      await new Promise((r) => setTimeout(r, 2000));
+      return res.redirect("https://app.keylogroup.co.uk/");
     }
 
-    if (!password || password.length < 8)
-      return res.status(400).send("Password must be at least 8 characters");
+    let robloxId;
+    if (req.session.pendingRoblox) {
+      robloxId = req.session.pendingRoblox.robloxId;
+    } else if (req.session.verifiedRobloxId) {
+      robloxId = req.session.verifiedRobloxId;
+    } else {
+      console.warn("API_REGISTER_NO_IDENTITY", { sessionID: req.sessionID });
+      return res.status(400).send("Missing verified identity. Please restart registration.");
+    }
 
-    const encryptedId = encrypt(pending.robloxId);
+    if (!password || typeof password !== "string" || password.length < 8) {
+      return res.status(400).send("Password must be at least 8 characters.");
+    }
+    if (password.length > 128) {
+      return res.status(400).send("Password too long.");
+    }
+
+    const robloxIdHmac = hmacLookup(robloxId);
+
+    const existing = await dbQuery(
+      'SELECT id FROM "Accounts" WHERE roblox_id_hmac=$1 LIMIT 1',
+      [robloxIdHmac]
+    );
+    if (existing.rows.length > 0) {
+      console.log("API_REGISTER_ALREADY_EXISTS_AUTO_LOGIN", { robloxIdHmac });
+      req.session.pendingRoblox    = null;
+      req.session.verifiedRobloxId = null;
+      req.session.loggedIn         = true;
+      return req.session.save(() => res.redirect("https://app.keylogroup.co.uk/"));
+    }
+
+    const banned = await dbQuery(
+      'SELECT reason FROM "AccountsBan" WHERE roblox_id_hmac=$1 LIMIT 1',
+      [robloxIdHmac]
+    );
+    if (banned.rows.length > 0) {
+      return res.redirect(
+        `https://keylogroup.co.uk/account/restricted?reason=${encodeURIComponent(
+          banned.rows[0].reason || "Restricted"
+        )}`
+      );
+    }
+
+    const encryptedId       = encrypt(robloxId);
     const encryptedPassword = encrypt(password);
-    const robloxIdHmac = hmacLookup(pending.robloxId);
 
     await dbQuery(
       'INSERT INTO "Accounts" (roblox_id, roblox_id_hmac, encrypted_password) VALUES ($1, $2, $3)',
       [encryptedId, robloxIdHmac, encryptedPassword]
     );
 
-    req.session.pendingRoblox = null;
-    req.session.loggedIn = true;
-    console.log("API_REGISTER_SUCCESS");
+    // Clean up session
+    req.session.pendingRoblox    = null;
+    req.session.verifiedRobloxId = null;
+    req.session.pendingBioCode   = null;
+    req.session.loggedIn         = true;
+
+    console.log("API_REGISTER_SUCCESS", { robloxIdHmac });
     req.session.save(() => res.redirect("https://app.keylogroup.co.uk/"));
   } catch (err) {
-    console.error("API_REGISTER_EXCEPTION", { message: err.message });
-    res.status(500).send("Registration failed");
+    console.error("API_REGISTER_EXCEPTION", { message: err.message, stack: err.stack });
+    res.status(500).send("Registration failed. Please try again.");
+  }
+});
+
+// Look up a Roblox user by numeric ID — returns { id, name, avatar }
+app.get("/api/roblox/user/:id", authRateLimiter, async (req, res) => {
+  const { id } = req.params;
+
+  if (!/^\d+$/.test(id)) {
+    return res.status(400).json({ error: "Invalid Roblox User ID — must be numeric." });
+  }
+
+  try {
+    const usersRes = await axios.post(
+      "https://users.roblox.com/v1/users",
+      { userIds: [parseInt(id, 10)], excludeBannedUsers: false },
+      { headers: { "Content-Type": "application/json" }, timeout: 5000 }
+    );
+
+    const users = usersRes.data?.data;
+    if (!users || users.length === 0) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    const user = users[0];
+
+    let avatarUrl = "/icons/default-avatar.png";
+    try {
+      const thumbRes = await axios.get(
+        `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${user.id}&size=150x150&format=Png&isCircular=false`,
+        { timeout: 5000 }
+      );
+      const thumb = thumbRes.data?.data?.[0];
+      if (thumb?.imageUrl) avatarUrl = thumb.imageUrl;
+    } catch {
+      console.warn("ROBLOX_AVATAR_FETCH_FAILED", { userId: user.id });
+    }
+
+    console.log("ROBLOX_USER_LOOKUP", { id: user.id, name: user.name });
+    return res.json({ id: String(user.id), name: user.name, avatar: avatarUrl });
+  } catch (err) {
+    console.error("ROBLOX_USER_LOOKUP_ERROR", { message: err.message, id });
+    return res.status(500).json({ error: "Failed to look up Roblox user." });
+  }
+});
+
+// ── GET /api/roblox/code ──────────────────────────────────────────────────────
+// Issues a short-lived verification code stored server-side in the session.
+// Returns { code }
+app.get("/api/roblox/code", authRateLimiter, (req, res) => {
+  const raw  = crypto.randomBytes(4).toString("hex").toUpperCase();
+  const code = `KL-${raw}`;
+
+  req.session.pendingBioCode = { code, issuedAt: Date.now() };
+  req.session.save((err) => {
+    if (err) {
+      console.error("CODE_SESSION_SAVE_FAILED", { message: err.message });
+      return res.status(500).json({ error: "Session error" });
+    }
+    console.log("BIO_CODE_ISSUED", { sessionID: req.sessionID });
+    res.json({ code });
+  });
+});
+
+// ── GET /api/roblox/check-bio/:userId/:code ───────────────────────────────────
+// Fetches the user's Roblox bio and checks it contains the expected code.
+// On success sets req.session.verifiedRobloxId.
+// Returns { success: true } or { success: false, error: string }
+app.get("/api/roblox/check-bio/:userId/:code", authRateLimiter, async (req, res) => {
+  const { userId, code } = req.params;
+
+  if (!/^\d+$/.test(userId)) {
+    return res.status(400).json({ success: false, error: "Invalid user ID." });
+  }
+
+  const pending = req.session.pendingBioCode;
+  if (!pending || pending.code !== code) {
+    console.warn("BIO_CODE_MISMATCH", { sessionID: req.sessionID });
+    return res.status(400).json({ success: false, error: "Code mismatch or session expired. Please start over." });
+  }
+
+  if (Date.now() - pending.issuedAt > CODE_TTL_MS) {
+    req.session.pendingBioCode = null;
+    return res.status(400).json({ success: false, error: "Verification code expired. Please generate a new one." });
+  }
+
+  try {
+    const profileRes = await axios.get(
+      `https://users.roblox.com/v1/users/${userId}`,
+      { timeout: 5000 }
+    );
+
+    const bio = profileRes.data?.description || "";
+    if (!bio.includes(code)) {
+      console.log("BIO_CODE_NOT_FOUND", { userId });
+      return res.json({ success: false, error: "Code not found in bio. Save your profile and try again." });
+    }
+
+    // Code confirmed — clear so it can't be reused
+    req.session.pendingBioCode   = null;
+    req.session.verifiedRobloxId = userId;
+
+    req.session.save((err) => {
+      if (err) console.error("BIO_VERIFY_SESSION_SAVE_FAILED", { message: err.message });
+    });
+
+    console.log("BIO_CODE_VERIFIED", { userId });
+    return res.json({ success: true });
+  } catch (err) {
+    console.error("BIO_CHECK_ERROR", { message: err.message, userId });
+    return res.status(500).json({ success: false, error: "Could not reach Roblox. Please try again." });
+  }
+});
+
+// ── GET /api/roblox/username/:id ──────────────────────────────────────────────
+// Returns the Roblox username for a verified ID only.
+// Returns { success: true, username: string }
+app.get("/api/roblox/username/:id", authRateLimiter, async (req, res) => {
+  const { id } = req.params;
+
+  if (!/^\d+$/.test(id)) {
+    return res.status(400).json({ success: false, error: "Invalid user ID." });
+  }
+
+  // Must be the session-verified user — prevents enumeration
+  if (req.session.verifiedRobloxId !== id) {
+    return res.status(403).json({ success: false, error: "Not authorized." });
+  }
+
+  try {
+    const r = await axios.get(`https://users.roblox.com/v1/users/${id}`, { timeout: 5000 });
+    return res.json({ success: true, username: r.data.name });
+  } catch (err) {
+    console.error("USERNAME_FETCH_ERROR", { message: err.message, id });
+    return res.status(500).json({ success: false, error: "Failed to fetch username." });
   }
 });
 
@@ -473,13 +653,11 @@ app.get("/login", csrfProtection, (req, res) => {
   });
 });
 
-// ── Login POST — auth rate limited + brute force lockout + honeypot ──
 app.post("/login", authRateLimiter, csrfProtection, async (req, res) => {
   console.log("ROUTE_LOGIN_POST");
   try {
     const { robloxId, password, _hp } = req.body;
 
-    // ── D: Honeypot ──
     if (_hp && _hp.length > 0) {
       console.log("HONEYPOT_TRIGGERED_LOGIN");
       await new Promise((r) => setTimeout(r, 2000));
@@ -490,7 +668,6 @@ app.post("/login", authRateLimiter, csrfProtection, async (req, res) => {
 
     const accountHmac = hmacLookup(robloxId);
 
-    // ── C: Brute-force lockout check ──
     const lockout = await checkAccountLockout(accountHmac);
     if (lockout.locked) {
       console.log("BRUTE_FORCE_LOCKED", { retryAfter: lockout.retryAfter });
@@ -507,7 +684,7 @@ app.post("/login", authRateLimiter, csrfProtection, async (req, res) => {
 
     if (!users.rows.length) {
       await recordFailedAttempt(accountHmac);
-      return res.status(401).send("Invalid credentials"); // vague on purpose
+      return res.status(401).send("Invalid credentials");
     }
 
     let storedPassword;
@@ -519,13 +696,13 @@ app.post("/login", authRateLimiter, csrfProtection, async (req, res) => {
     }
 
     const maxLen = Math.max(password.length, storedPassword.length);
-    const inputBuf = Buffer.alloc(maxLen);
+    const inputBuf  = Buffer.alloc(maxLen);
     const storedBuf = Buffer.alloc(maxLen);
     inputBuf.write(password, "utf8");
     storedBuf.write(storedPassword, "utf8");
     const lengthMatch = password.length === storedPassword.length;
-    const bytesMatch = crypto.timingSafeEqual(inputBuf, storedBuf);
-    const match = lengthMatch && bytesMatch;
+    const bytesMatch  = crypto.timingSafeEqual(inputBuf, storedBuf);
+    const match       = lengthMatch && bytesMatch;
 
     if (!match) {
       await recordFailedAttempt(accountHmac);
