@@ -7,7 +7,7 @@ const { RedisStore } = require("connect-redis");
 const crypto = require("crypto");
 const axios = require("axios");
 const querystring = require("querystring");
-const { Pool } = require("pg");
+const mysql = require("mysql2/promise");
 const csurf = require("csurf");
 require("dotenv").config({ path: "/root/KeyloENV/.env" });
 
@@ -92,22 +92,23 @@ function decrypt(base64Blob) {
   throw new Error("DECRYPT_ALL_KEYS_FAILED");
 }
 
-// PG_URL_USERDATA is truncated in .env (shell redirect character broke the value).
-// Use the individual DB_* vars instead — all confirmed present and correct.
-const userdataPool = new Pool({
-  host:     process.env.DB_HOST_ACCOUNTS,
-  user:     process.env.DB_USER_ACCOUNTS,
-  password: process.env.DB_PASS_ACCOUNTS,
-  database: process.env.DB_NAME_ACCOUNTS,
-  port:     5432,
-  ssl:      false,
+const userdataPool = mysql.createPool({
+  host:             process.env.DB_HOST_ACCOUNTS,
+  user:             process.env.DB_USER_ACCOUNTS,
+  password:         process.env.DB_PASS_ACCOUNTS,
+  database:         process.env.DB_NAME_ACCOUNTS,
+  port:             3306,
+  ssl:              false,
+  waitForConnections: true,
+  connectionLimit:  10,
+  queueLimit:       0,
 });
 
 async function dbQuery(text, params) {
   console.log("DB_QUERY", { text, params });
-  const res = await userdataPool.query(text, params);
-  console.log("DB_RESULT", { rowCount: res.rowCount });
-  return res;
+  const [rows] = await userdataPool.execute(text, params);
+  console.log("DB_RESULT", { rowCount: rows.length });
+  return { rows, rowCount: rows.length };
 }
 
 function hmacLookup(value) {
@@ -121,14 +122,6 @@ const redisClient = createClient({ url: process.env.REDIS_URL });
 redisClient.on("error", (err) => console.error("REDIS_ERROR", { message: err.message }));
 redisClient.connect().then(() => console.log("REDIS_CONNECTED"));
 
-// ─── BIO CODE HELPERS ─────────────────────────────────────────────────────────
-//
-// Storing the code in req.session is unreliable for unauthenticated visitors
-// because saveUninitialized:false means Express won't always persist a fresh
-// session between the /api/roblox/code GET and the /api/roblox/check-bio GET.
-// We key off req.sessionID (stable once the cookie is set) and write straight
-// to Redis with a hard TTL, completely bypassing the session store.
-//
 const BIO_CODE_TTL_SECS    = 10 * 60; // 10 minutes
 const VERIFIED_ID_TTL_SECS = 15 * 60; // 15 minutes — survives to POST /api/register
 
@@ -233,7 +226,6 @@ async function clearFailedAttempts(accountHmac) {
   await redisClient.del(`lockout:${accountHmac}`);
 }
 
-// ── A: Global DDoS rate limiter ───────────────────────────────────────────────
 async function globalRateLimiter(req, res, next) {
   try {
     const key = req.session?.id
@@ -257,7 +249,6 @@ async function globalRateLimiter(req, res, next) {
   }
 }
 
-// ── B: Auth-route rate limiter ────────────────────────────────────────────────
 async function authRateLimiter(req, res, next) {
   try {
     const key = `authfp:${requestFingerprint(req)}`;
@@ -303,24 +294,12 @@ app.use(
     name: "keylo.sid",
     secret: process.env.SESSION_SECRET,
     resave: false,
-    // Must be true: unauthenticated visitors need a stable persisted session ID
-    // before /api/roblox/code fires, otherwise Redis has nothing to look up on
-    // the subsequent /api/roblox/check-bio call.
     saveUninitialized: true,
     proxy: true,
     cookie: {
       secure: true,
       httpOnly: true,
-      // "lax" is correct here — all auth requests (register, login, OAuth
-      // callback) are same-site navigations to keylogroup.co.uk.
-      // "none" was causing the browser to reject the cookie because it requires
-      // a Partitioned attribute in modern Chrome, and also caused the session ID
-      // to change on every request (confirmed in logs).
       sameSite: "lax",
-      // No domain override — let the browser scope the cookie to the exact host
-      // (keylogroup.co.uk). Setting domain: ".keylogroup.co.uk" means the cookie
-      // is sent to ALL subdomains including app.keylogroup.co.uk which runs a
-      // separate app and could shadow or clobber the session.
       maxAge: 30 * 24 * 60 * 60 * 1000,
     },
   })
@@ -427,7 +406,7 @@ app.get("/auth/roblox/callback", async (req, res) => {
     const robloxIdHmac   = hmacLookup(robloxId);
 
     const banned = await dbQuery(
-      'SELECT * FROM "AccountsBan" WHERE roblox_id_hmac=$1 LIMIT 1',
+      "SELECT * FROM `AccountsBan` WHERE roblox_id_hmac=? LIMIT 1",
       [robloxIdHmac]
     );
     if (banned.rows.length > 0) {
@@ -439,7 +418,7 @@ app.get("/auth/roblox/callback", async (req, res) => {
     }
 
     const existing = await dbQuery(
-      'SELECT * FROM "Accounts" WHERE roblox_id_hmac=$1 LIMIT 1',
+      "SELECT * FROM `Accounts` WHERE roblox_id_hmac=? LIMIT 1",
       [robloxIdHmac]
     );
 
@@ -489,7 +468,6 @@ app.get("/register", csrfProtection, (req, res) => {
   });
 });
 
-// ── POST /api/register ────────────────────────────────────────────────────────
 app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
   console.log("API_REGISTER_HIT", {
     hasOAuthPending: !!req.session.pendingRoblox,
@@ -519,7 +497,6 @@ app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
       return res.status(400).send("Missing verified identity. Please restart registration.");
     }
 
-    // Password validation
     if (!password || typeof password !== "string" || password.length < 8) {
       return res.status(400).send("Password must be at least 8 characters.");
     }
@@ -529,9 +506,8 @@ app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
 
     const robloxIdHmac = hmacLookup(robloxId);
 
-    // Duplicate check — auto-login if account already exists
     const existing = await dbQuery(
-      'SELECT id FROM "Accounts" WHERE roblox_id_hmac=$1 LIMIT 1',
+      "SELECT id FROM `Accounts` WHERE roblox_id_hmac=? LIMIT 1",
       [robloxIdHmac]
     );
     if (existing.rows.length > 0) {
@@ -544,7 +520,7 @@ app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
 
     // Ban check
     const banned = await dbQuery(
-      'SELECT reason FROM "AccountsBan" WHERE roblox_id_hmac=$1 LIMIT 1',
+      "SELECT reason FROM `AccountsBan` WHERE roblox_id_hmac=? LIMIT 1",
       [robloxIdHmac]
     );
     if (banned.rows.length > 0) {
@@ -555,16 +531,14 @@ app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
       );
     }
 
-    // Persist
     const encryptedId       = encrypt(robloxId);
     const encryptedPassword = encrypt(password);
 
     await dbQuery(
-      'INSERT INTO "Accounts" (roblox_id, roblox_id_hmac, encrypted_password) VALUES ($1, $2, $3)',
+      "INSERT INTO `Accounts` (roblox_id, roblox_id_hmac, encrypted_password) VALUES (?, ?, ?)",
       [encryptedId, robloxIdHmac, encryptedPassword]
     );
 
-    // Clean up
     req.session.pendingRoblox = null;
     req.session.loggedIn      = true;
     await deleteVerifiedId(req.sessionID);
@@ -578,11 +552,6 @@ app.post("/api/register", authRateLimiter, csrfProtection, async (req, res) => {
   }
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// ROBLOX API ROUTES
-// ─────────────────────────────────────────────────────────────────────────────
-
-// ── GET /api/roblox/user/:id ──────────────────────────────────────────────────
 app.get("/api/roblox/user/:id", authRateLimiter, async (req, res) => {
   const { id } = req.params;
 
@@ -624,8 +593,6 @@ app.get("/api/roblox/user/:id", authRateLimiter, async (req, res) => {
   }
 });
 
-// ── GET /api/roblox/code ──────────────────────────────────────────────────────
-// Writes the code straight to Redis under req.sessionID — no session save needed.
 app.get("/api/roblox/code", authRateLimiter, async (req, res) => {
   try {
     const raw  = crypto.randomBytes(4).toString("hex").toUpperCase();
@@ -641,8 +608,6 @@ app.get("/api/roblox/code", authRateLimiter, async (req, res) => {
   }
 });
 
-// ── GET /api/roblox/check-bio/:userId/:code ───────────────────────────────────
-// Reads the stored code straight from Redis — no session lookup needed.
 app.get("/api/roblox/check-bio/:userId/:code", authRateLimiter, async (req, res) => {
   const { userId, code } = req.params;
 
@@ -650,7 +615,6 @@ app.get("/api/roblox/check-bio/:userId/:code", authRateLimiter, async (req, res)
     return res.status(400).json({ success: false, error: "Invalid user ID." });
   }
 
-  // Only allow the exact format we generate: KL- followed by 8 uppercase hex chars
   if (!/^KL-[0-9A-F]{8}$/.test(code)) {
     return res.status(400).json({ success: false, error: "Malformed code." });
   }
@@ -678,7 +642,6 @@ app.get("/api/roblox/check-bio/:userId/:code", authRateLimiter, async (req, res)
       });
     }
 
-    // Fetch the user's Roblox bio
     const profileRes = await axios.get(
       `https://users.roblox.com/v1/users/${userId}`,
       { timeout: 5000 }
@@ -694,7 +657,6 @@ app.get("/api/roblox/check-bio/:userId/:code", authRateLimiter, async (req, res)
       });
     }
 
-    // Confirmed — delete used code, store verified ID, both in Redis
     await deleteBioCode(req.sessionID);
     await storeVerifiedId(req.sessionID, userId);
 
@@ -706,8 +668,6 @@ app.get("/api/roblox/check-bio/:userId/:code", authRateLimiter, async (req, res)
   }
 });
 
-// ── GET /api/roblox/username/:id ──────────────────────────────────────────────
-// Returns username only for the session-verified Roblox ID.
 app.get("/api/roblox/username/:id", authRateLimiter, async (req, res) => {
   const { id } = req.params;
 
@@ -728,10 +688,6 @@ app.get("/api/roblox/username/:id", authRateLimiter, async (req, res) => {
     return res.status(500).json({ success: false, error: "Failed to fetch username." });
   }
 });
-
-// ─────────────────────────────────────────────────────────────────────────────
-// REMAINING ROUTES
-// ─────────────────────────────────────────────────────────────────────────────
 
 app.get("/login", csrfProtection, (req, res) => {
   res.render("login", {
@@ -767,7 +723,7 @@ app.post("/login", authRateLimiter, csrfProtection, async (req, res) => {
     }
 
     const users = await dbQuery(
-      'SELECT * FROM "Accounts" WHERE roblox_id_hmac=$1 LIMIT 1',
+      "SELECT * FROM `Accounts` WHERE roblox_id_hmac=? LIMIT 1",
       [accountHmac]
     );
 
